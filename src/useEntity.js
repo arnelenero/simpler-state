@@ -5,6 +5,9 @@ export const useEntity = (
   entity,
   { transform = v => v, equality = strictEqual } = {}
 ) => {
+  if (!(entity._subscribers instanceof Array))
+    throw new Error('Invalid entity.')
+
   const computed = transform(entity._value)
 
   const [state, setState] = useState(computed)

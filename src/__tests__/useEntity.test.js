@@ -174,4 +174,19 @@ describe('useEntity', () => {
     })
     expect(renderCount).toBe(prevRenderCount)
   })
+
+  it('checks for valid entity', () => {
+    const origConsoleError = console.error
+    console.error = jest.fn()
+
+    const CounterView = () => {
+      const { value } = useEntity({ value: 0 })
+      return <>{value}</>
+    }
+    expect(() => {
+      component = mount(<CounterView />)
+    }).toThrow()
+
+    console.error = origConsoleError
+  })
 })
