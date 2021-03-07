@@ -3,7 +3,7 @@ import { strictEqual } from './utils'
 
 export const useEntity = (
   entity,
-  { transform = v => v, equality = strictEqual }
+  { transform = v => v, equality = strictEqual } = {}
 ) => {
   const computed = transform(entity._value)
 
