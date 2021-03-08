@@ -16,6 +16,11 @@ __SimpleR State__ is an ultra-lightweight library that provides the simplest sta
 - Multiple times faster than context/reducer solution
 - It's tiny, less than 1 KB (minified + gzipped)
 
+Get all these benefits with one dependency install:
+```
+npm install simpler-state
+```
+
 ## Two Easy Steps!
 
 __Step 1:__ Create an entity (shared state) and actions (updater functions)
@@ -56,4 +61,4 @@ const CounterView = () => {
 }
 ```
 
-It's that simple! 
+It's that simple!
