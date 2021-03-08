@@ -7,11 +7,11 @@
 
 __SimpleR State__ is an ultra-lightweight library that provides the simplest state management for React.
 
-It is part of the upcoming __SimpleR__ collection of all things that make React development a breeze. This library is an evolution of [__React Entities__](https://github.com/arnelenero/react-entities).
+This library is an evolution of [__React Entities__](https://github.com/arnelenero/react-entities).
 
 ## Two Easy Steps!
 
-__Step 1:__ Create an entity (shared state) and actions
+__Step 1:__ Create an entity (shared state) and actions (updater functions)
 
 ```js
 // counter.js
@@ -29,7 +29,7 @@ const decrement = by => {
 }
 ```
 
-__Step 2:__ Use the entity in your components
+__Step 2:__ Use the entity in your components with hooks
 
 ```jsx
 import { useEntity } from 'simpler-state'
