@@ -18,13 +18,13 @@ __Step 1:__ Create an entity (shared state) and actions (updater functions)
 
 import { entity } from 'simpler-state'
 
-const counter = entity(0)
+export const counter = entity(0)
 
-const increment = by => {
+export const increment = by => {
   counter.set(counter.get() + by)
 }
 
-const decrement = by => {
+export const decrement = by => {
   counter.set(counter.get() - by)
 }
 ```
