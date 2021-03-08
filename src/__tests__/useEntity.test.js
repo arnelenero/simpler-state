@@ -19,10 +19,7 @@ describe('useEntity', () => {
         : undefined
       setSelectKey = setKey // Allows modifying the selector key from outside
 
-      hookValue = useEntity(counter, {
-        transform: selector,
-        equality: equalityFn
-      })
+      hookValue = useEntity(counter, selector, equalityFn)
 
       useEffect(() => {
         renderCount++
