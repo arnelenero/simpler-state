@@ -2,7 +2,7 @@ export function entity<T = any>(initialValue: T): Entity<T>
 
 export function useEntity<C extends unknown = T>(
   entity: Entity<T>,
-  options: {
+  options?: {
     transform?: (value: T) => C
     equalityFn?: (a: any, b: any) => boolean
   }
