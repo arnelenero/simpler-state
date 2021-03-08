@@ -14,6 +14,10 @@ It is part of the upcoming __SimpleR__ collection of all things that make React 
 __Step 1:__ Create an entity (shared state) and actions
 
 ```js
+// counter.js
+
+import { entity } from 'simpler-state'
+
 const counter = entity(0)
 
 const increment = by => {
@@ -28,6 +32,9 @@ const decrement = by => {
 __Step 2:__ Use the entity in your components
 
 ```jsx
+import { useEntity } from 'simpler-state'
+import { counter, increment, decrement } from 'counter'
+
 const CounterView = () => {
   const count = useEntity(counter)
 
