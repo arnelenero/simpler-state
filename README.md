@@ -62,3 +62,7 @@ const CounterView = () => {
 ```
 
 It's that simple!
+
+## Documentation
+
+Learn more about SimpleR State at [simpler-state.js.org](https://simpler-state.js.org).
