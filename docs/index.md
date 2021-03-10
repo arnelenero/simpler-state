@@ -18,7 +18,8 @@ Browse this documentation to explore SimpleR State.
 [The Basics](basics.html)
 
 [Recipes](recipes.html)
-- [Binding only relevant data](recipe-transforms.html)
+- [Binding only relevant data to components](recipe-transforms.html)
 - [Async actions](recipe-async.html)
 - [Separating "pure" updates from actions](recipe-pure.html)
+- [Orchestrating updates to multiple entities with one action](recipe-orchestrators.html)
 - [Unit testing entities](recipe-testing.html)
