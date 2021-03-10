@@ -5,7 +5,7 @@
 [![coverage](https://img.shields.io/coveralls/github/arnelenero/simpler-state)](https://coveralls.io/github/arnelenero/simpler-state)
 [![license](https://img.shields.io/github/license/arnelenero/simpler-state)](https://opensource.org/licenses/MIT)
 
-__SimpleR State__ is an ultra-lightweight library that provides the simplest state management for React.
+__SimpleR State__ is an ultra-lightweight library that provides the _simplest_ state management for React.
 
 - No complicated concepts or boilerplate code
 - Just use plain functions to implement state changes
