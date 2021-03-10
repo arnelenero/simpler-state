@@ -1,4 +1,4 @@
-# <img src="assets/simpler-state-logo.png" alt="SimpleR State" width="240" style="margin-top:16px"/>
+# <img src="assets/simpler-state-logo.png" alt="SimpleR State" width="240" />
 
 __SimpleR State__ is an ultra-lightweight library that provides the _simplest_ state management for React.
 
