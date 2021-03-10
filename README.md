@@ -1,4 +1,4 @@
-# SimpleR State
+# <img src="https://simpler-state.js.org/assets/simpler-state-logo.png" alt="SimpleR State" width="200"/>
 
 [![npm](https://img.shields.io/npm/v/simpler-state)](https://www.npmjs.com/package/simpler-state)
 [![build](https://img.shields.io/travis/arnelenero/simpler-state)](https://travis-ci.org/github/arnelenero/simpler-state)
