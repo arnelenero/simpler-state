@@ -14,3 +14,11 @@ __SimpleR State__ is an ultra-lightweight library that provides the simplest sta
 Browse this documentation to explore SimpleR State.
 
 [Quick Start](quick-start.html)
+
+[The Basics](basics.html)
+
+[Recipes](recipes.html)
+- [Binding only relevant data](recipe-transforms.html)
+- [Async actions](recipe-async.html)
+- [Separating "pure" updates from actions](recipe-pure.html)
+- [Unit testing entities](recipe-testing.html)

@@ -46,4 +46,8 @@ const CounterView = () => {
 }
 ```
 
-It's that simple!
+It's that simple!  
+
+
+<br /><br />
+[Back to home](index.html) | Next topic → [The Basics](basics.html)
