@@ -5,6 +5,9 @@
   "keywords": [
     "react",
     "state",
+    "global",
+    "shared",
+    "data",
     "simple",
     "functional",
     "hooks"
