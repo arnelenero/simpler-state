@@ -13,7 +13,7 @@ An entity can hold a value of any data type, including primitive types.
 
 An entity is created using the `entity` function.
 ```js
-entity(initialValue)
+entityObj = entity(initialValue)
 ```
 Specifying an initial value is __required__.
 
@@ -65,7 +65,7 @@ entity<ValueType>(initialValue)
 
 The `useEntity` hook allows us to bind an entity to a component. It takes an entity object as argument, and returns the current value of the entity, which then behaves like local state.
 ```js
-useEntity(entity) => value
+value = useEntity(entityObj)
 ```
 
 Here is an example usage:
