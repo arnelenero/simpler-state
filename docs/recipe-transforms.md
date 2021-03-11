@@ -1,6 +1,6 @@
 # Binding Only Relevant Data to Components
 
-There are cases where a component does not need the exact value of the entity, but rather some derivative of this value. It can either be:
+There are cases where a component doesn't need the exact value of the entity, but rather some derivative of this value. It can either be:
 - a portion of the value (e.g. for object type values), or 
 - a computed value
 
