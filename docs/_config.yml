@@ -1,3 +1,4 @@
 theme: jekyll-theme-architect
+markdown: CommonMarkGhPages
 title: SimpleR State
 description: The simplest app state management for React
