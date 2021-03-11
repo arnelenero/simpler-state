@@ -42,7 +42,7 @@ const MainView = () => {
   )
 }
 ```
-Notice that type inference still works at full force here. No need for explicit types even when working with a transform function.
+Notice that type inference still works full force here. No need for explicit types even when working with a transform function.
 
 </details><br />
 
@@ -86,7 +86,7 @@ To further enhance the app's performance, it is always a good idea to memoize th
 - placing the functions alongside the entity and its actions
 - using React's `useCallback` hook to keep them inside.
 
-SimpleR State is unopinionated, so we leave the decision to you.
+SimpleR State is unopinionated, so it's all up to you to decide.
 
 <br /><br />
 [Back to home](index.html) | [More recipes...](recipes.html)
