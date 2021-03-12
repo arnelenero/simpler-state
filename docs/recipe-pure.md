@@ -1,6 +1,6 @@
 # Separating "Pure" Updates from Actions
 
-Using _pure functions_ has its benefits. Since an action can be pretty much any function, it does not automatically prevent _side effects_.
+Using _pure functions_ has its benefits. Since an action can be pretty much any function, it doesn't automatically prevent _side effects_.
 
 To allow us to separate "pure" updates, an entity's `set` function has an alternative form that accepts an _updater function_ in this format:
 ```js
@@ -8,7 +8,7 @@ updaterFn(value, ...args) => newValue
 ```
 where `value` is the current entity value and the optional `args` can be any number of arguments. This function returns the new value to be set.
 
-The `set` call inside actions will then have to be in this format: 
+The `set` function will then have to be invoked in this format: 
 ```js
 entity.set(updaterFn, ...updaterArgs)
 ```
