@@ -57,7 +57,7 @@ The `equalityFn` is expected to come in this form:
 (a, b) => boolean
 ```
 
-The library provides `shallowEqual` for cases where the transform function returns an object with top-level properties derived from the entity state, as in this example:
+The library provides `shallowEqual` for cases where the transform function returns an object with top-level properties derived from the entity value, as in this example:
 
 **MainView.js**
 ```jsx
