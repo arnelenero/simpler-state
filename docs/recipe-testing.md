@@ -21,7 +21,7 @@ describe('counter', () => {
     it('increases the value of the counter', () => {
       //   👇
       increment(1)
-      expect(counter.get()).toBe(1);
+      expect(counter.get()).toBe(1)
       //              👆
     })
   })
