@@ -29,6 +29,7 @@ export const entity = initialValue => {
   }
   entity.get = () => entity._value
   entity.set = createSetter(entity)
+  entity.getInitialValue = () => entity._initialValue
 
   // Save reference to this entity for use with useEntityBoundary hook
   store.push(entity)
