@@ -52,8 +52,8 @@ export function plugin(
 ): void
 
 export interface Plugin {
-  onInit: (entity: Entity<any>, meta: object) => void
-  onSet: (entity: Entity<any>, meta: object) => void
-  shouldIgnoreInit: (meta: object) => boolean
-  shouldIgnoreSet: (meta: object) => boolean
+  onInit?: (entity: Entity<any>, meta: object) => void
+  onSet?: (entity: Entity<any>, meta: object) => void
+  shouldIgnoreInit?: (meta: object) => boolean
+  shouldIgnoreSet?: (meta: object) => boolean
 }
