@@ -5,6 +5,9 @@ export const entity = (initialValue, meta = {}) => {
   if (initialValue === undefined)
     throw new Error('Entity requires an initial value.')
 
+  if (typeof meta !== 'object')
+    throw new Error('Entity metadata should be an object.')
+
   const entity = {
     _value: undefined,
     _subscribers: []

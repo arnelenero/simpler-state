@@ -2,8 +2,9 @@
  * Creates an entity and returns a direct reference
  * that provides get() and set() functions
  * @param initialValue - required default value
+ * @param meta - optional metadata object (for plug-ins)
  */
-export function entity<T = any>(initialValue: T): Entity<T>
+export function entity<T = any>(initialValue: T, meta?: object): Entity<T>
 
 /**
  * Binds an entity to the component as a shared state
@@ -39,3 +40,18 @@ export function useEntityBoundary(): void
 
 export function strictEqual(a: any, b: any): boolean
 export function shallowEqual(a: any, b: any): boolean
+
+/**
+ * Attaches a plug-in to SimplerR State
+ * @param pluginPkg - the plug-in package
+ * @param options - optional configuration object
+ */
+export function plugin(
+  pluginPkg: (options: object) => Plugin,
+  options: object
+): void
+
+export interface Plugin {
+  onInit: (entity: Entity<any>, meta: object) => void
+  onSet: (entity: Entity<any>, meta: object) => void
+}
