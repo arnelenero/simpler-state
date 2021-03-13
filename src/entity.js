@@ -1,4 +1,29 @@
 import { store } from './store'
+import { plugins } from './plugin'
+
+export const entity = (initialValue, options = {}) => {
+  if (initialValue === undefined)
+    throw new Error('Entity requires an initial value.')
+
+  const entity = {
+    _value: undefined,
+    _subscribers: []
+  }
+  entity.get = () => entity._value
+  entity.set = createSetter(entity)
+  entity.init = () => {
+    entity.set(initialValue)
+  }
+
+  applyPlugins(entity, options)
+
+  entity.init()
+
+  // Save reference to this entity for use with useEntityBoundary hook
+  store.push(entity)
+
+  return entity
+}
 
 export const createSetter = entity => (newValue, ...updaterArgs) => {
   if (typeof newValue === 'function')
@@ -18,26 +43,21 @@ export const createSetter = entity => (newValue, ...updaterArgs) => {
   )
 }
 
-export const entity = initialValue => {
-  if (initialValue === undefined)
-    throw new Error('Entity requires an initial value.')
-
-  const entity = {
-    _value: undefined,
-    _subscribers: []
-  }
-  entity.get = () => entity._value
-  entity.set = createSetter(entity)
-  entity.init = () => {
-    entity.set(initialValue)
-  }
-
-  entity.init()
-
-  // Save reference to this entity for use with useEntityBoundary hook
-  store.push(entity)
-
-  return entity
+export const applyPlugins = (entity, options) => {
+  plugins.forEach(plugin => {
+    if (typeof plugin.onCreate === 'function') {
+      plugin.onCreate(options)
+    }
+    if (typeof plugin.onChange === 'function') {
+      let set = entity.set
+      entity.set = (...args) => {
+        const before = entity._value
+        set(...args)
+        const after = entity._value
+        plugin.onChange(before, after, options)
+      }
+    }
+  })
 }
 
 export default entity
