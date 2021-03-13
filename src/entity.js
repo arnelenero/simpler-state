@@ -48,14 +48,21 @@ export const createSetter = entity => (newValue, ...updaterArgs) => {
 
 export const applyPlugins = (entity, meta) => {
   plugins.forEach(plugin => {
-    if (typeof plugin.onInit === 'function') {
+    const ignoreInit =
+      typeof plugin.shouldIgnoreInit === 'function' &&
+      plugin.shouldIgnoreInit(meta)
+    if (!ignoreInit && typeof plugin.onInit === 'function') {
       let init = entity.init
       entity.init = () => {
         init()
         plugin.onInit(entity, meta)
       }
     }
-    if (typeof plugin.onSet === 'function') {
+
+    const ignoreSet =
+      typeof plugin.shouldIgnoreSet === 'function' &&
+      plugin.shouldIgnoreSet(meta)
+    if (!ignoreSet && typeof plugin.onSet === 'function') {
       let set = entity.set
       entity.set = (...args) => {
         set(...args)
