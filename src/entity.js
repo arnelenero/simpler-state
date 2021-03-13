@@ -45,16 +45,18 @@ export const createSetter = entity => (newValue, ...updaterArgs) => {
 
 export const applyPlugins = (entity, options) => {
   plugins.forEach(plugin => {
-    if (typeof plugin.onCreate === 'function') {
-      plugin.onCreate(options)
+    if (typeof plugin.onInit === 'function') {
+      let init = entity.init
+      entity.init = () => {
+        init()
+        plugin.onInit(entity, options)
+      }
     }
-    if (typeof plugin.onChange === 'function') {
+    if (typeof plugin.onSet === 'function') {
       let set = entity.set
       entity.set = (...args) => {
-        const before = entity._value
         set(...args)
-        const after = entity._value
-        plugin.onChange(before, after, options)
+        plugin.onSet(entity, options)
       }
     }
   })
