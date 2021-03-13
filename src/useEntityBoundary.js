@@ -5,7 +5,7 @@ export const useEntityBoundary = () => {
   useEffect(() => {
     return () => {
       for (let i = 0; i < store.length; i++) {
-        store[i]._value = store[i]._initialValue
+        store[i].init()
       }
     }
   }, [])

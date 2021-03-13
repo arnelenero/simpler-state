@@ -23,13 +23,16 @@ export const entity = initialValue => {
     throw new Error('Entity requires an initial value.')
 
   const entity = {
-    _value: initialValue,
-    _initialValue: initialValue,
+    _value: undefined,
     _subscribers: []
   }
   entity.get = () => entity._value
   entity.set = createSetter(entity)
-  entity.getInitialValue = () => entity._initialValue
+  entity.init = () => {
+    entity.set(initialValue)
+  }
+
+  entity.init()
 
   // Save reference to this entity for use with useEntityBoundary hook
   store.push(entity)

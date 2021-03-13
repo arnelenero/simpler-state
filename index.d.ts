@@ -23,6 +23,7 @@ export function useEntity<T, C>(
 ): C
 
 export interface Entity<T> {
+  init: () => T
   get: () => T
   set: (
     newValue: T | ((value: T, ...args: any[]) => T),
@@ -38,11 +39,3 @@ export function useEntityBoundary(): void
 
 export function strictEqual(a: any, b: any): boolean
 export function shallowEqual(a: any, b: any): boolean
-
-export interface Plugin {
-  onCreate: () => void
-  onFirstUse: () => void
-  beforeSet: () => void
-  afterSet: () => void
-  onDestroy: () => void
-}

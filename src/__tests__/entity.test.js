@@ -51,14 +51,15 @@ describe('entity', () => {
     expect(counter).toHaveProperty('_value', 2)
   })
 
-  it('provides a `getInitialValue` function in the entity', () => {
+  it('provides an `init` function in the entity', () => {
     const counter = entity(0)
-    expect(counter.getInitialValue).toBeInstanceOf(Function)
+    expect(counter.init).toBeInstanceOf(Function)
   })
 
-  it('enables `getInitialValue` to return the initial value of the entity', () => {
+  it('enables `init` to reset the entity to its initial value', () => {
     const counter = entity(0)
-    const initial = counter.getInitialValue()
-    expect(initial).toBe(0)
+    counter.set(2)
+    counter.init()
+    expect(counter).toHaveProperty('_value', 0)
   })
 })

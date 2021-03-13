@@ -4,7 +4,7 @@ When we unit test our entities, ideally we would isolate them from the component
 
 Since actions are defined outside the entity object, we can easily invoke actions in our tests, then use the entity's `get` method to inspect its current value.
 
-We can also use the `getInitialValue` method in combination with `set` to reset the entity to its initial value before each test case.
+We can also use the `init` method to reset the entity to its initial value before each test case.
 
 Here is an example Jest unit test:
 
@@ -13,16 +13,16 @@ Here is an example Jest unit test:
 import { counter, increment } from './counter'
 
 beforeEach(() => {
-  counter.set(counter.getInitialValue())  // 👈
+  counter.init()  // 👈 Reset value
 })
 
 describe('counter', () => {
   describe('increment', () => {
     it('increases the value of the counter', () => {
-      //   👇
+      //   👇 Invoke action
       increment(1)
       expect(counter.get()).toBe(1)
-      //              👆
+      //              👆 Inspect value
     })
   })
 })
