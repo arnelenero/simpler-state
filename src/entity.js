@@ -1,7 +1,7 @@
 import { store } from './store'
 import { plugins } from './plugin'
 
-export const entity = (initialValue, options = {}) => {
+export const entity = (initialValue, meta = {}) => {
   if (initialValue === undefined)
     throw new Error('Entity requires an initial value.')
 
@@ -15,7 +15,7 @@ export const entity = (initialValue, options = {}) => {
     entity.set(initialValue)
   }
 
-  applyPlugins(entity, options)
+  applyPlugins(entity, meta)
 
   entity.init()
 
@@ -43,20 +43,20 @@ export const createSetter = entity => (newValue, ...updaterArgs) => {
   )
 }
 
-export const applyPlugins = (entity, options) => {
+export const applyPlugins = (entity, meta) => {
   plugins.forEach(plugin => {
     if (typeof plugin.onInit === 'function') {
       let init = entity.init
       entity.init = () => {
         init()
-        plugin.onInit(entity, options)
+        plugin.onInit(entity, meta)
       }
     }
     if (typeof plugin.onSet === 'function') {
       let set = entity.set
       entity.set = (...args) => {
         set(...args)
-        plugin.onSet(entity, options)
+        plugin.onSet(entity, meta)
       }
     }
   })
