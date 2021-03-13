@@ -48,7 +48,7 @@ export function shallowEqual(a: any, b: any): boolean
  */
 export function plugin(
   pluginPkg: (options: object) => Plugin,
-  options: object
+  options?: object
 ): void
 
 export interface Plugin {
