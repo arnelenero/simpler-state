@@ -48,27 +48,19 @@ export const createSetter = entity => (newValue, ...updaterArgs) => {
 
 export const applyPlugins = (entity, meta) => {
   plugins.forEach(plugin => {
-    const ignoreInit =
-      typeof plugin.shouldIgnoreInit === 'function' &&
-      plugin.shouldIgnoreInit(meta)
-    if (!ignoreInit && typeof plugin.onInit === 'function') {
-      let init = entity.init
-      entity.init = () => {
-        init()
-        plugin.onInit(entity, meta)
+    const tapMethod = (method, tap, shouldIgnore) => {
+      const ignore = typeof shouldIgnore === 'function' && shouldIgnore(meta)
+      if (!ignore && typeof tap === 'function') {
+        const func = entity[method]
+        entity[method] = (...args) => {
+          func(...args)
+          tap(entity, meta)
+        }
       }
     }
 
-    const ignoreSet =
-      typeof plugin.shouldIgnoreSet === 'function' &&
-      plugin.shouldIgnoreSet(meta)
-    if (!ignoreSet && typeof plugin.onSet === 'function') {
-      let set = entity.set
-      entity.set = (...args) => {
-        set(...args)
-        plugin.onSet(entity, meta)
-      }
-    }
+    tapMethod('init', plugin.onInit, plugin.shouldIgnoreInit)
+    tapMethod('set', plugin.onSet, plugin.shouldIgnoreSet)
   })
 }
 
