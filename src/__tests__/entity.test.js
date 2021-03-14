@@ -1,4 +1,5 @@
 import entity from '../entity'
+import { plugins } from '../plugin'
 
 describe('entity', () => {
   it('returns an entity object', () => {
@@ -67,5 +68,71 @@ describe('entity', () => {
     expect(() => entity(0, true)).toThrow()
   })
 
-  it('applies the `onInit` plug-in tap (if any) to the entity', () => {})
+  it('applies the `onInit` plug-in tap (if any) to the entity', () => {
+    let initCalls = 0
+    plugins.push({
+      id: 'test',
+      onInit: (entity, meta) => {
+        initCalls++
+      }
+    })
+    entity(0)
+    entity({ hello: 'world' })
+    expect(initCalls).toBe(2)
+
+    plugins.pop()
+  })
+
+  it('evaluates `shouldIgnoreInit` to determine exclusion', () => {
+    let initCalls = 0
+    plugins.push({
+      id: 'test',
+      onInit: (entity, meta) => {
+        initCalls++
+      },
+      shouldIgnoreInit: meta => meta.skip === true
+    })
+    entity(0)
+    entity({ hello: 'world' }, { skip: true })
+    expect(initCalls).toBe(1)
+
+    plugins.pop()
+  })
+
+  it('applies the `onSet` plug-in tap (if any) to the entity', () => {
+    let setCalls = 0
+    plugins.push({
+      id: 'test',
+      onSet: (entity, meta) => {
+        setCalls++
+      }
+    })
+    const counter = entity(0)
+    const greeting = entity({ hello: 'world' })
+    counter.set(1)
+    greeting.set('wazzup')
+    // note: `set` is also called automatically on init!
+    expect(setCalls).toBe(4)
+
+    plugins.pop()
+  })
+
+  it('evaluates `shouldIgnoreSet` to determine exclusion', () => {
+    let setCalls = 0
+    plugins.push({
+      id: 'test',
+      onSet: (entity, meta) => {
+        setCalls++
+      },
+      shouldIgnoreSet: meta => meta.skip === true
+    })
+    const counter = entity(0)
+    const greeting = entity({ hello: 'world' }, { skip: true })
+    counter.set(1)
+    greeting.set('wazzup')
+    // note: `set` is also called automatically on init!
+    expect(setCalls).toBe(2)
+
+    plugins.pop()
+  })
 })
