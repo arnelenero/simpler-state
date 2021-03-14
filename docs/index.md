@@ -25,3 +25,7 @@ Browse this documentation to explore SimpleR State.
 - [Orchestrating updates to multiple entities with one action](recipe-orchestrators.html)
 - [Unit testing entities](recipe-testing.html)
 - [Extending the library with plug-ins](recipe-plugins.html)
+
+<br />
+
+> If you like this library, the concept, and its simplicity, please [give it a star on GitHub](https://github.com/arnelenero/simpler-state) to let me know. 😀
