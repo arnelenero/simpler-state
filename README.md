@@ -15,7 +15,7 @@ __SimpleR State__ is an ultra-lightweight library that provides the _simplest_ s
 - Full TypeScript support with uncomplicated types
 - Made specifically for React, and built on React Hooks 
 - Multiple times faster than context/reducer solution
-- It's tiny, less than 1 KB (minified + gzipped)
+- It's tiny, just around 1 KB (minified + gzipped)
 
 Get all these benefits with one dependency install:
 ```
