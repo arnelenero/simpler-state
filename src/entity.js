@@ -1,4 +1,32 @@
 import { store } from './store'
+import { plugins } from './plugin'
+
+export const entity = (initialValue, meta = {}) => {
+  if (initialValue === undefined)
+    throw new Error('Entity requires an initial value.')
+
+  if (typeof meta !== 'object')
+    throw new Error('Entity metadata should be an object.')
+
+  const entity = {
+    _value: undefined,
+    _subscribers: []
+  }
+  entity.get = () => entity._value
+  entity.set = createSetter(entity)
+  entity.init = () => {
+    entity.set(initialValue)
+  }
+
+  applyPlugins(entity, meta)
+
+  entity.init()
+
+  // Save reference to this entity for use with useEntityBoundary hook
+  store.push(entity)
+
+  return entity
+}
 
 export const createSetter = entity => (newValue, ...updaterArgs) => {
   if (typeof newValue === 'function')
@@ -18,26 +46,22 @@ export const createSetter = entity => (newValue, ...updaterArgs) => {
   )
 }
 
-export const entity = initialValue => {
-  if (initialValue === undefined)
-    throw new Error('Entity requires an initial value.')
+export const applyPlugins = (entity, meta) => {
+  plugins.forEach(plugin => {
+    const tapMethod = (method, tap, shouldIgnore) => {
+      const ignore = typeof shouldIgnore === 'function' && shouldIgnore(meta)
+      if (!ignore && typeof tap === 'function') {
+        const func = entity[method]
+        entity[method] = (...args) => {
+          func(...args)
+          tap(entity, meta)
+        }
+      }
+    }
 
-  const entity = {
-    _value: undefined,
-    _subscribers: []
-  }
-  entity.get = () => entity._value
-  entity.set = createSetter(entity)
-  entity.init = () => {
-    entity.set(initialValue)
-  }
-
-  entity.init()
-
-  // Save reference to this entity for use with useEntityBoundary hook
-  store.push(entity)
-
-  return entity
+    tapMethod('init', plugin.onInit, plugin.shouldIgnoreInit)
+    tapMethod('set', plugin.onSet, plugin.shouldIgnoreSet)
+  })
 }
 
 export default entity
