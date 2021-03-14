@@ -120,7 +120,7 @@ Here we use generics to enable type checking on the metadata against the meta pr
 </details><br />
 
 
-# Making a plug-in ignore an entity
+## Making a plug-in ignore an entity
 
 Following our logger example, by default all entities will be included in the logs, except when a `skipLog` flag is set in the entity. This logic was defined in the logger plug-in as follows:
 ```js
