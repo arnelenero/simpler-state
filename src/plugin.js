@@ -1,10 +1,10 @@
 export const plugins = []
 
 export const plugin = (pluginFn, options = {}) => {
+  if (typeof pluginFn !== 'function') throw new Error('Invalid plug-in package')
+
   if (typeof options !== 'object')
     throw new Error('Plug-in options should be an object.')
-
-  if (typeof pluginFn !== 'function') throw new Error('Invalid plug-in package')
 
   const pluginObj = pluginFn(options)
 
