@@ -2,15 +2,15 @@
 
 __SimpleR State__ is an ultra-lightweight library that provides the _simplest_ state management for React.
 
-- No complicated concepts or boilerplate code
-- Just use plain functions to implement state changes
-- Largely unopinionated with flexible syntax
-- Extremely simple to unit test state changes
-- Highly extensible with plug-ins
-- Full TypeScript support with uncomplicated types
-- Made specifically for React, and built on React Hooks 
-- Multiple times faster than context/reducer solution
-- It's tiny, just around 1 KB (minified + gzipped)
+- __Minimalist API__; no complicated concepts or boilerplate
+- Just use __plain functions__ to update state
+- Largely __unopinionated__ with flexible syntax
+- Extremely __simple to unit test__ state logic
+- Highly extensible with __plug-ins__
+- Full __TypeScript__ support with uncomplicated types
+- Made specifically for React, and built on __React Hooks__ 
+- Multiple times __faster__ than context/reducer solution
+- It's tiny, just __around 1 KB__ (minified + gzipped)
 
 Browse this documentation to explore SimpleR State.
 
