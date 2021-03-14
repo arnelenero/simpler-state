@@ -52,6 +52,7 @@ export function plugin<O extends object>(
 ): void
 
 export interface Plugin<M extends object = Record<any, any>> {
+  id: string
   onInit?: (entity: Entity<any>, meta: M) => void
   onSet?: (entity: Entity<any>, meta: M) => void
   shouldIgnoreInit?: (meta: M) => boolean
