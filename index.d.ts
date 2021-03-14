@@ -4,19 +4,19 @@
  * @param initialValue - required default value
  * @param meta - optional metadata object (for plug-ins)
  */
-export function entity<T = any>(initialValue: T, meta?: object): Entity<T>
+export function entity<T = any>(initialValue: T): Entity<T>
+export function entity<T = any, M extends object = Record<any, any>>(
+  initialValue: T,
+  meta: M
+): Entity<T>
 
-/**
- * Binds an entity to the component as a shared state
- * @param entity - the entity reference
- */
-export function useEntity<T>(entity: Entity<T>): T
 /**
  * Binds an entity to the component as a shared state
  * @param entity - the entity reference
  * @param transform - optional data transformation function
  * @param equalityFn - optional custom equality function
  */
+export function useEntity<T>(entity: Entity<T>): T
 export function useEntity<T, C>(
   entity: Entity<T>,
   transform?: (value: T) => C,
@@ -46,14 +46,14 @@ export function shallowEqual(a: any, b: any): boolean
  * @param pluginPkg - the plug-in package
  * @param options - optional configuration object
  */
-export function plugin(
-  pluginPkg: (options: object) => Plugin,
-  options?: object
+export function plugin<O extends object>(
+  pluginPkg: (options: O) => Plugin<any>,
+  options?: O
 ): void
 
-export interface Plugin {
-  onInit?: (entity: Entity<any>, meta: object) => void
-  onSet?: (entity: Entity<any>, meta: object) => void
-  shouldIgnoreInit?: (meta: object) => boolean
-  shouldIgnoreSet?: (meta: object) => boolean
+export interface Plugin<M extends object = Record<any, any>> {
+  onInit?: (entity: Entity<any>, meta: M) => void
+  onSet?: (entity: Entity<any>, meta: M) => void
+  shouldIgnoreInit?: (meta: M) => boolean
+  shouldIgnoreSet?: (meta: M) => boolean
 }
