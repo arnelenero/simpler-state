@@ -9,6 +9,7 @@ Here we provide some suggested patterns that you may consider for specific scena
 - [Separating "pure" updates from actions](recipe-pure.html)
 - [Orchestrating updates to multiple entities with one action](recipe-orchestrators.html)
 - [Unit testing entities](recipe-testing.html)
+- [Extending the library with plug-ins](recipe-plugins.html)
 
 
 <br /><br />
