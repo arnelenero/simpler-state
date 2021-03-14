@@ -28,4 +28,4 @@ Browse this documentation to explore SimpleR State.
 
 <br />
 
-> If you like this library, the concept, and its simplicity, please [give it a star on GitHub](https://github.com/arnelenero/simpler-state) to let me know. 😀
+> If you like this library, the concept, and its simplicity, please give it a star on the [GitHub repo](https://github.com/arnelenero/simpler-state) to let me know. 😀

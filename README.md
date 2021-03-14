@@ -72,8 +72,8 @@ Learn more about SimpleR State at [simpler-state.js.org](https://simpler-state.j
 
 I have opened a Request For Comments ([here](https://github.com/arnelenero/simpler-state/issues/1)) on GitHub. Your comments and suggestions would be greatly appreciated.
 
-And if you like this library, the concept, and its simplicity, [please give it a star on GitHub](https://github.com/arnelenero/simpler-state) to let me know. 😀
+__And if you like this library, the concept, and its simplicity, please give it a star on the [GitHub repo](https://github.com/arnelenero/simpler-state) to let me know.__ 😀
 
 ## Prior Art
 
-This library is an evolution of the already production-tested [react-entities](https://github.com/arnelenero/react-entities) that I also wrote. It shares the same stable core, but with a very different API.
+This library is an evolution of the already production-proven [react-entities](https://github.com/arnelenero/react-entities) that I also wrote. It shares the same stable core, but with a very different API.
