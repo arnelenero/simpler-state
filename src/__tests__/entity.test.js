@@ -62,4 +62,10 @@ describe('entity', () => {
     counter.init()
     expect(counter).toHaveProperty('_value', 0)
   })
+
+  it('checks if the `meta` argument (if any) is an object', () => {
+    expect(() => entity(0, true)).toThrow()
+  })
+
+  it('applies the `onInit` plug-in tap (if any) to the entity', () => {})
 })

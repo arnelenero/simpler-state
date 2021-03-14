@@ -22,20 +22,22 @@ A plug-in code comes in the form of a function that accepts an options object an
 ```js
 options => pluginObj
 ```
-The plug-in object consists of any of these methods that define the taps and plug-in behavior:
+The plug-in object consists of a __required__ `id` property, and any of these methods that define the taps and plug-in behavior:
 ```js
 onInit(entity, meta)
 shouldIgnoreInit(meta)
 onSet(entity, meta)
 shouldIgnoreSet(meta)
 ```
- 
+A unique `id` is required so that each plug-in can only be installed once throughout the app's lifecycle.
+
 As an example, let's write a simple plug-in that logs every time an entity value changes.
 
 **plugins/logger.js**
 ```js
 export const logger = options => {
   return {
+    id: 'logger',
     onSet: (entity, meta) => {
       const name = meta.name || 'entity'
       const log = options.consoleDebug ? console.debug : console.log
@@ -51,6 +53,8 @@ export const logger = options => {
 
 **plugins/logger.ts**
 ```ts
+import { Plugin } from 'simpler-state'
+
 export interface LoggerMeta {
   name?: string
   skipLog?: boolean
@@ -64,6 +68,7 @@ export type LoggerPlugin = Plugin<LoggerMeta>
 
 export const logger = (options: LoggerOptions): LoggerPlugin => {
   return {
+    id: 'logger',
     onSet: (entity, meta) => {
       const name = meta.name || 'entity'
       const log = options.consoleDebug ? console.debug : console.log
@@ -86,8 +91,9 @@ plugin(pluginFn, options)
 ```
 where `pluginFn` is the plug-in code we described in the previous section, and `options` is the object passed to the plug-in code.
 
-To use our example logger plug-in, we can insert this code in a top-level component such as `App`:
+To use our example logger plug-in, we can insert this code in a top-level source file __outside__ React, such as `index.js`/`index.ts`:
 ```js
+import { plugin } from 'simpler-state'
 import { logger } from './plugins/logger'
 
 plugin(logger, { consoleDebug: true })
