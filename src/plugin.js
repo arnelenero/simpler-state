@@ -10,6 +10,12 @@ export const plugin = (pluginFn, options = {}) => {
 
   if (typeof pluginObj !== 'object') throw new Error('Invalid plug-in')
 
+  if (typeof pluginObj.id !== 'string')
+    throw new Error('Plug-in should have an `id`')
+
+  if (plugins.find(installed => installed.id === pluginObj.id))
+    throw new Error(`Plug-in with id '${pluginObj.id}' is already installed.`)
+
   plugins.push(pluginObj)
 }
 
