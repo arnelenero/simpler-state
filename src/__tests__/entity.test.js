@@ -1,3 +1,6 @@
+import React from 'react'
+import { mount } from 'enzyme'
+
 import entity from '../entity'
 import { plugins } from '../plugin'
 
@@ -67,6 +70,16 @@ describe('entity', () => {
   it('provides a `use` hook function in the entity', () => {
     const counter = entity(0)
     expect(counter.use).toBeInstanceOf(Function)
+
+    let count
+    const CounterView = () => {
+      count = counter.use()
+      return <></>
+    }
+    const component = mount(<CounterView />)
+    expect(count).toBe(0)
+
+    component.unmount()
   })
 
   it('checks if the `meta` argument (if any) is an object', () => {
