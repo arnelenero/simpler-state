@@ -9,25 +9,25 @@ export const entity = (initialValue, meta = {}) => {
   if (typeof meta !== 'object')
     throw new Error('Entity metadata should be an object.')
 
-  const entity = {
+  const newEntity = {
     _value: undefined,
     _subscribers: []
   }
-  entity.get = () => entity._value
-  entity.set = createSetter(entity)
-  entity.init = () => {
-    entity.set(initialValue)
+  newEntity.get = () => newEntity._value
+  newEntity.set = createSetter(newEntity)
+  newEntity.init = () => {
+    newEntity.set(initialValue)
   }
-  entity.use = createHook()
+  newEntity.use = createHook(newEntity)
 
-  applyPlugins(entity, meta)
+  applyPlugins(newEntity, meta)
 
-  entity.init()
+  newEntity.init()
 
   // Save reference to this entity for use with useEntityBoundary hook
-  store.push(entity)
+  store.push(newEntity)
 
-  return entity
+  return newEntity
 }
 
 const createSetter = entity => (newValue, ...updaterArgs) => {
@@ -66,7 +66,7 @@ const applyPlugins = (entity, meta) => {
   })
 }
 
-const createHook = () => {
+const createHook = entity => {
   return (...args) => useEntity(entity, ...args)
 }
 
