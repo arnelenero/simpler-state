@@ -30,6 +30,12 @@ export interface Entity<T> {
     newValue: T | ((value: T, ...args: any[]) => T),
     ...updaterArgs: any[]
   ) => void
+  use: EntityHook<T>
+}
+
+export type EntityHook<T> = {
+  (): T
+  <C>(transform?: (value: T) => C, equalityFn?: (a: any, b: any) => boolean): C
 }
 
 /**
