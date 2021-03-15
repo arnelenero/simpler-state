@@ -1,3 +1,4 @@
+import { useEntity } from './useEntity'
 import { store } from './store'
 import { plugins } from './plugin'
 
@@ -17,6 +18,7 @@ export const entity = (initialValue, meta = {}) => {
   entity.init = () => {
     entity.set(initialValue)
   }
+  entity.use = createHook()
 
   applyPlugins(entity, meta)
 
@@ -28,7 +30,7 @@ export const entity = (initialValue, meta = {}) => {
   return entity
 }
 
-export const createSetter = entity => (newValue, ...updaterArgs) => {
+const createSetter = entity => (newValue, ...updaterArgs) => {
   if (typeof newValue === 'function')
     newValue = newValue(entity._value, ...updaterArgs)
 
@@ -46,7 +48,7 @@ export const createSetter = entity => (newValue, ...updaterArgs) => {
   )
 }
 
-export const applyPlugins = (entity, meta) => {
+const applyPlugins = (entity, meta) => {
   plugins.forEach(plugin => {
     const tapMethod = (method, tap, shouldIgnore) => {
       const ignore = typeof shouldIgnore === 'function' && shouldIgnore(meta)
@@ -62,6 +64,10 @@ export const applyPlugins = (entity, meta) => {
     tapMethod('init', plugin.onInit, plugin.shouldIgnoreInit)
     tapMethod('set', plugin.onSet, plugin.shouldIgnoreSet)
   })
+}
+
+const createHook = () => {
+  return (...args) => useEntity(entity, ...args)
 }
 
 export default entity

@@ -64,6 +64,11 @@ describe('entity', () => {
     expect(counter).toHaveProperty('_value', 0)
   })
 
+  it('provides a `use` hook function in the entity', () => {
+    const counter = entity(0)
+    expect(counter.use).toBeInstanceOf(Function)
+  })
+
   it('checks if the `meta` argument (if any) is an object', () => {
     expect(() => entity(0, true)).toThrow()
   })
