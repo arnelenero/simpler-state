@@ -35,10 +35,12 @@ export const counter = entity(0)
 
 export const increment = by => {
   counter.set(counter.get() + by)
+  // alternatively: counter.set(val => val + by)
 }
 
 export const decrement = by => {
   counter.set(counter.get() - by)
+  // alternatively: counter.set(val => val - by)
 }
 ```
 
@@ -50,6 +52,7 @@ import { counter, increment, decrement } from 'counter'
 
 const CounterView = () => {
   const count = useEntity(counter)
+   // alternatively: const count = counter.use()
 
   return (
     <>
