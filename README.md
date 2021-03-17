@@ -52,7 +52,7 @@ import { counter, increment, decrement } from 'counter'
 
 const CounterView = () => {
   const count = useEntity(counter)
-   // alternatively: const count = counter.use()
+  // alternatively: const count = counter.use()
 
   return (
     <>
