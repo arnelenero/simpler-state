@@ -14,12 +14,11 @@ Here's an example:
 
 **MainView.js**
 ```jsx
-import { useEntity } from 'simpler-state'
 import { settings } from './entities/settings'
 
 const MainView = () => {
-  const config = useEntity(settings, value => value.config)
-  //                                       👆
+  const config = settings.use(value => value.config)
+  //                                👆
   return ( 
     //  . . .
   )
@@ -31,12 +30,11 @@ const MainView = () => {
 
 **MainView.tsx**
 ```tsx
-import { useEntity } from 'simpler-state'
 import { settings } from './entities/settings'
 
 const MainView = () => {
-  const config = useEntity(settings, value => value.config)
-  //                                       👆
+  const config = settings.use(value => value.config)
+  //                                👆
   return ( 
     //  . . .
   )
