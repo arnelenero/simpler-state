@@ -65,11 +65,11 @@ const CounterView = () => {
 }
 ```
 
-It's that simple!
+It's that simple! __But the library can do a lot more.__ 
 
 ## Documentation
 
-Learn more about SimpleR State at [simpler-state.js.org](https://simpler-state.js.org).
+Learn more about what you can do with SimpleR State at [simpler-state.js.org](https://simpler-state.js.org).
 
 ## Feedback
 
