@@ -14,7 +14,7 @@ __SimpleR State__ is an ultra-lightweight library that provides the _simplest_ s
 
 Browse this documentation to explore SimpleR State.
 
-[Quick Start: The TL;DR Cheat Sheet](quick-start.html)
+[Quick Start: TL;DR Cheat Sheet](quick-start.html)
 
 [The Basics](basics.html)
 

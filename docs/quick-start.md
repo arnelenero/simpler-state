@@ -1,4 +1,4 @@
-# Quick Start: The TL;DR Cheat Sheet
+# Quick Start: TL;DR Cheat Sheet
 
 ## Setup
 
@@ -52,9 +52,9 @@ const CounterView = () => {
 It's that simple!  
 
 
-## Using partial and computed values using transform functions
+## Using partial and computed values with transform functions
 
-Use only the relevant part of the entity value
+Use only the relevant part of the entity value:
 ```jsx
 const MainView = () => {
   const theme = settings.use(value => value.theme)
@@ -63,7 +63,7 @@ const MainView = () => {
 }
 ```
 
-... or a computed value
+... or a computed value:
 ```jsx
 const RiggedCounter = () => {
   const count = counter.use(value => value + 20)
@@ -88,7 +88,7 @@ export const loadConfig = async () => {
 
 ## Unit testing of entities
 
-Invoke an action, then use the entity object's `get` method to inspect the value. Use the entity's `init` method to reset its value before each test case.
+Invoke an action, then use the entity object's `get` method to inspect the current value. Use the entity's `init` method to reset its value before each test case.
 ```js
 import { counter, increment } from './counter'
 
