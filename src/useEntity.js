@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect } from 'react'
 import { strictEqual } from './utils'
 
+const identity = v => v
+
 export const useEntity = (
   entity,
-  transform = v => v,
+  transform = identity,
   equality = strictEqual
 ) => {
   if (!(entity._subscribers instanceof Array))
