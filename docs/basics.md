@@ -15,9 +15,19 @@ An entity is created using the `entity` function.
 ```js
 entityObj = entity(initialValue)
 ```
-Specifying an initial value is __required__.
+Specifying an initial value is __required__. The function returns an entity object that provides a setter (`set`) that we can use to implement actions. 
 
-The function returns an entity object that provides two essential methods: a getter (`get`) and a setter (`set`). We use these to implement actions. Here's a simple example:
+When calling `set` inside actions, we can pass either a straight value...
+```js
+entityObj.set(newValue)
+```
+
+... or an _updater function_, if the new value depends on the current value.
+```js
+entityObj.set(value => newValue)
+```
+
+Here's a simple example:
 
 **entities/counter.js**
 ```js
@@ -25,12 +35,16 @@ import { entity } from 'simpler-state'
 
 export const counter = entity(0)
 
+export const reset = () => {
+  counter.set(0)
+}
+
 export const increment = by => {
-  counter.set(counter.get() + by)
+  counter.set(value => value + by)  
 }
 
 export const decrement = by => {
-  counter.set(counter.get() - by)
+  counter.set(value => value - by)
 }
 ```
 
@@ -44,11 +58,11 @@ import { entity } from 'simpler-state'
 export const counter = entity(0)  // 👈 TS infers entity value is number type
 
 export const increment = (by: number) => {
-  counter.set(counter.get() + by)
+  counter.set(value => value + by)
 }
 
 export const decrement = (by: number) => {
-  counter.set(counter.get() - by)
+  counter.set(value => value - by)
 }
 ```
 
@@ -63,20 +77,19 @@ entity<ValueType>(initialValue)
 
 ## Using an Entity in Components
 
-The `useEntity` hook allows us to bind an entity to a component. It takes an entity object as argument, and returns the current value of the entity, which then behaves like local state.
+The entity object has a `use` hook that allows us to bind it to a component. The hook returns the current value of the entity, which then behaves like local state.
 ```js
-value = useEntity(entityObj)
+value = entityObj.use()
 ```
 
 Here is an example usage:
 
 **CounterView.js**
 ```jsx
-import { useEntity } from 'simpler-state'
 import { counter, increment, decrement } from 'counter'
 
 const CounterView = () => {
-  const count = useEntity(counter)
+  const count = counter.use()
 
   return (
     <>
@@ -94,11 +107,10 @@ const CounterView = () => {
 
 **CounterView.tsx**
 ```tsx
-import { useEntity } from 'simpler-state'
 import { counter, increment, decrement } from 'counter'
 
 const CounterView = () => {
-  const count = useEntity(counter)  // 👈 type inference works!
+  const count = counter.use()  // 👈 type inference works!
 
   return (
     <>
@@ -111,7 +123,7 @@ const CounterView = () => {
 }
 ```
 
-Notice that we don't need to use explicit types here. The `useEntity` hook lets TypeScript do all the type inference for us.
+Notice that we don't need to use explicit types here. The `use` hook lets TypeScript do all the type inference for us.
 
 </details>
 
