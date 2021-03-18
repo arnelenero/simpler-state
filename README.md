@@ -33,14 +33,16 @@ import { entity } from 'simpler-state'
 
 export const counter = entity(0)
 
+export const reset = () => {
+  counter.set(0)
+}
+
 export const increment = by => {
-  counter.set(counter.get() + by)
-  // alternatively: counter.set(val => val + by)
+  counter.set(value => value + by)  
 }
 
 export const decrement = by => {
-  counter.set(counter.get() - by)
-  // alternatively: counter.set(val => val - by)
+  counter.set(value => value - by)
 }
 ```
 
@@ -51,8 +53,7 @@ import { useEntity } from 'simpler-state'
 import { counter, increment, decrement } from 'counter'
 
 const CounterView = () => {
-  const count = useEntity(counter)
-  // alternatively: const count = counter.use()
+  const const count = counter.use()
 
   return (
     <>
