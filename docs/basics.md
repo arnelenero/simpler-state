@@ -57,6 +57,10 @@ import { entity } from 'simpler-state'
 
 export const counter = entity(0)  // 👈 TS infers entity value is number type
 
+export const reset = () => {
+  counter.set(0)
+}
+
 export const increment = (by: number) => {
   counter.set(value => value + by)
 }
