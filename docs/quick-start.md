@@ -54,7 +54,7 @@ Use only the relevant part of the entity value:
 ```jsx
 const MainView = () => {
   const theme = settings.use(value => value.theme)
-
+  //                               👆
   return <Layout theme={theme} /> 
 }
 ```
@@ -63,7 +63,7 @@ const MainView = () => {
 ```jsx
 const RiggedCounter = () => {
   const count = counter.use(value => value + 20)
-
+  //                               👆
   return <div>{count}</div>
 }
 ```
