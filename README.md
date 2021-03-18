@@ -40,27 +40,22 @@ export const reset = () => {
 export const increment = by => {
   counter.set(value => value + by)  
 }
-
-export const decrement = by => {
-  counter.set(value => value - by)
-}
 ```
 
 __Step 2:__ Use the entity in your components with hooks
 
 ```jsx
-import { useEntity } from 'simpler-state'
-import { counter, increment, decrement } from 'counter'
+import { counter, increment, reset } from 'counter'
 
 const CounterView = () => {
-  const const count = counter.use()
+  const count = counter.use()
 
   return (
     <>
       <div>{count}</div>
 
       <button onClick={() => increment(1)}> + </button> 
-      <button onClick={() => decrement(1)}> - </button>
+      <button onClick={reset}> Reset </button>
     </>
   )
 }
