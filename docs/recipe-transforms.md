@@ -4,9 +4,9 @@ There are cases where a component doesn't need the exact value of the entity, bu
 - a portion of the value (e.g. for object type values), or 
 - a computed value
 
-In such situation, we can pass a _transform_ function to `useEntity` as follows:
+In such situation, we can pass a _transform_ function to `use` as follows:
 ```js
-value = useEntity(entityObj, value => relevantValue)
+value = entityObj.use(value => relevantValue)
 ```
 This transform function, also called _selector_ in other conventions, takes the current entity value, then returns some other value that is more relevant to the component. The hook then binds only this derived value to the component, thus preventing unnecessary re-renders.
 
@@ -46,9 +46,9 @@ Notice that type inference still works full force here. No need for explicit typ
 
 ## Using a custom equality function
 
-When deciding whether it should trigger a re-render, `useEntity` compares the current vs. previous result of the transform function. The default equality check used is `===` (strict equality), but we can specify a different equality function if needed.
+When deciding whether it should trigger a re-render, `use` compares the current vs. previous result of the transform function. The default equality check used is `===` (strict equality), but we can specify a different equality function if needed.
 ```js
-value = useEntity(entity, transformFn, equalityFn)
+value = entityObj.use(transformFn, equalityFn)
 ```
 The `equalityFn` is expected to come in this form:
 ```js
@@ -59,11 +59,11 @@ The library provides `shallowEqual` for cases where the transform function retur
 
 **MainView.js**
 ```jsx
-import { useEntity, shallowEqual } from 'simpler-state'
+import { shallowEqual } from 'simpler-state'
 import { settings } from './entities/settings'
 
 const MainView = () => {
-  const config = useEntity(settings, value => {
+  const config = settings.use(value => {
     return {
       theme: value.theme,
       enableCountdown: value.featureFlags.countdown
