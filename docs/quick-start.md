@@ -48,7 +48,7 @@ const CounterView = () => {
 It's that simple!  
 
 
-## Using partial and computed values with transform functions
+## Using partial and computed values in components
 
 Use only the relevant part of the entity value:
 ```jsx
