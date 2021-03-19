@@ -15,9 +15,7 @@ export const entity = (initialValue, meta = {}) => {
   }
   newEntity.get = () => newEntity._value
   newEntity.set = createSetter(newEntity)
-  newEntity.init = () => {
-    newEntity.set(initialValue)
-  }
+  newEntity.init = createInit(newEntity, initialValue)
   newEntity.use = createHook(newEntity)
 
   applyPlugins(newEntity, meta)
@@ -64,6 +62,16 @@ const applyPlugins = (entity, meta) => {
     tapMethod('init', plugin.onInit, plugin.shouldIgnoreInit)
     tapMethod('set', plugin.onSet, plugin.shouldIgnoreSet)
   })
+}
+
+const createInit = (entity, initialValue) => {
+  return typeof initialValue.then === 'function'
+    ? () => {
+        initialValue.then(value => entity.set(value))
+      }
+    : () => {
+        entity.set(initialValue)
+      }
 }
 
 const createHook = entity => {

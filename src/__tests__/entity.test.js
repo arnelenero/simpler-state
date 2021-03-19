@@ -19,6 +19,36 @@ describe('entity', () => {
     expect(counter).toHaveProperty('_value', 0)
   })
 
+  it('supports Promise for async initial value', async () => {
+    const promise = new Promise(resolve =>
+      setTimeout(() => {
+        resolve(0)
+      }, 1)
+    )
+    const counter = entity(promise)
+
+    // We need to await this to include it in coverage
+    const inspect = () =>
+      new Promise(resolve => {
+        promise.then(value => {
+          expect(value).toBe(0)
+          expect(counter).toHaveProperty('_value', 0)
+          resolve()
+        })
+      })
+    await inspect()
+  })
+
+  it('keeps value undefined while waiting for async initial value', () => {
+    const promise = new Promise(resolve =>
+      setTimeout(() => {
+        resolve(0)
+      }, 1)
+    )
+    const counter = entity(promise)
+    expect(counter).toHaveProperty('_value', undefined)
+  })
+
   it('provides a `get` function in the entity', () => {
     const counter = entity(0)
     expect(counter.get).toBeInstanceOf(Function)

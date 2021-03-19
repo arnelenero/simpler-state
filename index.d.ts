@@ -5,10 +5,15 @@
  * @param meta - optional metadata object (for plug-ins)
  */
 export function entity<T = any>(initialValue: T): Entity<T>
+export function entity<T = any>(initialValue: Promise<T>): Entity<T | undefined>
 export function entity<T = any, M extends object = Record<any, any>>(
   initialValue: T,
   meta: M
 ): Entity<T>
+export function entity<T = any, M extends object = Record<any, any>>(
+  initialValue: Promise<T>,
+  meta: M
+): Entity<T | undefined>
 
 /**
  * Binds an entity to the component as a shared state
