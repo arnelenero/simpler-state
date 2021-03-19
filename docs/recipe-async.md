@@ -15,7 +15,7 @@ export const settings = entity({
 })
 //                          👇
 export const loadConfig = async () => {
-  settings.set({ ...settings.get(), loading: true })
+  settings.set({ loading: true, config: null })
 
   const res = await fetchConfig()
   settings.set({ loading: false, config: res })
@@ -41,7 +41,7 @@ export const settings = entity<Settings>({
 })
 //                          👇
 export const loadConfig = async () => {
-  settings.set({ ...settings.get(), loading: true })
+  settings.set({ loading: true, config: null })
 
   const res = await fetchConfig()
   settings.set({ loading: false, config: res })

@@ -87,7 +87,7 @@ export const topScores = entity(fetchTopScores())
 Use `Promise` or `async/await` for async actions.
 ```js
 export const loadConfig = async () => {
-  settings.set({ ...settings.get(), loading: true })
+  settings.set({ loading: true, config: null })
 
   const res = await fetchConfig()
   settings.set({ loading: false, config: res })
