@@ -1,6 +1,6 @@
-# <img src="assets/simpler-state-logo.png" alt="SimpleR State" height="28" />
+<img src="assets/simpler-state-logo.png" alt="SimpleR State" height="42" />
 
-__SimpleR State__ is an ultra-lightweight library that provides the _simplest_ state management for React.
+<h3>The simplest app state management for React.</h3>
 
 - __Minimalist API__; no complicated concepts or boilerplate
 - Use __plain functions__ to update state (including async)
@@ -13,6 +13,8 @@ __SimpleR State__ is an ultra-lightweight library that provides the _simplest_ s
 - It's tiny, just __around 1 KB__ (minified + gzipped)
 
 Browse this documentation to explore SimpleR State.
+
+## Contents
 
 [Quick Start: TL;DR Cheat Sheet](quick-start.html) 👈
 
