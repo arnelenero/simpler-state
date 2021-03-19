@@ -13,7 +13,9 @@ For each tap, there are 2 things we can define:
 - what to do each time the entity value changes
 - whether the tap should be applied to the specific entity
 
-A tap can look for optional _metadata_ attached to each entity, which influence the tap's behavior. For example, a logger tap can check for a 'name' in the metadata and use that to identify the specific entity in the logs. It can also check for a 'skip' flag in the metadata when deciding whether it should exclude the entity from the logging altogether.
+A tap can look for optional _metadata_ attached to each entity, which influence the tap's behavior. For example, a logger tap can check for a 'name' in the metadata and use that to identify the specific entity in the logs. 
+
+By default, the tap is applied to __all__ entities. However, we can specify exclusions. For the logger example, it can check for a 'skip' flag in the metadata to see if it should exclude the entity from the logging.
 
 
 ## Writing a plug-in
@@ -29,9 +31,9 @@ shouldIgnoreInit(meta)
 onSet(entity, meta)
 shouldIgnoreSet(meta)
 ```
-A unique `id` is required so that each plug-in can only be installed once throughout the app's lifecycle.
+A unique `id` is required so that each plug-in can only be installed once throughout the app's lifecycle. The `onInit` and `onSet` define the taps, while `shouldIgnoreInit` and `shouldIgnoreSet` each define the conditions for excluding an entity from the corresponding tap.
 
-As an example, let's write a simple plug-in that logs every time an entity value changes.
+As an example, let's write a simple plug-in that logs on the console every time an entity value changes.
 
 **plugins/logger.js**
 ```js
