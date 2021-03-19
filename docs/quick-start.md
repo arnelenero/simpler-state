@@ -71,13 +71,13 @@ const RiggedCounter = () => {
 
 ## Async initial value
 
-Use `Promise` or `async/await` for async initial value, e.g. fetching from server.
+Use `Promise` or `async/await` for async initial value (e.g. fetching from server).
 ```js
 const fetchTopScores = async () => {
   /* Fetch data from server here ... */
   return data
 }
-
+//                Do NOT await here 👇
 export const topScores = entity(fetchTopScores())
 ```
 
