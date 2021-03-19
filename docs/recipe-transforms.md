@@ -4,7 +4,7 @@ There are cases where a component doesn't need the exact value of the entity, bu
 - a portion of the value (e.g. for object type values), or 
 - a computed value
 
-In such situation, we can pass a _transform_ function to `use` as follows:
+In such situation, we can pass a _transform_ function to the entity's `use` hook as follows:
 ```js
 value = entityObj.use(value => relevantValue)
 ```
