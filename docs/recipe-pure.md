@@ -4,7 +4,7 @@ Using _pure functions_ has its benefits. Since an action can be pretty much any 
 
 To allow us to separate "pure" updates, an entity's `set` function has an alternative form that accepts an _updater function_ in this format:
 ```js
-updaterFn(value, ...args) => newValue
+(value, ...args) => newValue
 ```
 where `value` is the current entity value and the optional `args` can be any number of arguments. This function returns the new value to be set.
 
