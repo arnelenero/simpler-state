@@ -1,16 +1,14 @@
 <img src="assets/simpler-state-logo.png" alt="SimpleR State" height="48" />
 
-<p style="font-size:18px; line-height:1.4; font-weight:600">The simplest app state management for React.</p>
-
 - __Minimalist API__; no complicated concepts or boilerplate
-- Use __plain functions__ to update state (including async)
+- Use __plain functions__ (including async) to update state
 - Largely __unopinionated__ with flexible syntax
 - Extremely __simple to unit test__ state logic
 - Highly extensible with __plug-ins__ (e.g. persistence, dev tools)
 - Full __TypeScript__ support with uncomplicated types
 - Made specifically for React, and built on __React Hooks__ 
 - Multiple times __faster__ than context/reducer solution
-- It's tiny, just __around 1 KB__ (minified + gzipped)
+- Tiny, just __around 1 KB__ (minified + gzipped)
 
 Browse this documentation to explore SimpleR State.
 
