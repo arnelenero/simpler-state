@@ -1,6 +1,6 @@
-<img src="assets/simpler-state-logo.png" alt="SimpleR State" height="42" />
+<img src="assets/simpler-state-logo.png" alt="SimpleR State" height="48" />
 
-<h3>The simplest app state management for React.</h3>
+<p style="font-size:18px; line-height:1.4; font-weight:600">The simplest app state management for React.</p>
 
 - __Minimalist API__; no complicated concepts or boilerplate
 - Use __plain functions__ to update state (including async)
