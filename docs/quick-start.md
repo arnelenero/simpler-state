@@ -44,8 +44,7 @@ const CounterView = () => {
   )
 }
 ```
-
-It's that simple!  
+(Other components can use the shared `counter` the same way.)
 
 
 ## Using partial and computed values in components
