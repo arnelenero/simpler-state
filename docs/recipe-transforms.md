@@ -59,7 +59,7 @@ The `equalityFn` is expected to come in this form:
 
 ### Shallow equality
 
-The library provides `shallowEqual` for cases where the transform function returns an object with top-level properties derived from the entity value. In the example below, `shallowEqual` returns `true` (and therefore the component will _not_ update) if both `theme` and `enableCountdown` properties of the computed value did not change.
+The library provides `shallowEqual` for cases where the transform function returns an object with top-level properties derived from the entity value. In the example below, `shallowEqual` returns `true`—and therefore the component will __not__ update—if both `theme` and `enableCountdown` properties of the computed value did not change.
 
 **MainView.js**
 ```jsx
@@ -83,9 +83,9 @@ const MainView = () => {
 
 ## Optimization
 
-To further enhance the app's performance, it is always a good idea to memoize the transform and equality functions. We can choose from various techniques, such as:
-- defining the functions outside the component
-- placing the functions alongside the entity and its actions
+To further enhance the app's performance, it is always a good idea to _memoize_ the transform and equality functions. We can choose from various techniques, such as:
+- defining them outside the component
+- placing them alongside the entity and its actions
 - using React's `useCallback` hook to keep them inside the component
 
 SimpleR State is unopinionated, so it's all up to you to decide.
