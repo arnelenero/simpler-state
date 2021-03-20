@@ -44,6 +44,8 @@ Notice that type inference still works full force here. No need for explicit typ
 
 </details><br />
 
+> Below are some more advanced topics that pertain to __optional__ features that are provided for flexibility.
+
 ## Using a custom equality function
 
 When deciding whether it should trigger a re-render, `use` compares the current vs. previous result of the transform function. The default equality check used is `===` (strict equality), but we can specify a different equality function if needed.
@@ -55,7 +57,9 @@ The `equalityFn` is expected to come in this form:
 (a, b) => boolean
 ```
 
-The library provides `shallowEqual` for cases where the transform function returns an object with top-level properties derived from the entity value, as in this example:
+### Shallow equality
+
+The library provides `shallowEqual` for cases where the transform function returns an object with top-level properties derived from the entity value. In the example below, `shallowEqual` returns `true` (and therefore the component will _not_ update) if both `theme` and `enableCountdown` properties of the computed value did not change.
 
 **MainView.js**
 ```jsx
@@ -82,7 +86,7 @@ const MainView = () => {
 To further enhance the app's performance, it is always a good idea to memoize the transform and equality functions. We can choose from various techniques, such as:
 - defining the functions outside the component
 - placing the functions alongside the entity and its actions
-- using React's `useCallback` hook to keep them inside.
+- using React's `useCallback` hook to keep them inside the component
 
 SimpleR State is unopinionated, so it's all up to you to decide.
 
