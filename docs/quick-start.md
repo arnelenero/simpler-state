@@ -22,7 +22,8 @@ export const reset = () => {
 }
 
 export const increment = by => {
-  counter.set(value => value + by)  
+  counter.set(value => value + by)
+  // Alternatively: counter.set(counter.get() + by)  
 }
 ```
 

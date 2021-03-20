@@ -27,6 +27,9 @@ entityObj.set(newValue)
 entityObj.set(value => newValue)
 ```
 
+> __Alternative syntax:__  The entity object also provides a getter (`get`) in case you prefer to use the straight-value format in specifying the new value based on the current.
+
+
 Here's a simple example:
 
 **entities/counter.js**
@@ -40,11 +43,8 @@ export const reset = () => {
 }
 
 export const increment = by => {
-  counter.set(value => value + by)  
-}
-
-export const decrement = by => {
-  counter.set(value => value - by)
+  counter.set(value => value + by)
+  // Alternatively: counter.set(counter.get() + by)  
 }
 ```
 
@@ -63,10 +63,7 @@ export const reset = () => {
 
 export const increment = (by: number) => {
   counter.set(value => value + by)
-}
-
-export const decrement = (by: number) => {
-  counter.set(value => value - by)
+  // Alternatively: counter.set(counter.get() + by)  
 }
 ```
 
@@ -77,7 +74,6 @@ entity<ValueType>(initialValue)
 
 </details>
 <br />
-
 
 ## Using an Entity in Components
 
@@ -90,7 +86,7 @@ Here is an example usage:
 
 **CounterView.js**
 ```jsx
-import { counter, increment, decrement } from 'counter'
+import { counter, increment, reset } from 'counter'
 
 const CounterView = () => {
   const count = counter.use()
@@ -100,7 +96,7 @@ const CounterView = () => {
       <div>{count}</div>
 
       <button onClick={() => increment(1)}> + </button> 
-      <button onClick={() => decrement(1)}> - </button>
+      <button onClick={reset}> Reset </button>
     </>
   )
 }
