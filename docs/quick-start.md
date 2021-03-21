@@ -6,6 +6,7 @@
 npm install simpler-state
 ```
 
+
 ## Two easy steps!
 
 __Step 1:__ Create an entity (shared state) and actions (updater functions)
@@ -69,19 +70,6 @@ const RiggedCounter = () => {
 ```
 
 
-## Async initial value
-
-Use `Promise` or `async/await` for async initial value (e.g. fetching from server).
-```js
-const fetchTopScores = async () => {
-  /* Fetch data from server here ... */
-  return data
-}
-//                Do NOT await here 👇
-export const topScores = entity(fetchTopScores())
-```
-
-
 ## Async actions
 
 Use `Promise` or `async/await` for async actions.
@@ -92,6 +80,19 @@ export const loadConfig = async () => {
   const res = await fetchConfig()
   settings.set({ loading: false, config: res })
 }
+```
+
+
+## Async initial value
+
+Use `Promise` or `async/await` for async initial value (e.g. pre-fetching data).
+```js
+const fetchTopScores = async () => {
+  /* Fetch data from server here ... */
+  return data
+}
+//    Initial value is a Promise  👇  (do NOT `await`)
+export const topScores = entity(fetchTopScores())
 ```
 
 
