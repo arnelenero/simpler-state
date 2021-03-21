@@ -71,3 +71,8 @@ export interface Plugin<M extends object = Record<any, any>> {
     meta: M
   ) => (...args: any[]) => void
 }
+
+/**
+ * Resets all entities to initial value
+ */
+export function resetAll(): void
