@@ -13,10 +13,10 @@ export const plugin = (pluginFn, options = {}) => {
   if (typeof pluginObj.id !== 'string')
     throw new Error('Plug-in should have an `id`')
 
-  if (plugins.find(installed => installed.id === pluginObj.id))
-    throw new Error(`Plug-in with id '${pluginObj.id}' is already installed.`)
-
-  plugins.push(pluginObj)
+  // Prevent installing the same plug-in more than once
+  const foundAt = plugins.findIndex(installed => installed.id === pluginObj.id)
+  if (foundAt > -1) plugins[foundAt] = pluginObj
+  else plugins.push(pluginObj)
 }
 
 export default plugin
