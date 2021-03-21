@@ -2,14 +2,15 @@ import React, { useEffect } from 'react'
 import { act } from 'react-dom/test-utils'
 import { mount } from 'enzyme'
 
-import useEntityBoundary from '../useEntityBoundary'
+import resetAll from '../resetAll'
 import entity from '../entity'
 import useEntity from '../useEntity'
 
-describe('useEntityBoundary', () => {
+describe('resetAll', () => {
   const TestShell = () => {
-    useEntityBoundary()
-
+    useEffect(() => {
+      return () => resetAll()
+    })
     return <CounterView />
   }
 
@@ -45,7 +46,7 @@ describe('useEntityBoundary', () => {
     if (component.exists()) component.unmount()
   })
 
-  it('resets entities to initial value every time the component unmounts', () => {
+  it('resets all entities to initial value', () => {
     component = mount(<TestShell />)
 
     const prevMountCount = mountCount
