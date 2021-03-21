@@ -22,7 +22,7 @@ export const entity = (initialValue, meta = {}) => {
 
   newEntity.init()
 
-  // Save reference to this entity for use with useEntityBoundary hook
+  // Save reference to this entity for use with `resetAll`
   store.push(newEntity)
 
   return newEntity
