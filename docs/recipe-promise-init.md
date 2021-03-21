@@ -24,5 +24,7 @@ const ScoreBoard = () => {
 }
 ```
 
+> __TypeScript Note:__ Type inference works here, too. The entity data type automatically becomes `T | undefined` where `T` is the data type of the return value of the `Promise`.
+
 <br /><br />
 [Back to home](index.html) | [More recipes...](recipes.html)
