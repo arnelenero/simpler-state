@@ -2,8 +2,9 @@
 
 Don't let the simplicity fool you! SimpleR State can be as feature-rich as you'd like, with its highly flexible plug-in system.
 
-> __Coming soon:__ A set of pre-built plug-ins will be available soon, providing features like local/remote persistence and dev tools.
+> __EXPERIMENTAL:__ The plug-in API is still experimental, and therefore may continue to change until finalized in the stable release.
 
+> __Coming soon:__ A set of pre-built plug-ins will be available soon, providing features like local/remote persistence and dev tools.
 
 ## How a plug-in works
 
