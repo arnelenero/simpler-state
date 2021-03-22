@@ -36,7 +36,6 @@ Back to our example above, the `fetchTopScores` async function can be implemente
 
 ```js
 const fetchTopScores = async () => {
-  let data
   try {
     /* Fetch data from server here ... */
     return res.json()
