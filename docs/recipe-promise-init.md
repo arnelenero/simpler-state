@@ -39,12 +39,10 @@ const fetchTopScores = async () => {
   let data
   try {
     /* Fetch data from server here ... */
-    data = res.json()
+    return res.json()
   } catch (err) {
-    data = { status: 'Error', error: err }
+    return { status: 'Error', error: err }
   }
-
-  return data
 }
 ```
 This ensures that the entity eventually gets its async initial value, even if it's actually an error value. Associated components can then check for errors in the entity's value and react accordingly.
