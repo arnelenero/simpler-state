@@ -27,7 +27,7 @@ entityObj.set(newValue)
 entityObj.set(value => newValue)
 ```
 
-> __Alternative syntax:__  The entity object also provides a getter (`get`) in case you prefer to use the straight-value format in specifying the new value based on the current.
+> __Alternative syntax:__  The entity object also provides a getter (`get`) in case you prefer to use the straight-value format in specifying the new value based on the current. See example below.
 
 
 Here's a simple example:
@@ -126,6 +126,10 @@ const CounterView = () => {
 Notice that we don't need to use explicit types here. The `use` hook lets TypeScript do all the type inference for us.
 
 </details>
+
+> __Alternative syntax:__ If you prefer to conform to a straight `useXXXX` convention for all your hooks, you can simply create an alias for `entity.use`. For example:<p>
+In __counter.js__: `export const useCounter = counter.use`</p><p>
+In __CounterView.js__: `const count = useCounter()`</p>
 
 <br /><br />
 [Back to home](index.html) | Next topic → [Recipes](recipes.html)

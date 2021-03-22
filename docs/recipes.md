@@ -6,7 +6,7 @@ Here we provide some suggested patterns that you may consider for specific scena
 
 - [Binding only relevant data to components](recipe-transforms.html)
 - [Async actions](recipe-async.html)
-- [Async initial value using Promise](recipe-promise-init.html)
+- [Prefetching data using async initial value](recipe-promise-init.html)
 - [Separating "pure" updates from actions](recipe-pure.html)
 - [Orchestrating updates to multiple entities with one action](recipe-orchestrators.html)
 - [Unit testing entities](recipe-testing.html)

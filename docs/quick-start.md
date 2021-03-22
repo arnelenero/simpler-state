@@ -85,7 +85,7 @@ export const loadConfig = async () => {
 
 ## Async initial value
 
-Use `Promise` or `async/await` for async initial value (e.g. pre-fetching data).
+Use `Promise` or `async` function as initial state to prefetch data.
 ```js
 const fetchTopScores = async () => {
   /* Fetch data from server here ... */
