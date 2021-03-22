@@ -30,7 +30,7 @@ entityObj.set(value => newValue)
 > __Alternative syntax:__  The entity object also provides a getter (`get`) in case you prefer to use the straight-value format in specifying the new value based on the current. See example below.
 
 
-Here's a simple example:
+Let's create a simple counter entity—the classic contrived example 😀:
 
 **entities/counter.js**
 ```js
@@ -81,8 +81,9 @@ The entity object has a `use` hook that allows us to bind it to a component. The
 ```js
 value = entityObj.use()
 ```
+> In contrast to React's `useState` hook, this looks more like the `useContext` hook in that it returns only the current value (this analogy makes sense, since an entity hook indeed returns a "shared" value).  Remember, the actions can be directly imported from the entity module.
 
-Here is an example usage:
+Here is an example using our counter entity:
 
 **CounterView.js**
 ```jsx
@@ -127,7 +128,7 @@ Notice that we don't need to use explicit types here. The `use` hook lets TypeSc
 
 </details>
 
-> __Alternative syntax:__ If you prefer to conform to a straight `useXXXX` convention for all your hooks, you can simply create an alias for `entity.use`. For example:<p>
+> __Alternative syntax:__ If you prefer to conform to a straight `useXXXX` naming convention for all your hooks, you can simply create an alias for `entity.use`. For example:<p>
 In __counter.js__: `export const useCounter = counter.use`</p><p>
 In __CounterView.js__: `const count = useCounter()`</p>
 
