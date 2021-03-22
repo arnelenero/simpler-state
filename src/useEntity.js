@@ -29,7 +29,9 @@ export const useEntity = (
     return () => {
       for (let i = 0, c = entity._subscribers.length; i < c; i++) {
         if (entity._subscribers[i] === subscriberFn) {
-          entity._subscribers[i] = null
+          // Move the last subscriber over the removed one and pop it 
+          entity._subscribers[i] = entity._subscribers[entity._subscribers.length - 1]
+          entity._subscribers.pop()
           break
         }
       }
