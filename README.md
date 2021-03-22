@@ -39,6 +39,7 @@ export const reset = () => {
 
 export const increment = by => {
   counter.set(value => value + by)  
+  // Alternatively: counter.set(counter.get() + by)  
 }
 ```
 
@@ -61,7 +62,7 @@ const CounterView = () => {
 }
 ```
 
-It's that simple! __But the library can do a lot more.__ 
+It's that simple! __But the library can do a lot more, so check out the docs website.__ 
 
 ## Documentation
 
