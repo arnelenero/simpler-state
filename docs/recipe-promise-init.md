@@ -8,7 +8,7 @@ A common use-case for such async initial value is _prefetching_ data from the se
 const fetchTopScores = async () => {
   /* Fetch data from server here ... */
   return data
-}(
+}
 //    Initial value is a Promise  👇  (do NOT `await`)
 export const topScores = entity(fetchTopScores())
 ```
@@ -27,6 +27,28 @@ const ScoreBoard = () => {
 > __TypeScript Note:__ Type inference works here, too. The entity data type automatically becomes `T | undefined` where `T` is the data type of the return value of the `Promise`.
 
 > __What's the difference between prefetching using async initial value vs. fetching via async action?__ Note that prefetching starts automatically and __immediately__ after the entity is created, even before React components begin to render. On-demand fetching using async action, on the other hand, is normally triggered by some effect or callback in a component. High-priority data that don't require parameters coming from a component are good candidates for prefetching.
+
+## Error handling for prefetch
+
+The `entity` function expects an async initial value to __eventually__ return a value. All necessary error handling should be done by the async function that performs the actual fetch.
+
+Back to our example above, the `fetchTopScores` async function can be implemented like this:
+
+```js
+const fetchTopScores = async () => {
+  let data
+  try {
+    /* Fetch data from server here ... */
+    data = res.json()
+  } catch (err) {
+    data = { status: 'Error', error: err }
+  }
+
+  return data
+}
+```
+This ensures that the entity eventually gets its async initial value, even if it's actually an error value. Associated components can then check for errors in the entity's value and react accordingly.
+
 
 <br /><br />
 [Back to home](index.html) | [More recipes...](recipes.html)
