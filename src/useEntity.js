@@ -21,12 +21,7 @@ export const useEntity = (
     [transform, equality, state]
   )
 
-  useEffect(() => {
-    entity._subscribers.add(subscriberFn)
-    return () => {
-      entity._subscribers.delete(subscriberFn)
-    }
-  }, [subscriberFn, entity._subscribers])
+  useEffect(() => entity._subscribe(subscriberFn), [subscriberFn, entity])
 
   // Re-sync state in case transform function has changed
   subscriberFn(entity._value)

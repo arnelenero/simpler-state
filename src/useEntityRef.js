@@ -15,12 +15,7 @@ export const useEntityRef = (entity, transform = identity) => {
     [transform]
   )
 
-  useEffect(() => {
-    entity._subscribers.add(subscriberFn)
-    return () => {
-      entity._subscribers.delete(subscriberFn)
-    }
-  }, [subscriberFn, entity._subscribers])
+  useEffect(() => entity._subscribe(subscriberFn), [subscriberFn, entity])
 
   // Re-sync ref in case the transform function has changed
   subscriberFn(entity._value)

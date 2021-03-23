@@ -14,6 +14,8 @@ export const entity = (initialValue, meta = {}) => {
     _value: undefined,
     _subscribers: new Set()
   }
+  newEntity._subscribe = createSubscribe(newEntity)
+
   newEntity.get = () => newEntity._value
   newEntity.set = createSetter(newEntity)
   newEntity.init = createInit(newEntity, initialValue)
@@ -73,6 +75,13 @@ const createHook = entity => {
 
 const createRefHook = entity => {
   return (...args) => useEntityRef(entity, ...args)
+}
+
+const createSubscribe = entity => subscriberFn => {
+  entity._subscribers.add(subscriberFn)
+  return () => {
+    entity._subscribers.delete(subscriberFn)
+  }
 }
 
 export default entity
