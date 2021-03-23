@@ -44,10 +44,9 @@ export type EntityHook<T> = {
 }
 
 /**
- * Hook that automatically resets the values of all entities
- * when the component unmounts, for proper cleanup.
+ * Resets the values of all entities (for testing)
  */
-export function useEntityBoundary(): void
+export function resetAll(): void
 
 export function strictEqual(a: any, b: any): boolean
 export function shallowEqual(a: any, b: any): boolean
