@@ -1,2 +1,2 @@
-export const store = []
+export const store = new Set()
 export default store

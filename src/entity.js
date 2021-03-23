@@ -11,7 +11,7 @@ export const entity = (initialValue, meta = {}) => {
 
   const newEntity = {
     _value: undefined,
-    _subscribers: []
+    _subscribers: new Set()
   }
   newEntity.get = () => newEntity._value
   newEntity.set = createSetter(newEntity)
@@ -23,7 +23,7 @@ export const entity = (initialValue, meta = {}) => {
   newEntity.init()
 
   // Save reference to this entity for use with `resetAll`
-  store.push(newEntity)
+  store.add(newEntity)
 
   return newEntity
 }
@@ -34,17 +34,7 @@ const createSetter = entity => (newValue, ...updaterArgs) => {
 
   entity._value = newValue
 
-  // Cleanup any nullified subscribers from prior unmounts
-  cleanupNullSubscriptions(entity._subscribers)
-
-  for (let i = 0, c = entity._subscribers.length; i < c; i++)
-    entity._subscribers[i](entity._value)
-}
-
-const cleanupNullSubscriptions = subscribers => {
-  for (let i = 0; i < subscribers.length; i++)
-    while (subscribers.length > i && typeof subscribers[i] !== 'function')
-      subscribers.splice(i, 1)
+  entity._subscribers.forEach(cb => cb(entity._value))
 }
 
 const applyPlugins = (entity, meta) => {

@@ -1,9 +1,7 @@
 import store from './store'
 
 export const resetAll = () => {
-  for (let i = 0; i < store.length; i++) {
-    store[i].init()
-  }
+  store.forEach(entity => entity.init())
 }
 
 export default resetAll

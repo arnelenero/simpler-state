@@ -8,8 +8,7 @@ export const useEntity = (
   transform = identity,
   equality = strictEqual
 ) => {
-  if (!(entity._subscribers instanceof Array))
-    throw new Error('Invalid entity.')
+  if (!(entity._subscribers instanceof Set)) throw new Error('Invalid entity.')
 
   const computed = transform(entity._value)
 
@@ -25,15 +24,9 @@ export const useEntity = (
   )
 
   useEffect(() => {
-    entity._subscribers.push(subscriberFn)
+    entity._subscribers.add(subscriberFn)
     return () => {
-      // Nullify the subscription. Next setter call will do the cleanup.
-      for (let i = 0, c = entity._subscribers.length; i < c; i++) {
-        if (entity._subscribers[i] === subscriberFn) {
-          entity._subscribers[i] = null
-          break
-        }
-      }
+      entity._subscribers.delete(subscriberFn)
     }
   }, [subscriberFn, entity._subscribers])
 
