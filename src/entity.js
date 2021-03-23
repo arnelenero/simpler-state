@@ -1,5 +1,4 @@
 import { useEntity } from './useEntity'
-import { useEntityRef } from './useEntityRef'
 import { store } from './store'
 import { plugins } from './plugin'
 
@@ -20,7 +19,6 @@ export const entity = (initialValue, meta = {}) => {
   newEntity.set = createSetter(newEntity)
   newEntity.init = createInit(newEntity, initialValue)
   newEntity.use = createHook(newEntity)
-  newEntity.useRef = createRefHook(newEntity)
 
   applyPlugins(newEntity, meta)
 
@@ -71,10 +69,6 @@ const createInit = (entity, initialValue) => {
 
 const createHook = entity => {
   return (...args) => useEntity(entity, ...args)
-}
-
-const createRefHook = entity => {
-  return (...args) => useEntityRef(entity, ...args)
 }
 
 const createSubscribe = entity => subscriberFn => {

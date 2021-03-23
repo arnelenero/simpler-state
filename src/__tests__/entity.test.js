@@ -112,21 +112,6 @@ describe('entity', () => {
     component.unmount()
   })
 
-  it('provides a `useRef` hook function in the entity', () => {
-    const counter = entity(0)
-    expect(counter.useRef).toBeInstanceOf(Function)
-
-    let count
-    const CounterView = () => {
-      count = counter.useRef()
-      return <></>
-    }
-    const component = mount(<CounterView />)
-    expect(count.current).toBe(0)
-
-    component.unmount()
-  })
-
   it('checks if the `meta` argument (if any) is an object', () => {
     expect(() => entity(0, true)).toThrow()
   })
