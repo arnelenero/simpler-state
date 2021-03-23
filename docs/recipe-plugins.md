@@ -2,21 +2,15 @@
 
 Don't let the simplicity fool you! SimpleR State can be as feature-rich as you'd like, with its highly flexible plug-in system.
 
-> __EXPERIMENTAL:__ The plug-in API is still experimental, and therefore may continue to change until finalized in the stable release.
-
 > __Coming soon:__ A set of pre-built plug-ins will be available soon, providing features like local/remote persistence and dev tools.
 
 ## How a plug-in works
 
-A plug-in consists of _taps_ into methods that cause a value change in entities, i.e. `set` and `init`. Through these taps, we can extend functionality by doing additional handling of the data, such as logging or saving it somewhere.
+A plug-in consists of _method overrides_ for `set` and `init` of __all entities__. Through these overrides, we can extend functionality by doing additional handling of the data, such as logging or saving it somewhere.
 
-For each tap, there are 2 things we can define:
-- what to do each time the entity value changes
-- whether the tap should be applied to the specific entity
+An override can look for optional _metadata_ attached to each entity. For example, a logger plug-in can check for a 'name' in the metadata and use that to label the entity in logs by its name. 
 
-A tap can look for optional _metadata_ attached to each entity, which influence the tap's behavior. For example, a logger tap can check for a 'name' in the metadata and use that to identify the specific entity in the logs. 
-
-By default, the tap is applied to __all__ entities. However, we can specify exclusions. For the logger example, it can check for a 'skip' flag in the metadata to see if it should exclude the entity from the logging.
+Although an override is applied to __all__ entities, it can behave differently for each entity, depending on that entity's metadata. For the logger example, it can check for a 'skip' flag in the metadata to see if it should exclude the entity from the logging.
 
 
 ## Writing a plug-in
@@ -25,28 +19,31 @@ A plug-in code comes in the form of a function that accepts an options object an
 ```js
 options => pluginObj
 ```
-The plug-in object consists of a __required__ `id` property, and any of these methods that define the taps and plug-in behavior:
+The plug-in object consists of a __required__ `id` property, and either or both of these method overrides:
 ```js
-onInit(entity, meta)
-shouldIgnoreInit(meta)
-onSet(entity, meta)
-shouldIgnoreSet(meta)
+init: (origInitFn, get, meta) => newInitFn
+set: (origSetFn, get, meta) => newSetFn
 ```
-A unique `id` is required so that each plug-in can only be installed once throughout the app's lifecycle. The `onInit` and `onSet` define the taps, while `shouldIgnoreInit` and `shouldIgnoreSet` each define the conditions for excluding an entity from the corresponding tap.
+A unique `id` is required so that each plug-in can only be installed once throughout the app's lifecycle. Notice that each override accepts the original method of the entity, its `get` method, and its metadata (if any).
 
-As an example, let's write a simple plug-in that logs on the console every time an entity value changes.
+As an example, let's write a simple plug-in that logs on the console every time an entity is updated. It will exclude an entity from the logging if its metadata has the `skipLog` flag. It also looks for an optional `name` in the metadata.
 
 **plugins/logger.js**
 ```js
 export const logger = options => {
   return {
     id: 'logger',
-    onSet: (entity, meta) => {
+    set: (origSet, get, meta) => (...args) => {
+      const prev = get()
+
+      origSet(...args)  // 👈 make sure to call the original `set`
+
+      if (meta.skipLog) return
+
       const name = meta.name || 'entity'
       const log = options.consoleDebug ? console.debug : console.log
-      log(`${name} value set to:`, entity.get())
-    },
-    shouldIgnoreSet: meta => meta.skipLog === true
+      log(`${name} value changed from:`, prev, 'to:', get())
+    }
   }
 }
 ```
@@ -72,12 +69,17 @@ export type LoggerPlugin = Plugin<LoggerMeta>
 export const logger = (options: LoggerOptions): LoggerPlugin => {
   return {
     id: 'logger',
-    onSet: (entity, meta) => {
+    set: (origSet, get, meta) => (...args) => {
+      const prev = get()
+
+      origSet(...args)  // 👈 make sure to call the original `set`
+
+      if (meta.skipLog) return
+
       const name = meta.name || 'entity'
       const log = options.consoleDebug ? console.debug : console.log
-      log(`${name} value set to:`, entity.get())
-    },
-    shouldIgnoreSet: meta => meta.skipLog === true
+      log(`${name} value changed from:`, prev, 'to:', get())
+    }
   }
 }
 ```
@@ -111,7 +113,7 @@ We can optionally attach a _meta_ object when creating an entity as follows:
 entityObj = entity(initialValue, meta)
 ```
 
-Here's an example that allows our logger plug-in to identify the `counter` entity by its name in the console logs:
+Here's an example that allows our logger plug-in to label the `counter` entity by its name in the console logs:
 ```js
 export const counter = entity(0, { name: 'counter' })
 ```
@@ -120,7 +122,6 @@ export const counter = entity(0, { name: 'counter' })
 
 ```ts
 import { LoggerMeta } from './plugins/logger'
-
 //                                       👇                       
 export const counter = entity<number, LoggerMeta>(0, { name: 'counter' })
 ```
@@ -128,18 +129,6 @@ Here we use generics to enable type checking on the metadata against the meta pr
 
 </details><br />
 
-
-## Making a plug-in ignore an entity
-
-Following our logger example, by default all entities will be included in the logs, except when a `skipLog` flag is set in the entity. This logic was defined in the logger plug-in as follows:
-```js
-    shouldIgnoreSet: meta => meta.skipLog === true
-```
-
-Let's say we don't need the `settings` entity to be included in the logging, so we can attach the appropriate metadata to it as follows:
-```js
-export const settings = entity(null, { skipLog: true })
-```
 
 <br /><br />
 [Back to home](index.html) | [More recipes...](recipes.html)
