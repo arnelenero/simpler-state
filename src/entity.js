@@ -39,23 +39,6 @@ const createSetter = entity => (newValue, ...updaterArgs) => {
   entity._subscribers.forEach(cb => cb(entity._value))
 }
 
-export const applyPlugins = (entity, meta) => {
-  plugins.forEach(plugin => {
-    const overrideMethod = method => {
-      if (typeof plugin[method] === 'function') {
-        const override = plugin[method](entity[method], entity.get, meta)
-        if (typeof override !== 'function')
-          throw new Error(
-            `Invalid override for '${method}' in plug-in '${plugin.id}'.`
-          )
-        entity[method] = override
-      }
-    }
-    overrideMethod('init')
-    overrideMethod('set')
-  })
-}
-
 const createInit = (entity, initialValue) => {
   return typeof initialValue.then === 'function'
     ? () => {
@@ -75,6 +58,23 @@ const createSubscribe = entity => subscriberFn => {
   return () => {
     entity._subscribers.delete(subscriberFn)
   }
+}
+
+export const applyPlugins = (entity, meta) => {
+  plugins.forEach(plugin => {
+    const overrideMethod = method => {
+      if (typeof plugin[method] === 'function') {
+        const override = plugin[method](entity[method], entity.get, meta)
+        if (typeof override !== 'function')
+          throw new Error(
+            `Invalid override for '${method}' in plug-in '${plugin.id}'.`
+          )
+        entity[method] = override
+      }
+    }
+    overrideMethod('init')
+    overrideMethod('set')
+  })
 }
 
 export default entity
