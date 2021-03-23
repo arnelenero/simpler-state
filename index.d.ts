@@ -39,7 +39,7 @@ export function useEntityRef<T, C>(
 ): C
 
 export interface Entity<T> {
-  init: () => T
+  init: () => void
   get: () => T
   set: (
     newValue: T | ((value: T, ...args: any[]) => T),
@@ -79,8 +79,15 @@ export function plugin<O extends object>(
 
 export interface Plugin<M extends object = Record<any, any>> {
   id: string
-  onInit?: (entity: Entity<any>, meta: M) => void
-  onSet?: (entity: Entity<any>, meta: M) => void
-  shouldIgnoreInit?: (meta: M) => boolean
-  shouldIgnoreSet?: (meta: M) => boolean
+  init?: (origInit: () => void, get: () => any, meta: M) => () => void
+  set?: (
+    origSet: (...args: any[]) => void,
+    get: () => any,
+    meta: M
+  ) => (...args: any[]) => void
 }
+
+/**
+ * Resets all entities to initial value
+ */
+export function resetAll(): void

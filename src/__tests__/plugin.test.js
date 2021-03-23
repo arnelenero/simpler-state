@@ -59,13 +59,15 @@ describe('plugin', () => {
     }).toThrow()
   })
 
-  it('throws if plug-in (with same `id`) is being installed more than once', () => {
-    expect(() => {
-      const tester = () => ({
-        id: 'tester'
-      })
-      plugin(tester)
-      plugin(tester)
-    }).toThrow()
+  it('overwrites any prior installed plug-in with same `id`', () => {
+    const tester = () => ({
+      id: 'tester'
+    })
+    const newTester = () => ({
+      id: 'tester'
+    })
+    plugin(tester)
+    plugin(newTester)
+    expect(plugins).toHaveLength(1)
   })
 })

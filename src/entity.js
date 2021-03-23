@@ -39,21 +39,20 @@ const createSetter = entity => (newValue, ...updaterArgs) => {
   entity._subscribers.forEach(cb => cb(entity._value))
 }
 
-const applyPlugins = (entity, meta) => {
+export const applyPlugins = (entity, meta) => {
   plugins.forEach(plugin => {
-    const tapMethod = (method, tap, shouldIgnore) => {
-      const ignore = typeof shouldIgnore === 'function' && shouldIgnore(meta)
-      if (!ignore && typeof tap === 'function') {
-        const func = entity[method]
-        entity[method] = (...args) => {
-          func(...args)
-          tap(entity, meta)
-        }
+    const overrideMethod = method => {
+      if (typeof plugin[method] === 'function') {
+        const override = plugin[method](entity[method], entity.get, meta)
+        if (typeof override !== 'function')
+          throw new Error(
+            `Invalid override for '${method}' in plug-in '${plugin.id}'.`
+          )
+        entity[method] = override
       }
     }
-
-    tapMethod('init', plugin.onInit, plugin.shouldIgnoreInit)
-    tapMethod('set', plugin.onSet, plugin.shouldIgnoreSet)
+    overrideMethod('init')
+    overrideMethod('set')
   })
 }
 
