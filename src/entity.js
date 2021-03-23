@@ -34,16 +34,17 @@ const createSetter = entity => (newValue, ...updaterArgs) => {
 
   entity._value = newValue
 
-  for (let i = 0; i < entity._subscribers.length; i++) {
-    if (typeof entity._subscribers[i] === 'function')
-      entity._subscribers[i](entity._value)
-  }
+  // Cleanup any nullified subscribers from prior unmounts
+  cleanupNullSubscriptions(entity._subscribers)
 
-  // Cleanup any nullified subscribers due to possible
-  // component unmounts caused by this app state change
-  entity._subscribers = entity._subscribers.filter(
-    item => typeof item === 'function'
-  )
+  for (let i = 0, c = entity._subscribers.length; i < c; i++)
+    entity._subscribers[i](entity._value)
+}
+
+const cleanupNullSubscriptions = subscribers => {
+  for (let i = 0; i < subscribers.length; i++)
+    while (subscribers.length > i && typeof subscribers[i] !== 'function')
+      subscribers.splice(i, 1)
 }
 
 const applyPlugins = (entity, meta) => {

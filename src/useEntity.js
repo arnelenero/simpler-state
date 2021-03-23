@@ -27,6 +27,7 @@ export const useEntity = (
   useEffect(() => {
     entity._subscribers.push(subscriberFn)
     return () => {
+      // Nullify the subscription. Next setter call will do the cleanup.
       for (let i = 0, c = entity._subscribers.length; i < c; i++) {
         if (entity._subscribers[i] === subscriberFn) {
           entity._subscribers[i] = null
