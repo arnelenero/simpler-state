@@ -25,6 +25,7 @@ Browse this documentation to explore SimpleR State.
 - [Separating "pure" updates from actions](recipe-pure.html)
 - [Orchestrating updates to multiple entities with one action](recipe-orchestrators.html)
 - [Unit testing entities](recipe-testing.html)
+- [Resetting all entities between component tests](recipe-reset-all.html)
 - [Extending the library with plug-ins](recipe-plugins.html)
 
 <br />
