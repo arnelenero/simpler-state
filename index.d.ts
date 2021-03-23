@@ -1,6 +1,5 @@
 /**
- * Creates an entity and returns a direct reference
- * that provides get() and set() functions
+ * Creates and returns a new entity
  * @param initialValue - required default value
  * @param meta - optional metadata object (for plug-ins)
  */
@@ -17,7 +16,7 @@ export function entity<T = any, M extends object = Record<any, any>>(
 
 /**
  * Binds an entity to the component as a shared state
- * @param entity - the entity reference
+ * @param entity - the entity
  * @param transform - optional data transformation function
  * @param equalityFn - optional custom equality function
  */
@@ -28,6 +27,17 @@ export function useEntity<T, C>(
   equalityFn?: (a: any, b: any) => boolean
 ): C
 
+/**
+ * Binds an entity to the component as a ref
+ * @param entity - the entity
+ * @param transform - optional data transformation function
+ */
+export function useEntityRef<T>(entity: Entity<T>): T
+export function useEntityRef<T, C>(
+  entity: Entity<T>,
+  transform?: (value: T) => C
+): C
+
 export interface Entity<T> {
   init: () => T
   get: () => T
@@ -36,6 +46,7 @@ export interface Entity<T> {
     ...updaterArgs: any[]
   ) => void
   use: EntityHook<T>
+  useRef: EntityRefHook<T>
 }
 
 export type EntityHook<T> = {
@@ -43,13 +54,18 @@ export type EntityHook<T> = {
   <C>(transform?: (value: T) => C, equalityFn?: (a: any, b: any) => boolean): C
 }
 
+export type EntityRefHook<T> = {
+  (): T
+  <C>(transform?: (value: T) => C): C
+}
+
+export function strictEqual(a: any, b: any): boolean
+export function shallowEqual(a: any, b: any): boolean
+
 /**
  * Resets the values of all entities (for testing)
  */
 export function resetAll(): void
-
-export function strictEqual(a: any, b: any): boolean
-export function shallowEqual(a: any, b: any): boolean
 
 /**
  * Attaches a plug-in to SimplerR State

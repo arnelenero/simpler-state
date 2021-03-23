@@ -10,9 +10,7 @@ export const useEntity = (
 ) => {
   if (!(entity._subscribers instanceof Set)) throw new Error('Invalid entity.')
 
-  const computed = transform(entity._value)
-
-  const [state, setState] = useState(computed)
+  const [state, setState] = useState(transform(entity._value))
 
   const subscriberFn = useCallback(
     newValue => {
@@ -30,7 +28,10 @@ export const useEntity = (
     }
   }, [subscriberFn, entity._subscribers])
 
-  return computed
+  // Re-sync state in case transform function has changed
+  subscriberFn(entity._value)
+
+  return state
 }
 
 export default useEntity
