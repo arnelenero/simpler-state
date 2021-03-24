@@ -63,11 +63,6 @@ export function strictEqual(a: any, b: any): boolean
 export function shallowEqual(a: any, b: any): boolean
 
 /**
- * Resets the values of all entities (for testing)
- */
-export function resetAll(): void
-
-/**
  * Attaches a plug-in to SimplerR State
  * @param pluginPkg - the plug-in package
  * @param options - optional configuration object
