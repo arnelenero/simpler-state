@@ -1,10 +1,10 @@
-# Binding Only Relevant Data to Components
+# Binding Only Relevant Data (Partial or Computed Values)
 
 There are cases where a component doesn't need the exact value of the entity, but rather some derivative of this value. It can either be:
 - a portion of the value (e.g. for object type values), or 
 - a computed value
 
-In such situation, we can pass a _transform_ function to the entity's `use` hook as follows:
+By binding only these relevant values to the component, we prevent unnecessary re-renders. For this purpose, we can pass a _transform_ function to the entity's `use` hook as follows:
 ```js
 value = entityObj.use(value => relevantValue)
 ```
@@ -83,12 +83,11 @@ const MainView = () => {
 
 ## Optimization
 
-To further enhance the app's performance, it is always a good idea to _memoize_ the transform and equality functions. We can choose from various techniques, such as:
+To further enhance the app's performance, it's always a good idea to _memoize_ the transform and equality functions. We can choose from various techniques, such as:
 - defining them outside the component
 - placing them alongside the entity and its actions
 - using React's `useCallback` hook to keep them inside the component
 
-SimpleR State is unopinionated, so it's all up to you to decide.
 
 <br /><br />
 [Back to home](index.html) | [More recipes...](recipes.html)

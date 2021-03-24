@@ -19,7 +19,7 @@ Browse this documentation to explore SimpleR State.
 [The Basics](basics.html)
 
 [Recipes](recipes.html)
-- [Binding only relevant data to components](recipe-transforms.html)
+- [Binding only relevant data (partial or computed values)](recipe-transforms.html)
 - [Async actions](recipe-async.html)
 - [Prefetching data using async initial value](recipe-promise-init.html)
 - [Separating "pure" updates from actions](recipe-pure.html)
