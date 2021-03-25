@@ -24,7 +24,7 @@ export const reset = () => {
 
 export const increment = by => {
   counter.set(value => value + by)
-  // Alternatively: counter.set(counter.get() + by)  
+  // --OR-->  counter.set(counter.get() + by)  
 }
 ```
 
@@ -35,6 +35,7 @@ import { counter, increment, reset } from 'counter'
 
 const CounterView = () => {
   const count = counter.use()
+  // --OR-->  const count = useEntity(counter)
 
   return (
     <>

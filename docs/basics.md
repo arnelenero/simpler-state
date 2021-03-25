@@ -4,7 +4,7 @@
 
 An _entity_ is a single-concern data object whose value can be bound to any number of components in the app as a "shared state". Once bound to a component, an entity's value acts like local state, i.e. it causes the component to update on every change.
 
-Each entity would normally be associated with _actions_, which are just normal functions that make changes to the entity's value.
+Each entity would normally be associated with _actions_, which are just normal functions that make changes to the entity's value. However, actions are __not__ contained in the entity object.
 
 An entity can hold a value of any data type, including primitive types.
 
@@ -81,7 +81,13 @@ The entity object has a `use` hook that allows us to bind it to a component. The
 ```js
 value = entityObj.use()
 ```
-> In contrast to React's `useState` hook, this looks more like the `useContext` hook in that it returns only the current value (this analogy makes sense, since an entity hook indeed returns a "shared" value).  Remember, the actions can be directly imported from the entity module.
+
+Alternatively, if you wish to conform to the more familiar naming convention for all hooks, you can import and use the `useEntity` hook:
+```js
+value = useEntity(entityObj)
+```
+
+Keep in mind that the associated actions exist __outside__ the entity object, so we simply import and use them directly.
 
 Here is an example using our counter entity:
 
@@ -127,10 +133,6 @@ const CounterView = () => {
 Notice that we don't need to use explicit types here. The `use` hook lets TypeScript do all the type inference for us.
 
 </details>
-
-> __Alternative syntax:__ If you prefer to conform to a straight `useXXXX` naming convention for all your hooks, you can simply create an alias for `entity.use`. For example:<p>
-In __counter.js__: `export const useCounter = counter.use`</p><p>
-In __CounterView.js__: `const count = useCounter()`</p>
 
 <br /><br />
 [Back to home](index.html) | Next topic → [Recipes](recipes.html)
