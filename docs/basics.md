@@ -44,7 +44,7 @@ export const reset = () => {
 
 export const increment = by => {
   counter.set(value => value + by)
-  // Alternatively: counter.set(counter.get() + by)  
+  // --OR-->  counter.set(counter.get() + by)  
 }
 ```
 
@@ -63,7 +63,7 @@ export const reset = () => {
 
 export const increment = (by: number) => {
   counter.set(value => value + by)
-  // Alternatively: counter.set(counter.get() + by)  
+  // --OR-->  counter.set(counter.get() + by)  
 }
 ```
 
