@@ -4,7 +4,7 @@
 
 An _entity_ is a single-concern data object whose value can be bound to any number of components in the app as a "shared state". Once bound to a component, an entity's value acts like local state, i.e. it causes the component to update on every change.
 
-Each entity would normally be associated with _actions_, which are just normal functions that make changes to the entity's value. However, actions are __not__ contained in the entity object.
+Each entity would typically be associated with _actions_, which are just normal functions that make changes to the entity's value. However, these actions are __not__ contained in the entity object.
 
 An entity can hold a value of any data type, including primitive types.
 
