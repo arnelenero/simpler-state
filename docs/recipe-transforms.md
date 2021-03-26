@@ -15,6 +15,7 @@ Here's an example:
 **MainView.js**
 ```jsx
 import { settings } from './entities/settings'
+import { counter } from './entities/counter'
 
 const RiggedCounter = () => {
   //                     partial value   👇
