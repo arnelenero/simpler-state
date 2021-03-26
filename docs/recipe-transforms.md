@@ -1,4 +1,4 @@
-# Binding Only Relevant Data (Partial or Computed Values)
+# Binding Only Relevant Values (Partial or Computed)
 
 There are cases where a component doesn't need the exact value of the entity, but rather some derivative of this value. It can either be:
 - a portion of the value (e.g. for object type values), or 
@@ -10,7 +10,7 @@ value = entityObj.use(value => relevantValue)
 ```
 This transform function, also called _selector_ in other conventions, takes the current entity value, then returns some other value that is more relevant to the component. The hook then binds only this derived value to the component, thus preventing unnecessary re-renders.
 
-Here's an example:
+Here's an example. Notice that computed values can also depend on preceding values/transforms.
 
 **MainView.js**
 ```jsx
