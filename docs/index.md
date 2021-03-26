@@ -14,11 +14,11 @@ Browse this documentation to explore SimpleR State.
 
 ## Contents
 
-[Quick Start: TL;DR Cheat Sheet](quick-start.html) 👈
+[__Quick Start: TL;DR Cheat Sheet__](quick-start.html) 👈
 
-[The Basics](basics.html)
+[__The Basics__](basics.html)
 
-[Recipes](recipes.html)
+[__Recipes__](recipes.html)
 - [Binding only relevant data (partial or computed values)](recipe-transforms.html)
 - [Async actions](recipe-async.html)
 - [Prefetching data using async initial value](recipe-promise-init.html)
