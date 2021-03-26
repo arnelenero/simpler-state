@@ -16,33 +16,18 @@ Here's an example:
 ```jsx
 import { settings } from './entities/settings'
 
-const MainView = () => {
-  const config = settings.use(value => value.config)
-  //                                👆
+const RiggedCounter = () => {
+  //                     partial value   👇
+  const extra = settings.use(value => value.extra)
+  //                    computed value   👇
+  const count = counter.use(value => value + extra)
+  
   return ( 
     //  . . .
   )
 }
 ```
-
-<details>
-  <summary>TypeScript version</summary><br/>
-
-**MainView.tsx**
-```tsx
-import { settings } from './entities/settings'
-
-const MainView = () => {
-  const config = settings.use(value => value.config)
-  //                                👆
-  return ( 
-    //  . . .
-  )
-}
-```
-Notice that type inference still works full force here. No need for explicit types even when working with a transform function.
-
-</details><br />
+(Due to type inference, the TypeScript version is the same as above.)
 
 > Below are some more advanced topics that pertain to __optional__ features that are provided for flexibility.
 
