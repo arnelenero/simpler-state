@@ -97,6 +97,7 @@ import { counter, increment, reset } from 'counter'
 
 const CounterView = () => {
   const count = counter.use()
+  // --OR-->  const count = useEntity(counter)
 
   return (
     <>
@@ -118,6 +119,7 @@ import { counter, increment, decrement } from 'counter'
 
 const CounterView = () => {
   const count = counter.use()  // 👈 type inference works!
+  // --OR-->  const count = useEntity(counter)
 
   return (
     <>
