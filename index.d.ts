@@ -27,17 +27,6 @@ export function useEntity<T, C>(
   equalityFn?: (a: any, b: any) => boolean
 ): C
 
-/**
- * Binds an entity to the component as a ref
- * @param entity - the entity
- * @param transform - optional data transformation function
- */
-export function useEntityRef<T>(entity: Entity<T>): T
-export function useEntityRef<T, C>(
-  entity: Entity<T>,
-  transform?: (value: T) => C
-): C
-
 export interface Entity<T> {
   init: () => void
   get: () => T
