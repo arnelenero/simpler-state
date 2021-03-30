@@ -120,7 +120,7 @@ describe('entity', () => {
     let initCalls = 0
     plugins.push({
       id: 'test',
-      init: (init, meta) => () => {
+      init: (init, entity, meta) => () => {
         init()
         initCalls++
       }
@@ -136,7 +136,7 @@ describe('entity', () => {
     let setCalls = 0
     plugins.push({
       id: 'test',
-      set: (set, get, meta) => (...args) => {
+      set: (set, entity, meta) => (...args) => {
         set(...args)
         setCalls++
       }
@@ -156,7 +156,6 @@ describe('entity', () => {
       id: 'test',
       set: (set, ...args) => {
         set(...args)
-        console.log('Value changed')
       }
     })
 

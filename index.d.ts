@@ -63,10 +63,10 @@ export function plugin<O extends object>(
 
 export interface Plugin<M extends object = Record<any, any>> {
   id: string
-  init?: (origInit: () => void, get: () => any, meta: M) => () => void
+  init?: (origInit: () => void, entity: Entity<any>, meta: M) => () => void
   set?: (
     origSet: (...args: any[]) => void,
-    get: () => any,
+    entity: Entity<any>,
     meta: M
   ) => (...args: any[]) => void
 }

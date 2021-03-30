@@ -64,7 +64,7 @@ export const applyPlugins = (entity, meta) => {
   plugins.forEach(plugin => {
     const overrideMethod = method => {
       if (typeof plugin[method] === 'function') {
-        const override = plugin[method](entity[method], entity.get, meta)
+        const override = plugin[method](entity[method], entity, meta)
         if (typeof override !== 'function')
           throw new Error(
             `Invalid override for '${method}' in plug-in '${plugin.id}'.`
