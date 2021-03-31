@@ -1,4 +1,4 @@
-import { plugin, plugins } from '../plugin'
+import plugin, { plugins } from '../plugin'
 
 describe('plugin', () => {
   beforeEach(() => {

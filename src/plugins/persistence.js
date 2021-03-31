@@ -5,13 +5,15 @@ export const persistence = options => {
     id: 'persistence',
 
     init: (origInit, entity, meta) => {
+      validate(meta)
+
       return meta.persist
         ? () => {
             const storage =
               meta.storage || defaultStorage || window.localStorage
             const deserialize =
               meta.deserializeFn || defaultDeserializeFn || JSON.parse
-            const name = meta.persistAs || meta.name || 'entity'
+            const name = meta.persistAs || meta.name
             const getItem = async () => {
               const value = await storage.getItem(name)
               if (value) {
@@ -21,6 +23,7 @@ export const persistence = options => {
 
             origInit()
 
+            // Fetch persisted value (if any) from storage
             if (storage) {
               getItem()
             } else {
@@ -31,13 +34,15 @@ export const persistence = options => {
     },
 
     set: (origSet, entity, meta) => {
+      validate(meta)
+
       return meta.persist
         ? (...args) => {
             const storage =
               meta.storage || defaultStorage || window.localStorage
             const serialize =
               meta.serializeFn || defaultSerializeFn || JSON.stringify
-            const name = meta.persistAs || meta.name || 'entity'
+            const name = meta.persistAs || meta.name
             const setItem = async () => {
               const value = await serialize(entity.get())
               return storage.setItem(name, value)
@@ -45,6 +50,7 @@ export const persistence = options => {
 
             origSet(...args)
 
+            // Persist the new value to storage
             if (storage) {
               setItem()
             } else {
@@ -55,3 +61,12 @@ export const persistence = options => {
     }
   }
 }
+
+const validate = meta => {
+  if (meta.persist && !(meta.name || meta.persistAs))
+    throw new Error(
+      'Inconsistent entity metadata: `persist: true` requires either `name` or `persistAs` to be defined.'
+    )
+}
+
+export default persistence
