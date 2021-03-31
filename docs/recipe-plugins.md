@@ -2,7 +2,7 @@
 
 Don't let the simplicity fool you! SimpleR State can be as feature-rich as you'd like, with its highly flexible plug-in system.
 
-> __Coming soon:__ A set of pre-built plug-ins will be available soon, providing features like local/remote persistence and dev tools.
+> __Coming soon:__ A set of pre-built plug-ins will be available soon, providing features like local/remote persistence and dev tools. (__Update:__ As of 1.0.0 RC8, `persistence` plugin is available.)
 
 ## How a plug-in works
 

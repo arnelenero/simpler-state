@@ -1,6 +1,6 @@
 import persistence from '../persistence'
-import plugin from '../../plugin'
-import entity from '../../entity'
+import plugin from '../plugin'
+import entity from '../entity'
 
 describe('persistence', () => {
   beforeEach(() => {
