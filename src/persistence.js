@@ -1,11 +1,16 @@
 export const persistence = (key, options = {}) => {
   if (typeof key !== 'string')
-    throw new Error('Persistence requires a string key')
+    throw new Error('Persistence requires a string key.')
 
   let storage = options.storage || 'local'
   if (storage === 'local') storage = getLocalStorage()
   else if (storage === 'session') storage = getSessionStorage()
   else validateCustomStorage(storage)
+
+  if (!storage) {
+    console.warn('Storage unavailable. Persistence disabled.')
+    return {}
+  }
 
   return {
     init: (origInit, entity) => () => {
@@ -20,11 +25,7 @@ export const persistence = (key, options = {}) => {
       origInit()
 
       // Fetch persisted value (if any) from storage
-      if (storage) {
-        getItem()
-      } else {
-        console.warn(`Unable to fetch '${key}' from storage.`)
-      }
+      getItem()
     },
 
     set: (origSet, entity) => (...args) => {
@@ -37,11 +38,7 @@ export const persistence = (key, options = {}) => {
       origSet(...args)
 
       // Persist the new value to storage
-      if (storage) {
-        setItem()
-      } else {
-        console.warn(`Unable to persist '${options.key}' to storage.`)
-      }
+      setItem()
     }
   }
 }

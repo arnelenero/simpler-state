@@ -61,6 +61,8 @@ const createSubscribe = entity => subscriberFn => {
 
 export const applyPlugins = (entity, plugins) => {
   plugins.forEach(plugin => {
+    if (typeof plugin !== 'object') throw new Error('Invalid plug-in')
+
     const overrideMethod = method => {
       if (typeof plugin[method] === 'function') {
         const override = plugin[method](entity[method], entity)
