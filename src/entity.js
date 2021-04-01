@@ -42,10 +42,11 @@ const createSetter = entity => (newValue, ...updaterArgs) => {
 const createInit = (entity, initialValue) => {
   return typeof initialValue.then === 'function'
     ? () => {
+        // Call the setter so that any bound components are updated
         initialValue.then(value => entity.set(value))
       }
     : () => {
-        entity.set(initialValue)
+        entity._value = initialValue
       }
 }
 

@@ -145,8 +145,7 @@ describe('entity', () => {
     const greeting = entity({ hello: 'world' })
     counter.set(1)
     greeting.set('wazzup')
-    // note: `set` is also called automatically on init!
-    expect(setCalls).toBe(4)
+    expect(setCalls).toBe(2)
 
     plugins.pop()
   })
