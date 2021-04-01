@@ -1,13 +1,11 @@
 import { useEntity } from './useEntity'
 import { store } from './store'
-import { plugins } from './plugin'
 
-export const entity = (initialValue, meta = {}) => {
+export const entity = (initialValue, plugins = []) => {
   if (initialValue === undefined)
     throw new Error('Entity requires an initial value.')
 
-  if (typeof meta !== 'object')
-    throw new Error('Entity metadata should be an object.')
+  if (!(plugins instanceof Array)) throw new Error('Invalid plug-ins array.')
 
   const newEntity = {
     _value: undefined,
@@ -20,7 +18,7 @@ export const entity = (initialValue, meta = {}) => {
   newEntity.init = createInit(newEntity, initialValue)
   newEntity.use = createHook(newEntity)
 
-  applyPlugins(newEntity, meta)
+  applyPlugins(newEntity, plugins)
 
   newEntity.init()
 
@@ -61,15 +59,13 @@ const createSubscribe = entity => subscriberFn => {
   }
 }
 
-export const applyPlugins = (entity, meta) => {
+export const applyPlugins = (entity, plugins) => {
   plugins.forEach(plugin => {
     const overrideMethod = method => {
       if (typeof plugin[method] === 'function') {
-        const override = plugin[method](entity[method], entity, meta)
+        const override = plugin[method](entity[method], entity)
         if (typeof override !== 'function')
-          throw new Error(
-            `Invalid override for '${method}' in plug-in '${plugin.id}'.`
-          )
+          throw new Error(`Invalid override for '${method}' in plug-in.`)
         entity[method] = override
       }
     }

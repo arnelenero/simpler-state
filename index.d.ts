@@ -1,17 +1,12 @@
 /**
  * Creates and returns a new entity
  * @param initialValue - required default value
- * @param meta - optional metadata object (for plug-ins)
+ * @param plugins - optional array list of plug-ins
  */
-export function entity<T = any>(initialValue: T): Entity<T>
-export function entity<T = any>(initialValue: Promise<T>): Entity<T | undefined>
-export function entity<T = any, M extends object = Record<any, any>>(
-  initialValue: T,
-  meta: M
-): Entity<T>
-export function entity<T = any, M extends object = Record<any, any>>(
+export function entity<T = any>(initialValue: T, plugins?: Plugin[]): Entity<T>
+export function entity<T = any>(
   initialValue: Promise<T>,
-  meta: M
+  plugins?: Plugin[]
 ): Entity<T | undefined>
 
 /**
@@ -35,7 +30,6 @@ export interface Entity<T> {
     ...updaterArgs: any[]
   ) => void
   use: EntityHook<T>
-  useRef: EntityRefHook<T>
 }
 
 export type EntityHook<T> = {
@@ -43,58 +37,36 @@ export type EntityHook<T> = {
   <C>(transform?: (value: T) => C, equalityFn?: (a: any, b: any) => boolean): C
 }
 
-export type EntityRefHook<T> = {
-  (): T
-  <C>(transform?: (value: T) => C): C
-}
-
 export function strictEqual(a: any, b: any): boolean
 export function shallowEqual(a: any, b: any): boolean
 
-/**
- * Attaches a plug-in to SimplerR State
- * @param pluginPkg - the plug-in package
- * @param options - optional configuration object
- */
-export function plugin<O extends object>(
-  pluginPkg: (options: O) => Plugin<any>,
-  options?: O
-): void
-
-export interface Plugin<M extends object = Record<any, any>> {
-  id: string
-  init?: (origInit: () => void, entity: Entity<any>, meta: M) => () => void
+export interface Plugin {
+  init?: (origInit: () => void, entity: Entity<any>) => () => void
   set?: (
     origSet: (...args: any[]) => void,
-    entity: Entity<any>,
-    meta: M
+    entity: Entity<any>
   ) => (...args: any[]) => void
 }
 
 /**
  * Persistence plug-in enables storing entity values to
- * localStorage, sessionStorage or custom storage (must
- * implement the Web Storage API)
- * @param options - Optionally configure default storage and serialization/deserialization
+ * localStorage (default), sessionStorage or custom storage
+ * (must implement the Web Storage API)
+ * @param key - unique identifier
+ * @param options - optional config for storage and serialization/deserialization
  */
-export function persistence(options: {
-  defaultStorage?: Storage
-  defaultSerializeFn?: (value: any) => string | Promise<string>
-  defaultDeserializeFn?: (value: string) => any | Promise<any>
-}): Plugin<PersistenceMeta>
+export function persistence(
+  key: string,
+  options?: {
+    storage?: string | Storage
+    serializeFn?: (value: any) => string | Promise<string>
+    deserializeFn?: (value: string) => any | Promise<any>
+  }
+): Plugin
 
 export interface Storage {
   getItem: (key: string) => string | null | Promise<string> | Promise<null>
   setItem: (key: string, value: string) => void | Promise<void>
-}
-
-export interface PersistenceMeta {
-  persist: boolean
-  storage?: Storage
-  name?: string
-  persistAs?: string
-  serializeFn?: (value: any) => string | Promise<string>
-  deserializeFn?: (value: string) => any | Promise<any>
 }
 
 /**
