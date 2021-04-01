@@ -72,6 +72,32 @@ export interface Plugin<M extends object = Record<any, any>> {
 }
 
 /**
+ * Persistence plug-in enables storing entity values to
+ * localStorage, sessionStorage or custom storage (must
+ * implement the Web Storage API)
+ * @param options - Optionally configure default storage and serialization/deserialization
+ */
+export function persistence(options: {
+  defaultStorage?: Storage
+  defaultSerializeFn?: (value: any) => string | Promise<string>
+  defaultDeserializeFn?: (value: string) => any | Promise<any>
+}): Plugin<PersistenceMeta>
+
+export interface Storage {
+  getItem: (key: string) => string | null | Promise<string> | Promise<null>
+  setItem: (key: string, value: string) => void | Promise<void>
+}
+
+export interface PersistenceMeta {
+  persist: boolean
+  storage?: Storage
+  name?: string
+  persistAs?: string
+  serializeFn?: (value: any) => string | Promise<string>
+  deserializeFn?: (value: string) => any | Promise<any>
+}
+
+/**
  * Resets all entities to initial value
  */
 export function resetAll(): void
