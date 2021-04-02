@@ -1,13 +1,11 @@
 import { useEntity } from './useEntity'
 import { store } from './store'
-import { plugins } from './plugin'
 
-export const entity = (initialValue, meta = {}) => {
+export const entity = (initialValue, plugins = []) => {
   if (initialValue === undefined)
     throw new Error('Entity requires an initial value.')
 
-  if (typeof meta !== 'object')
-    throw new Error('Entity metadata should be an object.')
+  if (!(plugins instanceof Array)) throw new Error('Invalid plug-ins array.')
 
   const newEntity = {
     _value: undefined,
@@ -20,7 +18,7 @@ export const entity = (initialValue, meta = {}) => {
   newEntity.init = createInit(newEntity, initialValue)
   newEntity.use = createHook(newEntity)
 
-  applyPlugins(newEntity, meta)
+  applyPlugins(newEntity, plugins)
 
   newEntity.init()
 
@@ -42,10 +40,11 @@ const createSetter = entity => (newValue, ...updaterArgs) => {
 const createInit = (entity, initialValue) => {
   return typeof initialValue.then === 'function'
     ? () => {
+        // Call the setter so that any bound components are updated
         initialValue.then(value => entity.set(value))
       }
     : () => {
-        entity.set(initialValue)
+        entity._value = initialValue
       }
 }
 
@@ -60,15 +59,15 @@ const createSubscribe = entity => subscriberFn => {
   }
 }
 
-export const applyPlugins = (entity, meta) => {
+export const applyPlugins = (entity, plugins) => {
   plugins.forEach(plugin => {
+    if (typeof plugin !== 'object') throw new Error('Invalid plug-in')
+
     const overrideMethod = method => {
       if (typeof plugin[method] === 'function') {
-        const override = plugin[method](entity[method], entity.get, meta)
+        const override = plugin[method](entity[method], entity)
         if (typeof override !== 'function')
-          throw new Error(
-            `Invalid override for '${method}' in plug-in '${plugin.id}'.`
-          )
+          throw new Error(`Invalid override for '${method}' in plug-in.`)
         entity[method] = override
       }
     }
