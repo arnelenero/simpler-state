@@ -12,7 +12,7 @@ Here we provide some suggested patterns that you may consider for specific scena
 - [Simplifying nested object updates with proxies](recipe-proxies.html)
 - [Unit testing entities](recipe-testing.html)
 - [Resetting all entities between component tests](recipe-reset-all.html)
-- [Extending the library with plug-ins](recipe-plugins.html)
+- [Extending functionality with plug-ins](recipe-plugins.html)
 
 
 <br /><br />
