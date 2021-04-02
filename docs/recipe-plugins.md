@@ -27,10 +27,15 @@ export const logger = name => {
   return {
     set: (origSet, entity) => (...args) => {
       const prev = entity.get()
-
       origSet(...args)  // 👈 make sure to call the original `set`
 
-      console.log(`${name}:`, prev, '-->', entity.get())
+      console.log(`[${name}]`, prev, '-->', entity.get())
+    },
+
+    init: (origInit, entity) => () => {
+      origInit()  // 👈 make sure to call the original `init`
+
+      console.log(`[${name}] Initial value:`, entity.get())
     }
   }
 }
@@ -47,10 +52,15 @@ export const logger = (name: string): Plugin => {
   return {
     set: (origSet, entity) => (...args) => {
       const prev = entity.get()
-      
       origSet(...args)  // 👈 make sure to call the original `set`
 
       console.log(`${name}:`, prev, '-->', entity.get())
+    },
+
+    init: (origInit, entity) => () => {
+      origInit()  // 👈 make sure to call the original `init`
+
+      console.log(`[${name}] Initial value:`, entity.get())
     }
   }
 }
