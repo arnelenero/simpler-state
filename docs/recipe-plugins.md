@@ -69,6 +69,7 @@ entityObj = entity(initialValue, [plugin])
 The second argument is an array, so we can attach multiple plug-ins to the entity. The method overrides then work by _function composition_.
 
 Now let's use our example logger plug-in in the `counter` entity:
+
 **entities/counter.js**
 ```js
 import { logger } from './plugins/logger'
