@@ -74,6 +74,17 @@ describe('persistence', () => {
     expect(localStorage.getItem).not.toHaveBeenCalled()
   })
 
+  it('supports custom storage with async methods', () => {
+    const customStorage = {
+      getItem: key => new Promise(resolve => resolve(10)),
+      setItem: (key, value) => new Promise(resolve => resolve())
+    }
+    entity(0, [persistence('counter', { storage: customStorage })])
+    setTimeout(() => {
+      expect(entity.get()).toBe(10)
+    })
+  })
+
   it('requires a custom storage to implement both `getItem` and `setItem`', () => {
     const customStorage = {
       setItem: jest.fn()
@@ -88,7 +99,24 @@ describe('persistence', () => {
     const wrap = val => {
       return (serialized = { value: val })
     }
-    entity(0, [persistence('counter', { serializeFn: wrap })])
+    const counter = entity(0, [persistence('counter', { serializeFn: wrap })])
+    counter.set(1)
+    setTimeout(() => {
+      expect(localStorage.setItem).toHaveBeenLastCalledWith(
+        'counter',
+        serialized
+      )
+    })
+  })
+
+  it('supports async custom `serializeFn`', () => {
+    let serialized = null
+    const wrap = val =>
+      new Promise(resolve => {
+        resolve((serialized = { value: val }))
+      })
+    const counter = entity(0, [persistence('counter', { serializeFn: wrap })])
+    counter.set(1)
     setTimeout(() => {
       expect(localStorage.setItem).toHaveBeenLastCalledWith(
         'counter',
@@ -100,6 +128,15 @@ describe('persistence', () => {
   it('supports a custom `deserializeFn` when fetching from storage', () => {
     localStorage.setItem('counter', '{"value":1}')
     const unwrap = val => val.value
+    entity(0, [persistence('counter', { deserializeFn: unwrap })])
+    setTimeout(() => {
+      expect(entity.get()).toBe(1)
+    })
+  })
+
+  it('supports async custom `deserializeFn`', () => {
+    localStorage.setItem('counter', '{"value":1}')
+    const unwrap = val => new Promise(resolve => resolve(val.value))
     entity(0, [persistence('counter', { deserializeFn: unwrap })])
     setTimeout(() => {
       expect(entity.get()).toBe(1)
