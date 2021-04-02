@@ -83,7 +83,7 @@ export interface Plugin {
 export function persistence(
   key: string,
   options?: {
-    storage?: string | Storage
+    storage?: 'local' | 'session' | Storage
     serializeFn?: (value: any) => string | Promise<string>
     deserializeFn?: (value: string) => any | Promise<any>
   }
