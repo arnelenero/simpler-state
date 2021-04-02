@@ -2,7 +2,6 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import entity from '../entity'
-import { plugins } from '../plugin'
 
 describe('entity', () => {
   it('returns an entity object', () => {
@@ -112,56 +111,73 @@ describe('entity', () => {
     component.unmount()
   })
 
-  it('checks if the `meta` argument (if any) is an object', () => {
-    expect(() => entity(0, true)).toThrow()
+  it('checks if the `plugins` argument (if any) is an array', () => {
+    expect(() => entity(0, { persistence: true })).toThrow()
   })
 
   it('applies the `init` plug-in override (if any) to the entity', () => {
     let initCalls = 0
-    plugins.push({
-      id: 'test',
-      init: (init, entity, meta) => () => {
+    const plugin = {
+      init: (init, entity) => () => {
         init()
         initCalls++
       }
-    })
-    entity(0)
-    entity({ hello: 'world' })
+    }
+    entity(0, [plugin])
+    entity({ hello: 'world' }, [plugin])
     expect(initCalls).toBe(2)
-
-    plugins.pop()
   })
 
   it('applies the `set` plug-in override (if any) to the entity', () => {
     let setCalls = 0
-    plugins.push({
-      id: 'test',
-      set: (set, entity, meta) => (...args) => {
+    const plugin = {
+      set: (set, entity) => (...args) => {
         set(...args)
         setCalls++
       }
-    })
-    const counter = entity(0)
-    const greeting = entity({ hello: 'world' })
+    }
+    const counter = entity(0, [plugin])
+    const greeting = entity({ hello: 'world' }, [plugin])
     counter.set(1)
     greeting.set('wazzup')
     expect(setCalls).toBe(2)
+  })
 
-    plugins.pop()
+  it('attaches all plug-ins specified in the `plugins` argument', () => {
+    let setCallsA = 0
+    let setCallsB = 0
+    const pluginA = {
+      set: (set, entity) => (...args) => {
+        set(...args)
+        setCallsA++
+      }
+    }
+    const pluginB = {
+      set: (set, entity) => (...args) => {
+        set(...args)
+        setCallsB++
+      }
+    }
+    const counter = entity(0, [pluginA, pluginB])
+    counter.set(1)
+    expect(setCallsA).toBe(1)
+    expect(setCallsB).toBe(1)
+  })
+
+  it('checks if each item in the `plugins` argument is a plug-in object', () => {
+    expect(() => {
+      entity(0, [console.log])
+    }).toThrow()
   })
 
   it('requires plug-in overrides to be specified via composer function, throws otherwise', () => {
-    plugins.push({
-      id: 'test',
+    const plugin = {
       set: (set, ...args) => {
         set(...args)
       }
-    })
-
+    }
     expect(() => {
-      entity(0)
+      entity(0, [plugin])
     }).toThrow()
-
-    plugins.pop()
   })
 })
