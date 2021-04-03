@@ -17,9 +17,11 @@ A plug-in is simply an object containing either or both of these method override
 init: (origInitFn, entity) => newInitFn
 set: (origSetFn, entity) => newSetFn
 ```
-Each override function has access to the original method as well as a reference to the entity.
+Each override function has access to the original method as well as a reference to the entity. __It is important to make sure that the original method is invoked by the override.__
 
 A configurable plug-in is normally implemented as a function that accepts options as arguments, then composes the actual plug-in accordingly.
+
+> Although we only ever use an entity's `init` method in unit testing, i.e. to reset values between tests, it is actually automatically invoked upon creation of the entity. This makes the `init` override an ideal place to put code that we want to execute immediately before/after the initial value is set.
 
 Let's write an example plug-in that logs on the console every time an entity is updated. It requires a `name` argument to help identify the entity by name in the logs.
 

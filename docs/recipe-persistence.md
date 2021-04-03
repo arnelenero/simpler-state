@@ -16,7 +16,7 @@ where `key` is a __required__ unique string identifier, and `options` is an __op
 
 We'll see more on these options in the next sections.
 
-> __Why do we need a key?__ Persistence conforms to the Web Storage API, which stores __key-value pairs__. This is also why we need to make sure that we're supplying a __unique__ key for each entity. 
+> __Why do we need a key?__ Persistence conforms to the Web Storage API, which stores _key-value pairs_. This is also why we need to make sure that we're supplying a __unique__ key for each entity. 
 
 ## Basic usage
 

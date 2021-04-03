@@ -1,8 +1,8 @@
 # Separating "Pure" Updates from Actions
 
-Using _pure functions_ has its benefits. Since an action can be pretty much any function, it doesn't automatically prevent _side effects_.
+Using _pure functions_ has its benefits. Since an action can be pretty much any function, sometimes it includes _side effects_, especially async actions.
 
-To allow us to separate "pure" updates, an entity's `set` function has an alternative form that accepts an _updater function_ in this format:
+To allow us to separate "pure" updates, an entity's `set` function has an alternative form that accepts a parameterized _updater function_ in this format:
 ```js
 (value, ...args) => newValue
 ```
