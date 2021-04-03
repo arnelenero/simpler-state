@@ -135,7 +135,7 @@ export const counter = entity(0, [
 ```
 
 
-# Orchestrated updates to multiple entities
+## Orchestrated updates to multiple entities
 
 Implement an action that updates multiple entities by invoking either their `set` method directly, or other actions associated with them.
 
@@ -150,7 +150,7 @@ export const logout = () => {
 ```
 
 
-# Simpler nested-object updates
+## Simpler nested-object updates
 
 Use object proxy libraries, such as Immer, to simplify nested-object immutable updates.
 ```js
@@ -190,7 +190,7 @@ describe('counter', () => {
 })
 ```
 
-# Reset all entities between component tests
+## Reset all entities between component tests
 
 Reset all entities to their initial value between component tests.
 ```js
