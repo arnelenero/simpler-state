@@ -44,7 +44,7 @@ import { entity, persistence } from 'simpler-state'
 const remoteStorage = {
   getItem: async key => {
     const res = await fetchFromServer(key)
-    return res.value
+    return res.data
   },
   setItem: async (key, value) => {
     await saveToServer(key, value)
@@ -65,7 +65,7 @@ import { entity, persistence, Storage } from 'simpler-state'
 const remoteStorage: Storage = {
   getItem: async key => {
     const res = await fetchFromServer(key)
-    return res.value
+    return res.data
   },
   setItem: async (key, value) => {
     await saveToServer(key, value)
@@ -85,7 +85,9 @@ Explicitly typing the custom storage as `Storage` allows type inference to take 
 
 Conforming to the Web Storage API, all values we persist to our storage must first be _serialized_ into a __string__. The default serialization function used by persistence is `JSON.stringify`, while the default deserialization is `JSON.parse`.
 
-Building on our example above, if our custom storage requires a different serialization, we can use the `serializeFn` and `deserializeFn` options as follows:
+Note that serialization happens right __before__ every `setItem`, whereas deserialization happens right __after__ `getItem`.
+
+Building upon our example above, if our custom storage requires a different serialization, we can use the `serializeFn` and `deserializeFn` options as follows:
 ```js
 export const counter = entity(0, [
   persistence('counter', {
@@ -97,6 +99,7 @@ export const counter = entity(0, [
 ```
 (TypeScript version is the same, due to type inference on `persistence`.)
 
+> As mentioned, `persistence` is a bundled _plug-in_. SimpleR State's __Plug-in API__ allows adding functionality by extending the basic behavior of entities. You can learn more about how plug-ins work and how to create your own plug-ins [in this recipe page](recipe-plugins.html).
 
 <br /><br />
 [Back to home](index.html) | [More recipes...](recipes.html)

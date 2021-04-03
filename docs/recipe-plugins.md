@@ -1,11 +1,13 @@
 # Extending Functionality with Plug-ins
 
-Don't let the simplicity fool you! SimpleR State can be as feature-rich as you'd like, with its highly flexible plug-in system.
+Don't let the simplicity fool you! SimpleR State can be as feature-rich as you'd like, with its highly flexible Plug-in API.
 
 
 ## How a plug-in works
 
-A plug-in is attached to an entity, thereby extending functionality by providing _method overrides_ for its `init` and `set`. Through these overrides, we can do additional handling of the data, such as logging or saving it somewhere.
+A _plug-in_ is attached to an entity, thereby extending functionality by providing _method overrides_ for its `init` and `set`. Through these overrides, we can do additional handling of the data, such as logging or saving it somewhere.
+
+> The built-in __persistence__ feature is a good example of a plug-in.
 
 
 ## Writing a plug-in
