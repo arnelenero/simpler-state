@@ -99,6 +99,8 @@ export const counter = entity(0, [
 ```
 (TypeScript version is the same, due to type inference on `persistence`.)
 
+These custom functions can also be async, although they rarely need to be.
+
 > As mentioned, `persistence` is a bundled _plug-in_. SimpleR State's __Plug-in API__ allows adding functionality by extending the basic behavior of entities. You can learn more about how plug-ins work and how to create your own plug-ins [in this recipe page](recipe-plugins.html).
 
 <br /><br />
