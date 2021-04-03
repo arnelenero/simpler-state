@@ -12,11 +12,11 @@ Here is an example Jest unit test:
 ```js
 import { counter, increment } from './counter'
 
-beforeEach(() => {
-  counter.init()  // 👈 Reset value
-})
-
 describe('counter', () => {
+  beforeEach(() => {
+    counter.init()  // 👈 Reset value
+  })
+
   describe('increment', () => {
     it('increases the value of the counter', () => {
       //   👇 Invoke action
@@ -25,6 +25,8 @@ describe('counter', () => {
       //              👆 Inspect value
     })
   })
+
+  // . . .
 })
 ```
 

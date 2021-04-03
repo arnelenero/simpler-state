@@ -172,13 +172,11 @@ export const changeItemLabel = (index, label) => {
 
 Invoke an action, then use the entity object's `get` method to inspect the current value. Use the entity's `init` method to reset its value before each test case.
 ```js
-import { counter, increment } from './counter'
-
-beforeEach(() => {
-  counter.init()  // 👈 Reset value
-})
-
 describe('counter', () => {
+  beforeEach(() => {
+    counter.init()  // 👈 Reset value
+  })
+
   describe('increment', () => {
     it('increases the value of the counter', () => {
       //   👇 Invoke action
@@ -187,14 +185,16 @@ describe('counter', () => {
       //              👆 Inspect value
     })
   })
+
+  // . . .
 })
 ```
+
 
 ## Reset all entities between component tests
 
 Reset all entities to their initial value between component tests.
 ```js
-import CounterView from './CounterView'
 import { resetAll } from 'simpler-state'
 
 describe('CounterView', () => {
