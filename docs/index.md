@@ -22,7 +22,7 @@ Browse this documentation to explore SimpleR State.
 - [Binding only relevant values (partial or computed)](recipe-transforms.html)
 - [Async actions](recipe-async.html)
 - [Prefetching data using async initial value](recipe-promise-init.html)
-- [Persisting data](recipe-persistence.html)
+- [Persisting entity values](recipe-persistence.html)
 - [Separating "pure" updates from actions](recipe-pure.html)
 - [Orchestrating updates to multiple entities with one action](recipe-orchestrators.html)
 - [Simplifying nested object updates with proxies](recipe-proxies.html)

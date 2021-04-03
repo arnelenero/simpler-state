@@ -1,4 +1,4 @@
-# Persisting Data
+# Persisting Entity Values
 
 Using the __persistence plug-in__, we can persist the value of an entity to localStorage, sessionStorage, or a custom remote storage.
 
