@@ -30,7 +30,7 @@ const RiggedCounter = () => {
 ```
 (Due to type inference, the TypeScript version is the same as above.)
 
-> __Pro tip:__ If you design your entities to be as atomic as possible, you would less likely need to use transform functions to extract partial values. Applying this concept to the above example, we can define a standalone entity called `extra` instead, which is just a primitive (number) value. This is just an alternative, though, not necessarily the "better" approach.
+> __Pro tip:__ If you design your entities to be as atomic as possible, you would less likely need to use transform functions to extract partial values. Applying this concept to the above example, we can break up `settings` and define a standalone entity called `extra` instead, which is just a primitive (number) value. This is just an alternative, though, not necessarily the "better" approach.
 
 > Below are some more advanced topics that pertain to __optional__ features that are provided for flexibility.
 
