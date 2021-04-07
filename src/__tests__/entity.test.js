@@ -13,6 +13,16 @@ describe('entity', () => {
     expect(() => entity()).toThrow()
   })
 
+  it('supports initial value of `null`', () => {
+    expect(() => entity(null)).not.toThrow()
+  })
+
+  it('supports initial value of primitive type', () => {
+    expect(() => entity(0)).not.toThrow()
+    expect(() => entity('Hello')).not.toThrow()
+    expect(() => entity(false)).not.toThrow()
+  })
+
   it('sets the entity value to the initial value by default', () => {
     const counter = entity(0)
     expect(counter).toHaveProperty('_value', 0)
