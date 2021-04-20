@@ -3,11 +3,11 @@
  * @param initialValue - required default value
  * @param plugins - optional array list of plug-ins
  */
-export function entity<T = any>(initialValue: T, plugins?: Plugin[]): Entity<T>
 export function entity<T = any>(
   initialValue: Promise<T>,
   plugins?: Plugin[]
 ): Entity<T | undefined>
+export function entity<T = any>(initialValue: T, plugins?: Plugin[]): Entity<T>
 
 /**
  * Binds an entity to the component as a shared state
