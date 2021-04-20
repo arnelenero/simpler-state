@@ -71,9 +71,9 @@ Learn more about what you can do with SimpleR State at [simpler-state.js.org](ht
 
 ## Feedback
 
-I have opened a Request For Comments ([here](https://github.com/arnelenero/simpler-state/issues/1)) on GitHub. Your comments and suggestions would be greatly appreciated.
+__If you like this library, the concept, and its simplicity, please give it a star ⭐️ on the [GitHub repo](https://github.com/arnelenero/simpler-state) to let me know.__ 😀
 
-__And if you like this library, the concept, and its simplicity, please give it a star on the [GitHub repo](https://github.com/arnelenero/simpler-state) to let me know.__ 😀
+The RFC (Request For Comments) has ended, but please feel free to open an issue on GitHub for any concerns/questions/suggestions.
 
 ## Prior Art
 
