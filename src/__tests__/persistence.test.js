@@ -1,5 +1,6 @@
 import persistence from '../persistence'
 import entity from '../entity'
+import { act } from 'react-test-renderer'
 
 describe('persistence', () => {
   beforeEach(() => {
@@ -40,10 +41,19 @@ describe('persistence', () => {
     expect(localStorage.getItem).toHaveBeenLastCalledWith('counter')
   })
 
-  it('persists the new value by `key` on every entity.set()', () => {
+  it('sets the fetched value as current value', async () => {
+    localStorage.setItem('counter', 1)
     const counter = entity(0, [persistence('counter')])
-    setTimeout(() => {
-      counter.set(1)
+
+    await inspectAfterTimeout(() => {
+      expect(counter._value).toBe(1)
+    })
+  })
+
+  it('persists the new value by `key` on every entity.set()', async () => {
+    const counter = entity(0, [persistence('counter')])
+    counter.set(1)
+    await inspectAfterTimeout(() => {
       expect(localStorage.setItem).toHaveBeenLastCalledWith('counter', '1')
     })
   })
@@ -74,14 +84,16 @@ describe('persistence', () => {
     expect(localStorage.getItem).not.toHaveBeenCalled()
   })
 
-  it('supports custom storage with async methods', () => {
+  it('supports custom storage with async methods', async () => {
     const customStorage = {
       getItem: key => new Promise(resolve => resolve(10)),
       setItem: (key, value) => new Promise(resolve => resolve())
     }
-    entity(0, [persistence('counter', { storage: customStorage })])
-    setTimeout(() => {
-      expect(entity.get()).toBe(10)
+    const counter = entity(0, [
+      persistence('counter', { storage: customStorage })
+    ])
+    await inspectAfterTimeout(() => {
+      expect(counter.get()).toBe(10)
     })
   })
 
@@ -94,14 +106,14 @@ describe('persistence', () => {
     }).toThrow()
   })
 
-  it('supports a custom `serializeFn` when saving to storage', () => {
+  it('supports a custom `serializeFn` when saving to storage', async () => {
     let serialized = null
     const wrap = val => {
       return (serialized = { value: val })
     }
     const counter = entity(0, [persistence('counter', { serializeFn: wrap })])
     counter.set(1)
-    setTimeout(() => {
+    await inspectAfterTimeout(() => {
       expect(localStorage.setItem).toHaveBeenLastCalledWith(
         'counter',
         serialized
@@ -109,15 +121,15 @@ describe('persistence', () => {
     })
   })
 
-  it('supports async custom `serializeFn`', () => {
+  it('supports async custom `serializeFn`', async () => {
     let serialized = null
     const wrap = val =>
       new Promise(resolve => {
-        resolve((serialized = { value: val }))
+        resolve((serialized = JSON.stringify({ value: val })))
       })
     const counter = entity(0, [persistence('counter', { serializeFn: wrap })])
     counter.set(1)
-    setTimeout(() => {
+    await inspectAfterTimeout(() => {
       expect(localStorage.setItem).toHaveBeenLastCalledWith(
         'counter',
         serialized
@@ -125,21 +137,25 @@ describe('persistence', () => {
     })
   })
 
-  it('supports a custom `deserializeFn` when fetching from storage', () => {
+  it('supports a custom `deserializeFn` when fetching from storage', async () => {
     localStorage.setItem('counter', '{"value":1}')
-    const unwrap = val => val.value
-    entity(0, [persistence('counter', { deserializeFn: unwrap })])
-    setTimeout(() => {
-      expect(entity.get()).toBe(1)
+    const unwrap = val => JSON.parse(val).value
+    const counter = entity(0, [
+      persistence('counter', { deserializeFn: unwrap })
+    ])
+    await inspectAfterTimeout(() => {
+      expect(counter.get()).toBe(1)
     })
   })
 
-  it('supports async custom `deserializeFn`', () => {
+  it('supports async custom `deserializeFn`', async () => {
     localStorage.setItem('counter', '{"value":1}')
-    const unwrap = val => new Promise(resolve => resolve(val.value))
-    entity(0, [persistence('counter', { deserializeFn: unwrap })])
-    setTimeout(() => {
-      expect(entity.get()).toBe(1)
+    const unwrap = val => new Promise(resolve => resolve(JSON.parse(val).value))
+    const counter = entity(0, [
+      persistence('counter', { deserializeFn: unwrap })
+    ])
+    await inspectAfterTimeout(() => {
+      expect(counter.get()).toBe(1)
     })
   })
 
@@ -197,3 +213,11 @@ describe('persistence', () => {
     console.warn = origWarn
   })
 })
+
+const inspectAfterTimeout = (inspect, timeout = 5) =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      inspect()
+      resolve()
+    }, timeout)
+  })

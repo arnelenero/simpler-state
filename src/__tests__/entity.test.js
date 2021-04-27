@@ -36,7 +36,6 @@ describe('entity', () => {
     )
     const counter = entity(promise)
 
-    // We need to await this to include it in coverage
     const inspect = () =>
       new Promise(resolve => {
         promise.then(value => {
