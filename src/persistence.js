@@ -18,7 +18,9 @@ export const persistence = (key, options = {}) => {
       const getItem = () => {
         _promise(storage.getItem(key)).then(value => {
           if (value) {
-            _promise(deserialize(value)).then(value => entity.set(value))
+            _promise(deserialize(value)).then(value => {
+              setTimeout(() => entity.set(value))
+            })
           }
         })
       }
