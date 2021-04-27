@@ -41,7 +41,8 @@ const createInit = (entity, initialValue) => {
   return initialValue && typeof initialValue.then === 'function'
     ? () => {
         // Call the setter so that any bound components are updated
-        initialValue.then(value => entity.set(value))
+        // The `setTimeout` is for preventing race conditions with subscriptions
+        initialValue.then(value => setTimeout(() => entity.set(value)))
       }
     : () => {
         entity._value = initialValue

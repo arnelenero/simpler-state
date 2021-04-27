@@ -31,18 +31,17 @@ describe('entity', () => {
   it('supports Promise for async initial value', async () => {
     const promise = new Promise(resolve =>
       setTimeout(() => {
-        resolve(0)
+        resolve(10)
       }, 1)
     )
     const counter = entity(promise)
 
     const inspect = () =>
       new Promise(resolve => {
-        promise.then(value => {
-          expect(value).toBe(0)
-          expect(counter).toHaveProperty('_value', 0)
+        setTimeout(() => {
+          expect(counter).toHaveProperty('_value', 10)
           resolve()
-        })
+        }, 5)
       })
     await inspect()
   })
