@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { strictEqual } from './utils'
 
 const identity = v => v
@@ -21,12 +21,23 @@ export const useEntity = (
     [transform, equality, state]
   )
 
-  useEffect(() => entity._subscribe(subscriberFn), [subscriberFn, entity])
+  useIsoEffect(() => entity._subscribe(subscriberFn), [subscriberFn, entity])
 
   // Re-sync state in case transform function has changed
   subscriberFn(entity._value)
 
   return state
 }
+
+const canUseDOM = !!(
+  typeof window !== 'undefined' &&
+  window.document &&
+  window.document.createElement
+)
+
+const canUseNative =
+  typeof navigator != 'undefined' && navigator.product === 'ReactNative'
+
+const useIsoEffect = canUseDOM || canUseNative ? useLayoutEffect : useEffect
 
 export default useEntity
