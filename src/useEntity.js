@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useLayoutEffect } from 'react'
-import { strictEqual } from './utils'
+import { strictEqual, isClientSide } from './utils'
 
 const identity = v => v
 
@@ -28,19 +28,6 @@ export const useEntity = (
   subscriberFn(entity._value)
 
   return state
-}
-
-const isClientSide = () => {
-  const canUseDOM = !!(
-    typeof window !== 'undefined' &&
-    window.document &&
-    window.document.createElement
-  )
-
-  const canUseNative =
-    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
-
-  return canUseDOM || canUseNative
 }
 
 export default useEntity

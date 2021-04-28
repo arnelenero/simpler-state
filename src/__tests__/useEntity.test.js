@@ -5,7 +5,7 @@ import { mount } from 'enzyme'
 
 import useEntity from '../useEntity'
 import entity from '../entity'
-import { shallowEqual } from '../utils'
+import { shallowEqual, emulateSSR, clearSSR } from '../utils'
 
 describe('useEntity', () => {
   const counterView = (selectKey, equalityFn) => {
@@ -86,15 +86,14 @@ describe('useEntity', () => {
   })
 
   it('supports server-side rendering', () => {
-    const originalDocument = global.document
-    delete global.document
+    emulateSSR()
 
     const CounterView = counterView()
     expect(() => {
       ReactDOMServer.renderToString(<CounterView />)
     }).not.toThrow()
 
-    global.document = originalDocument
+    clearSSR()
   })
 
   it('always provides the updated entity value to the component', () => {
@@ -200,18 +199,3 @@ describe('useEntity', () => {
     console.error = origConsoleError
   })
 })
-
-/* Utility: Fake navigator.userAgent */
-const originalUA = global.navigator.userAgent
-let userAgent = originalUA
-Object.defineProperty(global.navigator, 'userAgent', {
-  get() {
-    return userAgent
-  }
-})
-export const resetUserAgent = () => {
-  userAgent = originalUA
-}
-export const fakeUserAgent = fakeUA => {
-  userAgent = fakeUA
-}
