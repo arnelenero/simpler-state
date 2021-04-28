@@ -21,6 +21,7 @@ export const useEntity = (
     [transform, equality, state]
   )
 
+  const useIsoEffect = isClientSide() ? useLayoutEffect : useEffect
   useIsoEffect(() => entity._subscribe(subscriberFn), [subscriberFn, entity])
 
   // Re-sync state in case transform function has changed
@@ -29,15 +30,17 @@ export const useEntity = (
   return state
 }
 
-const canUseDOM = !!(
-  typeof window !== 'undefined' &&
-  window.document &&
-  window.document.createElement
-)
+const isClientSide = () => {
+  const canUseDOM = !!(
+    typeof window !== 'undefined' &&
+    window.document &&
+    window.document.createElement
+  )
 
-const canUseNative =
-  typeof navigator != 'undefined' && navigator.product === 'ReactNative'
+  const canUseNative =
+    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
 
-const useIsoEffect = canUseDOM || canUseNative ? useLayoutEffect : useEffect
+  return canUseDOM || canUseNative
+}
 
 export default useEntity

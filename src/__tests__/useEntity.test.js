@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import ReactDOMServer from 'react-dom/server'
 import { act } from 'react-dom/test-utils'
 import { mount } from 'enzyme'
 
@@ -82,6 +83,18 @@ describe('useEntity', () => {
       increment()
     })
     expect(renderCount).toBe(prevRenderCount + 1)
+  })
+
+  it('supports server-side rendering', () => {
+    const originalDocument = global.document
+    delete global.document
+
+    const CounterView = counterView()
+    expect(() => {
+      ReactDOMServer.renderToString(<CounterView />)
+    }).not.toThrow()
+
+    global.document = originalDocument
   })
 
   it('always provides the updated entity value to the component', () => {
@@ -187,3 +200,18 @@ describe('useEntity', () => {
     console.error = origConsoleError
   })
 })
+
+/* Utility: Fake navigator.userAgent */
+const originalUA = global.navigator.userAgent
+let userAgent = originalUA
+Object.defineProperty(global.navigator, 'userAgent', {
+  get() {
+    return userAgent
+  }
+})
+export const resetUserAgent = () => {
+  userAgent = originalUA
+}
+export const fakeUserAgent = fakeUA => {
+  userAgent = fakeUA
+}
