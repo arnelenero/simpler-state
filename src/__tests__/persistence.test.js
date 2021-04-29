@@ -1,6 +1,5 @@
 import persistence from '../persistence'
 import entity from '../entity'
-import { act } from 'react-test-renderer'
 
 describe('persistence', () => {
   beforeEach(() => {
@@ -41,21 +40,16 @@ describe('persistence', () => {
     expect(localStorage.getItem).toHaveBeenLastCalledWith('counter')
   })
 
-  it('sets the fetched value as current value', async () => {
+  it('sets the fetched value as current value', () => {
     localStorage.setItem('counter', 1)
     const counter = entity(0, [persistence('counter')])
-
-    await inspectAfterTimeout(() => {
-      expect(counter._value).toBe(1)
-    })
+    expect(counter._value).toBe(1)
   })
 
-  it('persists the new value by `key` on every entity.set()', async () => {
+  it('persists the new value by `key` on every entity.set()', () => {
     const counter = entity(0, [persistence('counter')])
     counter.set(1)
-    await inspectAfterTimeout(() => {
-      expect(localStorage.setItem).toHaveBeenLastCalledWith('counter', '1')
-    })
+    expect(localStorage.setItem).toHaveBeenLastCalledWith('counter', '1')
   })
 
   it('uses localStorage by default if no `storage` is specified in options', () => {
@@ -106,19 +100,14 @@ describe('persistence', () => {
     }).toThrow()
   })
 
-  it('supports a custom `serializeFn` when saving to storage', async () => {
+  it('supports a custom `serializeFn` when saving to storage', () => {
     let serialized = null
     const wrap = val => {
       return (serialized = { value: val })
     }
     const counter = entity(0, [persistence('counter', { serializeFn: wrap })])
     counter.set(1)
-    await inspectAfterTimeout(() => {
-      expect(localStorage.setItem).toHaveBeenLastCalledWith(
-        'counter',
-        serialized
-      )
-    })
+    expect(localStorage.setItem).toHaveBeenLastCalledWith('counter', serialized)
   })
 
   it('supports async custom `serializeFn`', async () => {
@@ -137,15 +126,13 @@ describe('persistence', () => {
     })
   })
 
-  it('supports a custom `deserializeFn` when fetching from storage', async () => {
+  it('supports a custom `deserializeFn` when fetching from storage', () => {
     localStorage.setItem('counter', '{"value":1}')
     const unwrap = val => JSON.parse(val).value
     const counter = entity(0, [
       persistence('counter', { deserializeFn: unwrap })
     ])
-    await inspectAfterTimeout(() => {
-      expect(counter.get()).toBe(1)
-    })
+    expect(counter.get()).toBe(1)
   })
 
   it('supports async custom `deserializeFn`', async () => {
@@ -156,6 +143,20 @@ describe('persistence', () => {
     ])
     await inspectAfterTimeout(() => {
       expect(counter.get()).toBe(1)
+    })
+  })
+
+  it('does not set entity value if async `getItem` resolves to null', async () => {
+    const customStorage = {
+      getItem: key => new Promise(resolve => resolve(null)),
+      setItem: jest.fn()
+    }
+    const counter = entity(0, [
+      persistence('counter', { storage: customStorage })
+    ])
+    await inspectAfterTimeout(() => {
+      expect(customStorage.setItem).not.toHaveBeenCalled()
+      expect(counter.get()).toBe(0)
     })
   })
 

@@ -15,34 +15,20 @@ export const persistence = (key, options = {}) => {
   return {
     init: (origInit, entity) => () => {
       const deserialize = options.deserializeFn || JSON.parse
-      const getItem = () => {
-        _promise(storage.getItem(key)).then(value => {
-          if (value) {
-            _promise(deserialize(value)).then(value => {
-              setTimeout(() => entity.set(value))
-            })
-          }
-        })
-      }
 
       origInit()
 
       // Fetch persisted value (if any) from storage
-      getItem()
+      getItem(storage, key, deserialize, entity.set)
     },
 
     set: (origSet, entity) => (...args) => {
       const serialize = options.serializeFn || JSON.stringify
-      const setItem = () => {
-        _promise(serialize(entity.get())).then(value => {
-          storage.setItem(key, value)
-        })
-      }
 
       origSet(...args)
 
       // Persist the new value to storage
-      setItem()
+      setItem(storage, key, entity.get(), serialize)
     }
   }
 }
@@ -71,11 +57,25 @@ const validateCustomStorage = storage => {
     throw new Error('Persistence: Invalid storage.')
 }
 
-export default persistence
+const getItem = (storage, key, deserialize, callback) => {
+  const res = storage.getItem(key)
+  if (res == null) return
 
-/** Turns a value into a Promise (if it's not already) */
-const _promise = val => {
-  const notPromise =
-    typeof val !== 'object' || val === null || typeof val.then !== 'function'
-  return notPromise ? new Promise(resolve => resolve(val)) : val
+  if (typeof res.then === 'function')
+    res.then(val => {
+      if (val != null) processValue(deserialize, val, callback)
+    })
+  else processValue(deserialize, res, callback)
 }
+
+const setItem = (storage, key, value, serialize) => {
+  processValue(serialize, value, res => storage.setItem(key, res))
+}
+
+const processValue = (func, value, callback) => {
+  const res = func(value)
+  if (res && typeof res.then === 'function') res.then(callback)
+  else callback(res)
+}
+
+export default persistence
