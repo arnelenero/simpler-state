@@ -33,10 +33,13 @@ export interface Entity<T> {
   get: () => T
 
   /** Updates the value of the entity */
-  set: (
-    newValue: T | ((value: T, ...args: any[]) => T),
-    ...updaterArgs: any[]
-  ) => void
+  set: {
+    (newValue: T): void
+    <P extends unknown[]>(
+      updaterFn: (value: T, ...args: P) => T,
+      ...updaterArgs: P
+    ): void
+  }
 
   /** Binds the entity value to component state */
   use: EntityHook<T>
