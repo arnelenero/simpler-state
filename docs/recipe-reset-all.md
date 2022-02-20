@@ -14,7 +14,7 @@ Historically, in order to support `resetAll`, the library adds every entity crea
 
 We will need to enable the store before we can invoke `resetAll`, otherwise it will throw an error. For this we can use the `enableStore` function. This function needs to be invoked once **before the entities are created**. In Jest, the easiest way to do this is to invoke `enableStore()` in a Jest setup JavaScript.
 
-**jest-setup.js**
+**setupTests.js**
 
 ```js
 const { enableStore } = require('simpler-state')
@@ -22,11 +22,11 @@ const { enableStore } = require('simpler-state')
 enableStore()
 ```
 
-then in your Jest config:
+If the project was created using Create React App, this setup file should be in the `src` folder and Jest would be pre-configured to look for it there. Otherwise, add this to the Jest config:
 
 ```json
 {
-  "setupFilesAfterEnv": ["./jest-setup.js"]
+  "setupFilesAfterEnv": ["./setupTests.js"]
 }
 ```
 
