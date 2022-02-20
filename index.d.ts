@@ -102,6 +102,26 @@ export interface Storage {
 }
 
 /**
+ * Enables the global store
+ *
+ * This is particularly useful in tests, if you need to
+ * call `resetAll()` for resetting all entities to their
+ * initial value.
+ *
+ * This must be called at startup, **before** any entities
+ * are created. In Jest, for example, you can do this by
+ * calling `enableStore()` inside a Jest setup file.
+ */
+export function enableStore(): void
+
+/**
  * Resets all entities to initial value
+ *
+ * This function uses the global store, so `enableStore()`
+ * should be called at startup. Most common use-case for
+ * this is in testing. You should rarely, if at all, use
+ * this in your actual app code.
+ *
+ * @throws if global store is not enabled
  */
 export function resetAll(): void

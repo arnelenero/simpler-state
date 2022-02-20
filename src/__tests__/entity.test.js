@@ -2,6 +2,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import entity from '../entity'
+import { store, enableStore } from '../store'
 
 describe('entity', () => {
   it('returns an entity object', () => {
@@ -139,10 +140,12 @@ describe('entity', () => {
   it('applies the `set` plug-in override (if any) to the entity', () => {
     let setCalls = 0
     const plugin = {
-      set: (set, entity) => (...args) => {
-        set(...args)
-        setCalls++
-      }
+      set:
+        (set, entity) =>
+        (...args) => {
+          set(...args)
+          setCalls++
+        }
     }
     const counter = entity(0, [plugin])
     const greeting = entity({ hello: 'world' }, [plugin])
@@ -155,16 +158,20 @@ describe('entity', () => {
     let setCallsA = 0
     let setCallsB = 0
     const pluginA = {
-      set: (set, entity) => (...args) => {
-        set(...args)
-        setCallsA++
-      }
+      set:
+        (set, entity) =>
+        (...args) => {
+          set(...args)
+          setCallsA++
+        }
     }
     const pluginB = {
-      set: (set, entity) => (...args) => {
-        set(...args)
-        setCallsB++
-      }
+      set:
+        (set, entity) =>
+        (...args) => {
+          set(...args)
+          setCallsB++
+        }
     }
     const counter = entity(0, [pluginA, pluginB])
     counter.set(1)
@@ -187,5 +194,21 @@ describe('entity', () => {
     expect(() => {
       entity(0, [plugin])
     }).toThrow()
+  })
+
+  it('adds the entity to store if enabled', () => {
+    enableStore()
+
+    const counter = entity(true)
+    const addedToStore = store.has(counter)
+    expect(addedToStore).toBe(true)
+  })
+
+  it('does not add the entity to store if not enabled', () => {
+    enableStore(false)
+
+    const counter = entity(false)
+    const addedToStore = store.has(counter)
+    expect(addedToStore).toBe(false)
   })
 })
