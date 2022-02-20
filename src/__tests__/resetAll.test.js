@@ -5,6 +5,7 @@ import { mount } from 'enzyme'
 import resetAll from '../resetAll'
 import entity from '../entity'
 import useEntity from '../useEntity'
+import { enableStore } from '../store'
 
 describe('resetAll', () => {
   const TestShell = () => {
@@ -34,6 +35,8 @@ describe('resetAll', () => {
   let hookValueB = null
   let mountCount = 0
 
+  enableStore()
+
   beforeEach(() => {
     counter = entity(0)
     increment = (by = 1) => counter.set(counter.get() + by)
@@ -43,7 +46,7 @@ describe('resetAll', () => {
   })
 
   afterEach(() => {
-    if (component.exists()) component.unmount()
+    if (component && component.exists()) component.unmount()
   })
 
   it('resets all entities to initial value', () => {
@@ -70,5 +73,10 @@ describe('resetAll', () => {
     expect(mountCount).toBe(prevMountCount + 1)
     expect(hookValueA).toBe(0)
     expect(hookValueB).toBe(10)
+  })
+
+  it('requires store to be enabled and throws error otherwise', () => {
+    enableStore(false)
+    expect(() => resetAll()).toThrow()
   })
 })

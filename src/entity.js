@@ -1,5 +1,5 @@
 import { useEntity } from './useEntity'
-import { store } from './store'
+import { store, isStoreEnabled } from './store'
 
 export const entity = (initialValue, plugins = []) => {
   if (initialValue === undefined)
@@ -22,20 +22,22 @@ export const entity = (initialValue, plugins = []) => {
 
   newEntity.init()
 
-  // Save reference to this entity for use with `resetAll`
-  store.add(newEntity)
+  // Add this entity to store (if enabled) for use with `resetAll`
+  if (isStoreEnabled()) store.add(newEntity)
 
   return newEntity
 }
 
-const createSetter = entity => (newValue, ...updaterArgs) => {
-  if (typeof newValue === 'function')
-    newValue = newValue(entity._value, ...updaterArgs)
+const createSetter =
+  entity =>
+  (newValue, ...updaterArgs) => {
+    if (typeof newValue === 'function')
+      newValue = newValue(entity._value, ...updaterArgs)
 
-  entity._value = newValue
+    entity._value = newValue
 
-  entity._subscribers.forEach(cb => cb(entity._value))
-}
+    entity._subscribers.forEach(cb => cb(entity._value))
+  }
 
 const createInit = (entity, initialValue) => {
   return initialValue && typeof initialValue.then === 'function'
