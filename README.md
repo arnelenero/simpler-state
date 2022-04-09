@@ -5,26 +5,28 @@
 [![coverage](https://img.shields.io/coveralls/github/arnelenero/simpler-state)](https://coveralls.io/github/arnelenero/simpler-state)
 [![license](https://img.shields.io/github/license/arnelenero/simpler-state)](https://opensource.org/licenses/MIT)
 
-__SimpleR State__ is an ultra-lightweight library that provides the _simplest_ state management for React.
+**SimpleR State** is an ultra-lightweight library that provides the _simplest_ state management for React.
 
-- __Minimalist API__; no complicated concepts or boilerplate
-- Use __plain functions__ to update state (including async)
-- Largely __unopinionated__ with flexible syntax
-- Extremely __simple to unit test__ state logic
-- Highly extensible with __plug-ins__ (e.g. persistence, dev tools)
-- Full __TypeScript__ support with uncomplicated types
-- Made specifically for React, and built on __React Hooks__ 
-- Multiple times __faster__ than context/reducer solution
-- It's tiny, just __around 1 KB__ (minified + gzipped)
+- **Minimalist API**; no complicated concepts or boilerplate
+- Use **plain functions** to update state (including async)
+- Largely **unopinionated** with flexible syntax
+- Extremely **simple to unit test** state logic
+- Highly extensible with **plug-ins** (e.g. persistence, dev tools)
+- Full **TypeScript** support with uncomplicated types
+- Made specifically for React, and built on **React Hooks**
+- **Fully supports React 18 Concurrent Mode**
+- Multiple times **faster** than context/reducer solution
+- It's tiny, just **around 1 KB** (minified + gzipped)
 
 Get all these benefits with one dependency install:
+
 ```
 npm install simpler-state
 ```
 
 ## Two Easy Steps!
 
-__Step 1:__ Create an entity (shared state) and actions (updater functions)
+**Step 1:** Create an entity (shared state) and actions (updater functions)
 
 ```js
 // counter.js
@@ -38,12 +40,12 @@ export const reset = () => {
 }
 
 export const increment = by => {
-  counter.set(value => value + by)  
-  // --OR-->  counter.set(counter.get() + by)  
+  counter.set(value => value + by)
+  // --OR-->  counter.set(counter.get() + by)
 }
 ```
 
-__Step 2:__ Use the entity in your components with hooks
+**Step 2:** Use the entity in your components with hooks
 
 ```jsx
 import { counter, increment, reset } from 'counter'
@@ -56,14 +58,14 @@ const CounterView = () => {
     <>
       <div>{count}</div>
 
-      <button onClick={() => increment(1)}> + </button> 
+      <button onClick={() => increment(1)}> + </button>
       <button onClick={reset}> Reset </button>
     </>
   )
 }
 ```
 
-It's that simple! __But the library can do a lot more, so check out the docs website.__ 
+It's that simple! **But the library can do a lot more, so check out the docs website.**
 
 ## Documentation
 
@@ -71,7 +73,7 @@ Learn more about what you can do with SimpleR State at [simpler-state.js.org](ht
 
 ## Feedback
 
-__If you like this library, the concept, and its simplicity, please give it a star ⭐️ on the [GitHub repo](https://github.com/arnelenero/simpler-state) to let me know.__ 😀
+**If you like this library, the concept, and its simplicity, please give it a star ⭐️ on the [GitHub repo](https://github.com/arnelenero/simpler-state) to let me know.** 😀
 
 The RFC (Request For Comments) has ended, but please feel free to open an issue on GitHub for any concerns/questions/suggestions.
 

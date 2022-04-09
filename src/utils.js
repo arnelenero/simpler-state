@@ -18,31 +18,3 @@ const equalProps = (a, b) => {
   }
   return true
 }
-
-/* Client-side vs. server-side rendering detection */
-
-export const isClientDetected = () => {
-  const canUseDOM = !!(
-    typeof window !== 'undefined' &&
-    window.document &&
-    window.document.createElement
-  )
-
-  const canUseNative =
-    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
-
-  return canUseDOM || canUseNative
-}
-
-const isClient = isClientDetected()
-let fakeSSR = false
-
-export const isClientSide = () => isClient && !fakeSSR
-
-export const emulateSSR = () => {
-  fakeSSR = true
-}
-
-export const clearSSR = () => {
-  fakeSSR = false
-}

@@ -5,7 +5,7 @@ import { mount } from 'enzyme'
 
 import useEntity from '../useEntity'
 import entity from '../entity'
-import { shallowEqual, emulateSSR, clearSSR } from '../utils'
+import { shallowEqual } from '../utils'
 
 describe('useEntity', () => {
   const counterView = (selectKey, equalityFn) => {
@@ -86,14 +86,16 @@ describe('useEntity', () => {
   })
 
   it('supports server-side rendering', () => {
-    emulateSSR()
+    // Suppress the annoying useLayoutEffect error message
+    const origConsoleError = console.error
+    console.error = jest.fn()
 
     const CounterView = counterView()
     expect(() => {
       ReactDOMServer.renderToString(<CounterView />)
     }).not.toThrow()
 
-    clearSSR()
+    console.error = origConsoleError
   })
 
   it('always provides the updated entity value to the component', () => {
