@@ -42,7 +42,7 @@ describe('entity', () => {
         setTimeout(() => {
           expect(counter).toHaveProperty('_value', 10)
           resolve()
-        }, 5)
+        }, 10)
       })
     await inspect()
   })
