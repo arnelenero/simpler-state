@@ -1,6 +1,9 @@
 language: node_js
 node_js: 16
 cache: npm
+branches:
+  only:
+    - main
 script:
   - npm test
 after_success:
