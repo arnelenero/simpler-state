@@ -1,4 +1,5 @@
 import alias from './alias'
+import inspector from './inspector'
 
 import type { EntityHook } from './useEntity'
 
@@ -20,6 +21,7 @@ export interface Entity<T = any> {
     (updaterFn: (value: T) => T, alias?: string): void
   }
 
+  /** Subscribes to entity updates, and returns unsubscribe function. */
   subscribe(subscriberFn: (newValue: T) => any): () => void
 
   /** Binds the entity value to component state. */
@@ -91,8 +93,8 @@ function entity(initialValue: any, pluginsOrAlias?: Plugin[] | string): Entity {
   }
 
   newEntity.subscribe = createSubscribe(newEntity)
-  newEntity.get = () => newEntity._value
-  newEntity.set = createSetter(newEntity)
+  newEntity.get = createGet(newEntity)
+  newEntity.set = createSet(newEntity)
   newEntity.init = createInit(newEntity, initialValue)
   newEntity.use = createHook(newEntity)
 
@@ -108,3 +110,52 @@ function entity(initialValue: any, pluginsOrAlias?: Plugin[] | string): Entity {
 }
 
 export default entity
+
+function createSubscribe(entity: EntityImpl): Entity['subscribe'] {
+  return subscriberFn => {
+    entity._subscribers.add(subscriberFn)
+
+    // Return the corresponding unsubscribe function.
+    return () => {
+      entity._subscribers.delete(subscriberFn)
+    }
+  }
+}
+
+function createGet(entity: EntityImpl): Entity['get'] {
+  return () => entity._value
+}
+
+function createSet(entity: EntityImpl): Entity['set'] {
+  return (newValue, alias) => {
+    // Evaluate if `newValue` is a function.
+    if (typeof newValue === 'function') newValue = newValue(entity._value)
+
+    entity._value = newValue
+
+    entity._subscribers.forEach(cb => cb(entity._value))
+
+    // Send new value to Inspector only if the update did not come from Inspector.
+    if (alias !== '@@DEVTOOLS')
+      inspector.onSet?.(entity, alias ?? '<anonymous>')
+  }
+}
+
+let nextId = 1
+
+function createInit(entity: EntityImpl, initialValue: any): Entity['init'] {
+  return () => {
+    // Assign a sequential ID if no alias is provided.
+    if (!entity.name) entity.name = `entity${nextId++}`
+
+    if (initialValue instanceof Promise)
+      // Call the setter so that any bound components are updated.
+      // The `setTimeout` is for preventing race conditions with subscriptions.
+      initialValue.then((value: any) =>
+        setTimeout(() => entity.set!(value, '@@ASYNC_INIT')),
+      )
+    else entity._value = initialValue
+
+    inspector.onInit?.(entity)
+  }
+}
