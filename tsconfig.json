@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["esnext"],
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "importsNotUsedAsValues": "error",
+    "outDir": "./build",
+    "declarationDir": "./types",
+    "rootDir": "./src"
+  },
+  "include": ["src"],
+  "exclude": ["src/**/__tests__"]
+}

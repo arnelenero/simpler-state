@@ -8,15 +8,15 @@ module.exports = {
       '@babel/env',
       {
         loose,
-        modules: false,
-        targets: commonjs ? { ie: 11 } : { node: 'current' }
-      }
+        targets: commonjs ? { ie: 11 } : { node: '12' },
+      },
     ],
-    '@babel/react'
+    '@babel/react',
   ],
   plugins: [
     ['@babel/proposal-object-rest-spread', { loose }],
     commonjs && ['@babel/transform-modules-commonjs', { loose }],
-    ['@babel/transform-runtime', { useESModules: !commonjs }]
-  ].filter(Boolean)
+    ['@babel/transform-runtime', { useESModules: !commonjs }],
+  ].filter(Boolean),
+  comments: false,
 }
