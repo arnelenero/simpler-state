@@ -12,7 +12,7 @@ import type { Entity } from './entity'
  * @param equality - optional custom equality function
  * @returns the current value of the entity
  */
-function useEntity<T, C = T>(
+export default function useEntity<T, C = T>(
   entity: Entity<T>,
   transform: (value: T) => C = (v: any) => v,
   equality: (a: C, b: C) => boolean = strictEqual,
@@ -25,5 +25,3 @@ function useEntity<T, C = T>(
     equality,
   )
 }
-
-export default useEntity
