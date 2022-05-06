@@ -25,23 +25,13 @@ export interface Entity<T = any> {
    */
   get(): T
 
-  set: {
-    /**
-     * Updates the value of the entity.
-     *
-     * @param newValue - direct replacement for current value
-     * @param alias - optional name for the update
-     */
-    (newValue: T, alias?: string): void
-
-    /**
-     * Updates the value of the entity.
-     *
-     * @param updaterFn - function that calculates the new value
-     * @param alias - optional name for the update
-     */
-    (updaterFn: (value: T) => T, alias?: string): void
-  }
+  /**
+   * Updates the value of the entity.
+   *
+   * @param valueOrUpdaterFn - new value or an updater function
+   * @param alias - optional name for the update
+   */
+  set(valueOrUpdaterFn: T | ((value: T) => T), alias?: string): void
 
   /**
    * Subscribes to entity updates, and returns an unsubscribe function.
@@ -156,11 +146,12 @@ function createGet(entity: EntityImpl): Entity['get'] {
 }
 
 function createSet(entity: EntityImpl): Entity['set'] {
-  return (newValue, alias) => {
-    // Evaluate if `newValue` is a function.
-    if (typeof newValue === 'function') newValue = newValue(entity._value)
+  return (valueOrUpdaterFn, alias) => {
+    // Evaluate if new value is passed as updater function.
+    if (typeof valueOrUpdaterFn === 'function')
+      valueOrUpdaterFn = valueOrUpdaterFn(entity._value)
 
-    entity._value = newValue
+    entity._value = valueOrUpdaterFn
 
     entity._subscribers.forEach(cb => cb(entity._value))
 
