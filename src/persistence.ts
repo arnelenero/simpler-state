@@ -1,4 +1,4 @@
-import type { Entity } from './entity'
+import type { Plugin } from './entity'
 
 interface AsyncStorage {
   getItem(): Promise<any>
@@ -75,7 +75,7 @@ interface PersistenceOptions {
 export default function persistence(
   key: string,
   options: PersistenceOptions = {},
-) {
+): Plugin {
   if (typeof key !== 'string')
     throw new Error('Persistence requires a string key.')
 
@@ -91,7 +91,7 @@ export default function persistence(
   }
 
   return {
-    init(origInit: Entity['init'], entity: Entity) {
+    init(origInit, entity) {
       return () => {
         const deserialize = options.deserializeFn || JSON.parse
 
@@ -102,8 +102,8 @@ export default function persistence(
       }
     },
 
-    set(origSet: Entity['set'], entity: Entity) {
-      return (...args: [any, any]) => {
+    set(origSet, entity) {
+      return (...args) => {
         const serialize = options.serializeFn || JSON.stringify
 
         origSet(...args)
