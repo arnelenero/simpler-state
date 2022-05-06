@@ -66,15 +66,20 @@ function processValue(
   else callback(res)
 }
 
-interface PersistenceOptions {
-  storage?: Storage | AsyncStorage | string
-  serializeFn?: (val: any) => string
-  deserializeFn?: (val: string) => any
-}
-
+/**
+ * Persistence plug-in enables storing entity values to `localStorage` (default),
+ * `sessionStorage` or custom storage (must implement the Web Storage API).
+ *
+ * @param key - unique identifier
+ * @param options - optional config for storage and serialization/deserialization
+ */
 export default function persistence(
   key: string,
-  options: PersistenceOptions = {},
+  options: {
+    storage?: Storage | AsyncStorage | 'local' | 'session'
+    serializeFn?: (value: any) => string
+    deserializeFn?: (value: string) => any
+  } = {},
 ): Plugin {
   if (typeof key !== 'string')
     throw new Error('Persistence requires a string key.')
@@ -97,7 +102,7 @@ export default function persistence(
 
         origInit()
 
-        // Fetch persisted value (if any) from storage
+        // Fetch persisted value (if any) from storage.
         getItem(storage!, key, deserialize, entity.set)
       }
     },
@@ -108,7 +113,7 @@ export default function persistence(
 
         origSet(...args)
 
-        // Persist the new value to storage
+        // Persist the new value to storage.
         setItem(storage!, key, entity.get(), serialize)
       }
     },
