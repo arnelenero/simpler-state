@@ -1,7 +1,12 @@
-import { getGlobalStore, initGlobalStore } from './globalStore'
+import {
+  getMutableMap,
+  createGlobalStore,
+  watchGlobalStore,
+  updateGlobalStore,
+} from './globalStore'
 
 import type { Entity } from './entity'
-import type { GlobalStore } from './globalStore'
+import type { MutableMap } from './globalStore'
 
 interface DevToolsEvent {
   type: string
@@ -9,8 +14,8 @@ interface DevToolsEvent {
 }
 
 interface DevToolsConnection {
-  init(state: GlobalStore): void
-  send(action: { type: string }, state: GlobalStore): void
+  init(state: MutableMap): void
+  send(action: { type: string }, state: MutableMap): void
   subscribe(callback: (event: DevToolsEvent) => void): void
 }
 
@@ -52,7 +57,7 @@ function initInspector() {
 
   if (devTools) {
     // Global store collects values of all entities (except private ones).
-    const globalStore = initGlobalStore()
+    createGlobalStore()
 
     // Subscribe to Dev Tools events to update the global store and have the
     // subscribed entities get notified about the change.
@@ -61,7 +66,7 @@ function initInspector() {
       if (!isInspectorEnabled) return
 
       if (event.type === 'DISPATCH') {
-        globalStore.set(JSON.parse(event.state))
+        updateGlobalStore(JSON.parse(event.state))
       }
     })
   }
@@ -79,12 +84,11 @@ export function onInit(entity: Entity) {
   // Exit early if Dev Tools is not installed anyway.
   if (!devTools /*|| !isInspectorEnabled*/) return
 
-  const globalStore = getGlobalStore()
-  const mutableTree = globalStore.get()
+  const mutableMap = getMutableMap()
 
   // Subscribe to Dev Tools triggered global store updates only once.
-  if (!(entity.name in mutableTree)) {
-    globalStore.subscribe(value => {
+  if (!(entity.name in mutableMap)) {
+    watchGlobalStore(value => {
       if (!isInspectorEnabled) return
 
       entity.set(value[entity.name], '@@DEVTOOLS')
@@ -92,12 +96,12 @@ export function onInit(entity: Entity) {
   }
 
   // Save initial value to global store without notifying its subscribers.
-  mutableTree[entity.name] = entity.get()
+  mutableMap[entity.name] = entity.get()
 
   // If global already initialized, it means this entity is lazy loaded.
   // Notify Dev Tools of the lazy initialization.
   if (isDevToolsInitialized && isInspectorEnabled) {
-    devTools.send({ type: `${entity.name}:@@LAZY_INIT` }, mutableTree)
+    devTools.send({ type: `${entity.name}:@@LAZY_INIT` }, mutableMap)
   }
 }
 
@@ -108,11 +112,10 @@ export function onSet(entity: Entity, alias: string) {
   // Exit early if Dev Tools is not installed anyway.
   if (!devTools /*|| !isInspectorEnabled*/) return
 
-  const globalStore = getGlobalStore()
-  const mutableTree = globalStore.get()
+  const mutableMap = getMutableMap()
 
   // Update the global store without notifying its subscribers.
-  mutableTree[entity.name] = entity.get()
+  mutableMap[entity.name] = entity.get()
 
   // Nothing more to do if Inspector is disabled.
   if (!isInspectorEnabled) return
@@ -120,10 +123,10 @@ export function onSet(entity: Entity, alias: string) {
   // If this is the first setter call, initialize Dev Tools to the
   // initial value of the entire global store.
   if (!isDevToolsInitialized) {
-    devTools.init(mutableTree)
+    devTools.init(mutableMap)
     isDevToolsInitialized = true
   }
 
   // Notify Dev Tools of this update.
-  devTools.send({ type: `${entity.name}:${alias}` }, mutableTree)
+  devTools.send({ type: `${entity.name}:${alias}` }, mutableMap)
 }
