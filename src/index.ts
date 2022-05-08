@@ -1,5 +1,7 @@
 export { default as entity } from './entity'
 export { default as useEntity } from './useEntity'
+export { default as alias } from './alias'
+export { enableInspector } from './inspector'
 export { strictEqual, shallowEqual } from './utils'
 export { default as persistence } from './persistence'
 export { enableStore } from './store'

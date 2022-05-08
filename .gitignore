@@ -9,8 +9,10 @@ node_modules
 coverage
 
 # production
-lib
-es
+/build
+/lib
+/es
+/types
 
 # misc
 .DS_Store
