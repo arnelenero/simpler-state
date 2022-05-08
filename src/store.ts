@@ -4,8 +4,12 @@ const store = new Set<Entity>()
 let storeEnabled = false
 
 /**
- * Enables the entity store used for keeping references to all entities,
- * normally used with `resetAll()` in component tests.
+ * Enables the entity store that keeps references to all entities.
+ *
+ * This is particularly useful with `resetAll()` in component tests, where
+ * it must be called at startup, **before** any entities are created.
+ * In Jest, for example, you can do this by calling `enableStore()`
+ * inside a Jest setup file.
  *
  * @param condition - optional condition for enabling the store
  */
