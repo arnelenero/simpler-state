@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { act } from 'react-dom/test-utils'
+// @ts-ignore
 import { mount } from 'enzyme'
 
 import useEntity from '../useEntity'
 import entity from '../entity'
 import { shallowEqual } from '../utils'
 
+import type { Entity } from '../entity'
+
+type EqTest<T = any> = (a: T, b: T) => boolean
+
 describe('useEntity', () => {
-  const counterView = (selectKey, equalityFn) => {
+  const counterView = (selectKey?: string, equalityFn?: EqTest) => {
     return () => {
       const [key, setKey] = useState(selectKey)
       const selector = key
         ? equalityFn === shallowEqual
-          ? val => {
+          ? (val: any) => {
               return { [key]: val[key] }
             }
-          : val => val[key]
+          : (val: any) => val[key]
         : undefined
       setSelectKey = setKey // Allows modifying the selector key from outside
 
@@ -30,35 +35,35 @@ describe('useEntity', () => {
     }
   }
 
-  const mountCounter = (selectKey, equalityFn) => {
+  const mountCounter = (selectKey?: string, equalityFn?: EqTest) => {
     const CounterView = counterView(selectKey, equalityFn)
     component = mount(<CounterView />)
   }
 
-  const mountCounterWithAnother = CounterB => {
+  const mountCounterWithAnother = (CounterB: React.FC) => {
     const CounterView = counterView()
     component = mount(
       <div>
         <CounterView />
         <CounterB />
-      </div>
+      </div>,
     )
   }
 
-  let counter = null
-  let increment = null
-  let touch = null
-  let component = null
+  let counter: Entity
+  let increment: Function
+  let touch: Function
+  let component: any
   let renderCount = 0
-  let hookValue = null
-  let setSelectKey = null
+  let hookValue: any
+  let setSelectKey: Function
 
   beforeEach(() => {
     counter = entity({ value: 0, lastUpdated: new Date() })
     increment = (by = 1) => {
       counter.set({
         value: counter.get().value + by,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       })
     }
     touch = () => counter.set({ ...counter.get(), lastUpdated: new Date() })
@@ -191,6 +196,7 @@ describe('useEntity', () => {
     console.error = jest.fn()
 
     const CounterView = () => {
+      // @ts-ignore
       const { value } = useEntity({ value: 0 })
       return <>{value}</>
     }
