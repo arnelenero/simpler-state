@@ -72,8 +72,11 @@ interface EntityImpl<T = any> extends Partial<Entity<T>> {
 /**
  * Creates and returns a new entity.
  *
- * Initial value can be _any_ type, including primitives. It can also be
- * a `Promise` (unresolved, a.k.a. do not `await`).
+ * Initial value can be _any_ type, including primitives, but cannot be
+ * explicitly `undefined` (prefer `null` for this).
+ *
+ * It can also be a `Promise` (unresolved, i.e. do not `await`), in which
+ * case its value is implicitly `undefined` until the Promise resolves.
  *
  * @param initialValue - required default value
  * @param pluginsOrAlias - optional array list of plug-ins (or alias shorthand)
@@ -186,8 +189,6 @@ function createHook(entity: EntityImpl): Entity['use'] {
 function applyPlugins(entity: Entity, plugins: Plugin[]) {
   plugins.forEach(plugin => {
     if (typeof plugin !== 'object') throw new Error('Invalid plug-in')
-
-    if (plugin.init) entity.init = plugin.init(entity.init, entity)
 
     function overrideMethod(method: keyof Plugin) {
       const createOverride = plugin[method]

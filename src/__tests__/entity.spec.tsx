@@ -1,8 +1,11 @@
 import React from 'react'
+// @ts-ignore
 import { mount } from 'enzyme'
 
 import entity from '../entity'
-import { store, enableStore } from '../store'
+import { getStore, enableStore } from '../store'
+
+import type { Plugin } from '../entity'
 
 describe('entity', () => {
   it('returns an entity object', () => {
@@ -11,7 +14,12 @@ describe('entity', () => {
   })
 
   it('requires an initial value in the argument', () => {
+    // @ts-ignore
     expect(() => entity()).toThrow()
+  })
+
+  it('throws if initial value is `undefined`', () => {
+    expect(() => entity(undefined)).toThrow()
   })
 
   it('supports initial value of `null`', () => {
@@ -30,15 +38,17 @@ describe('entity', () => {
   })
 
   it('supports Promise for async initial value', async () => {
+    // TODO: Refactor this test to use callback to trigger inspect() instead.
+
     const promise = new Promise(resolve =>
       setTimeout(() => {
         resolve(10)
-      }, 1)
+      }, 1),
     )
     const counter = entity(promise)
 
     const inspect = () =>
-      new Promise(resolve => {
+      new Promise<void>(resolve => {
         setTimeout(() => {
           expect(counter).toHaveProperty('_value', 10)
           resolve()
@@ -51,7 +61,7 @@ describe('entity', () => {
     const promise = new Promise(resolve =>
       setTimeout(() => {
         resolve(0)
-      }, 1)
+      }, 1),
     )
     const counter = entity(promise)
     expect(counter).toHaveProperty('_value', undefined)
@@ -81,15 +91,7 @@ describe('entity', () => {
 
   it('supports passing an updater function to `set`', () => {
     const counter = entity(0)
-    const increment = (val, by) => val + by
-    counter.set(increment, 2)
-    expect(counter).toHaveProperty('_value', 2)
-  })
-
-  it('supports multiple arguments to the updater function', () => {
-    const counter = entity(0)
-    const adjust = (val, upBy, downBy) => val + upBy - downBy
-    counter.set(adjust, 5, 3)
+    counter.set(val => val + 2)
     expect(counter).toHaveProperty('_value', 2)
   })
 
@@ -109,7 +111,7 @@ describe('entity', () => {
     const counter = entity(0)
     expect(counter.use).toBeInstanceOf(Function)
 
-    let count
+    let count: number | null = null
     const CounterView = () => {
       count = counter.use()
       return <></>
@@ -121,16 +123,17 @@ describe('entity', () => {
   })
 
   it('checks if the `plugins` argument (if any) is an array', () => {
+    // @ts-ignore
     expect(() => entity(0, { persistence: true })).toThrow()
   })
 
   it('applies the `init` plug-in override (if any) to the entity', () => {
     let initCalls = 0
-    const plugin = {
-      init: (init, entity) => () => {
-        init()
+    const plugin: Plugin = {
+      init: origInit => () => {
+        origInit()
         initCalls++
-      }
+      },
     }
     entity(0, [plugin])
     entity({ hello: 'world' }, [plugin])
@@ -139,39 +142,39 @@ describe('entity', () => {
 
   it('applies the `set` plug-in override (if any) to the entity', () => {
     let setCalls = 0
-    const plugin = {
+    const plugin: Plugin = {
       set:
-        (set, entity) =>
+        origSet =>
         (...args) => {
-          set(...args)
+          origSet(...args)
           setCalls++
-        }
+        },
     }
     const counter = entity(0, [plugin])
     const greeting = entity({ hello: 'world' }, [plugin])
     counter.set(1)
-    greeting.set('wazzup')
+    greeting.set({ hello: 'wazzup' })
     expect(setCalls).toBe(2)
   })
 
   it('attaches all plug-ins specified in the `plugins` argument', () => {
     let setCallsA = 0
     let setCallsB = 0
-    const pluginA = {
+    const pluginA: Plugin = {
       set:
-        (set, entity) =>
+        origSet =>
         (...args) => {
-          set(...args)
+          origSet(...args)
           setCallsA++
-        }
+        },
     }
-    const pluginB = {
+    const pluginB: Plugin = {
       set:
-        (set, entity) =>
+        origSet =>
         (...args) => {
-          set(...args)
+          origSet(...args)
           setCallsB++
-        }
+        },
     }
     const counter = entity(0, [pluginA, pluginB])
     counter.set(1)
@@ -181,15 +184,17 @@ describe('entity', () => {
 
   it('checks if each item in the `plugins` argument is a plug-in object', () => {
     expect(() => {
+      // @ts-ignore
       entity(0, [console.log])
     }).toThrow()
   })
 
   it('requires plug-in overrides to be specified via composer function, throws otherwise', () => {
-    const plugin = {
+    const plugin: Plugin = {
+      // @ts-ignore
       set: (set, ...args) => {
         set(...args)
-      }
+      },
     }
     expect(() => {
       entity(0, [plugin])
@@ -200,7 +205,7 @@ describe('entity', () => {
     enableStore()
 
     const counter = entity(true)
-    const addedToStore = store.has(counter)
+    const addedToStore = getStore().has(counter)
     expect(addedToStore).toBe(true)
   })
 
@@ -208,7 +213,7 @@ describe('entity', () => {
     enableStore(false)
 
     const counter = entity(false)
-    const addedToStore = store.has(counter)
+    const addedToStore = getStore().has(counter)
     expect(addedToStore).toBe(false)
   })
 })
