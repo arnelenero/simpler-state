@@ -1,12 +1,12 @@
 import {
   getMutableMap,
-  createGlobalStore,
-  watchGlobalStore,
-  updateGlobalStore,
-} from './globalStore'
+  initRegistry,
+  updateRegistry,
+  watchRegistry,
+} from './registry'
 
 import type { Entity } from './entity'
-import type { MutableMap } from './globalStore'
+import type { MutableMap } from './registry'
 
 interface DevToolsEvent {
   type: string
@@ -49,24 +49,24 @@ export function enableInspector(condition = true) {
   isInspectorEnabled = condition
 }
 
-function initInspector() {
+export function initInspector() {
   devTools =
     (window.__REDUX_DEVTOOLS_EXTENSION__?.connect({
       name: document.title,
     }) as DevToolsConnection) ?? null
 
   if (devTools) {
-    // Global store collects values of all entities (except private ones).
-    createGlobalStore()
+    // The registry collects values of all entities (except private ones).
+    initRegistry()
 
-    // Subscribe to Dev Tools events to update the global store and have the
+    // Subscribe to Dev Tools events to update the registry and have the
     // subscribed entities get notified about the change.
     // TODO: The `any` type is temporary until @redux-devtools/extension export is fixed.
     devTools.subscribe(event => {
       if (!isInspectorEnabled) return
 
       if (event.type === 'DISPATCH') {
-        updateGlobalStore(JSON.parse(event.state))
+        updateRegistry(JSON.parse(event.state))
       }
     })
   }
@@ -82,20 +82,20 @@ export function onInit(entity: Entity) {
   if (!isInspectorInitialized) initInspector()
 
   // Exit early if Dev Tools is not installed anyway.
-  if (!devTools /*|| !isInspectorEnabled*/) return
+  if (!devTools) return
 
   const mutableMap = getMutableMap()
 
-  // Subscribe to Dev Tools triggered global store updates only once.
+  // Subscribe to Dev Tools triggered registry updates only once.
   if (!(entity.name in mutableMap)) {
-    watchGlobalStore(value => {
+    watchRegistry(value => {
       if (!isInspectorEnabled) return
 
       entity.set(value[entity.name], '@@DEVTOOLS')
     })
   }
 
-  // Save initial value to global store without notifying its subscribers.
+  // Save initial value to registry without notifying its subscribers.
   mutableMap[entity.name] = entity.get()
 
   // If global already initialized, it means this entity is lazy loaded.
@@ -114,14 +114,14 @@ export function onSet(entity: Entity, alias: string) {
 
   const mutableMap = getMutableMap()
 
-  // Update the global store without notifying its subscribers.
+  // Update the registry without notifying its subscribers.
   mutableMap[entity.name] = entity.get()
 
   // Nothing more to do if Inspector is disabled.
   if (!isInspectorEnabled) return
 
   // If this is the first setter call, initialize Dev Tools to the
-  // initial value of the entire global store.
+  // initial value of the entire registry.
   if (!isDevToolsInitialized) {
     devTools.init(mutableMap)
     isDevToolsInitialized = true
