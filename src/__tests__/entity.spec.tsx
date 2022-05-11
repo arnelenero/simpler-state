@@ -18,7 +18,7 @@ describe('entity', () => {
     expect(() => entity()).toThrow()
   })
 
-  it('throws if initial value is `undefined`', () => {
+  it('throws if initial value is explicitly `undefined`', () => {
     expect(() => entity(undefined)).toThrow()
   })
 
@@ -57,7 +57,7 @@ describe('entity', () => {
     await inspect()
   })
 
-  it('keeps value undefined while waiting for async initial value', () => {
+  it('keeps value `undefined` while waiting for async initial value', () => {
     const promise = new Promise(resolve =>
       setTimeout(() => {
         resolve(0)
@@ -65,6 +65,16 @@ describe('entity', () => {
     )
     const counter = entity(promise)
     expect(counter).toHaveProperty('_value', undefined)
+  })
+
+  it('sets the entity name to the optional alias passed as argument', () => {
+    const counter = entity(0, 'counter')
+    expect(counter.name).toBe('counter')
+  })
+
+  it('sets a default entity name `entity` suffixed by incremental number', () => {
+    const counter = entity(0)
+    expect(counter.name.indexOf('entity')).toBe(0)
   })
 
   it('provides a `get` function in the entity', () => {
@@ -192,8 +202,8 @@ describe('entity', () => {
   it('requires plug-in overrides to be specified via composer function, throws otherwise', () => {
     const plugin: Plugin = {
       // @ts-ignore
-      set: (set, ...args) => {
-        set(...args)
+      set: (origSet, ...args) => {
+        origSet(...args)
       },
     }
     expect(() => {

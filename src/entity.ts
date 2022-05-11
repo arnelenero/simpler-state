@@ -105,8 +105,7 @@ function entity(
       ? [alias(pluginsOrAlias)]
       : pluginsOrAlias
 
-  if (!(pluginsOrAlias instanceof Array))
-    throw new Error('Invalid plug-ins array.')
+  if (!(plugins instanceof Array)) throw new Error('Invalid plug-ins array.')
 
   const entityBuild: EntityImpl = {
     _value: undefined,
