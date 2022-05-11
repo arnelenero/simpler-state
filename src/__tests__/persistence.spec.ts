@@ -1,15 +1,17 @@
 import persistence from '../persistence'
 import entity from '../entity'
 
+import type { AsyncStorage, Storage } from '../persistence'
+
 describe('persistence', () => {
   beforeEach(() => {
     localStorage.clear()
-    localStorage.getItem.mockClear()
-    localStorage.setItem.mockClear()
+    ;(localStorage.getItem as jest.Mock).mockClear()
+    ;(localStorage.setItem as jest.Mock).mockClear()
 
     sessionStorage.clear()
-    sessionStorage.getItem.mockClear()
-    sessionStorage.setItem.mockClear()
+    ;(sessionStorage.getItem as jest.Mock).mockClear()
+    ;(sessionStorage.setItem as jest.Mock).mockClear()
   })
 
   it('comes as a function that returns the plug-in', () => {
@@ -31,6 +33,7 @@ describe('persistence', () => {
 
   it('requires a `key` as its first argument', () => {
     expect(() => {
+      // @ts-ignore
       persistence()
     }).toThrow()
   })
@@ -41,9 +44,9 @@ describe('persistence', () => {
   })
 
   it('sets the fetched value as current value', () => {
-    localStorage.setItem('counter', 1)
+    localStorage.setItem('counter', '1')
     const counter = entity(0, [persistence('counter')])
-    expect(counter._value).toBe(1)
+    expect(counter.get()).toBe(1)
   })
 
   it('persists the new value by `key` on every entity.set()', () => {
@@ -69,9 +72,9 @@ describe('persistence', () => {
   })
 
   it('supports custom storage', () => {
-    const customStorage = {
-      getItem: jest.fn(),
-      setItem: jest.fn()
+    const customStorage: Storage = {
+      getItem: jest.fn(() => null),
+      setItem: jest.fn(),
     }
     entity(0, [persistence('counter', { storage: customStorage })])
     expect(customStorage.getItem).toHaveBeenLastCalledWith('counter')
@@ -79,12 +82,12 @@ describe('persistence', () => {
   })
 
   it('supports custom storage with async methods', async () => {
-    const customStorage = {
-      getItem: key => new Promise(resolve => resolve(10)),
-      setItem: (key, value) => new Promise(resolve => resolve())
+    const customStorage: AsyncStorage = {
+      getItem: key => new Promise(resolve => resolve('10')),
+      setItem: (key, value) => new Promise(resolve => resolve()),
     }
     const counter = entity(0, [
-      persistence('counter', { storage: customStorage })
+      persistence('counter', { storage: customStorage }),
     ])
     await inspectAfterTimeout(() => {
       expect(counter.get()).toBe(10)
@@ -92,8 +95,9 @@ describe('persistence', () => {
   })
 
   it('requires a custom storage to implement both `getItem` and `setItem`', () => {
-    const customStorage = {
-      setItem: jest.fn()
+    // @ts-ignore
+    const customStorage: AsyncStorage = {
+      setItem: jest.fn(),
     }
     expect(() => {
       entity(0, [persistence('counter', { storage: customStorage })])
@@ -101,9 +105,9 @@ describe('persistence', () => {
   })
 
   it('supports a custom `serializeFn` when saving to storage', () => {
-    let serialized = null
-    const wrap = val => {
-      return (serialized = { value: val })
+    let serialized = ''
+    const wrap = (val: any) => {
+      return (serialized = JSON.stringify({ value: val }))
     }
     const counter = entity(0, [persistence('counter', { serializeFn: wrap })])
     counter.set(1)
@@ -111,9 +115,9 @@ describe('persistence', () => {
   })
 
   it('supports async custom `serializeFn`', async () => {
-    let serialized = null
-    const wrap = val =>
-      new Promise(resolve => {
+    let serialized = ''
+    const wrap = (val: any) =>
+      new Promise<string>(resolve => {
         resolve((serialized = JSON.stringify({ value: val })))
       })
     const counter = entity(0, [persistence('counter', { serializeFn: wrap })])
@@ -121,25 +125,26 @@ describe('persistence', () => {
     await inspectAfterTimeout(() => {
       expect(localStorage.setItem).toHaveBeenLastCalledWith(
         'counter',
-        serialized
+        serialized,
       )
     })
   })
 
   it('supports a custom `deserializeFn` when fetching from storage', () => {
     localStorage.setItem('counter', '{"value":1}')
-    const unwrap = val => JSON.parse(val).value
+    const unwrap = (val: string) => JSON.parse(val).value
     const counter = entity(0, [
-      persistence('counter', { deserializeFn: unwrap })
+      persistence('counter', { deserializeFn: unwrap }),
     ])
     expect(counter.get()).toBe(1)
   })
 
   it('supports async custom `deserializeFn`', async () => {
     localStorage.setItem('counter', '{"value":1}')
-    const unwrap = val => new Promise(resolve => resolve(JSON.parse(val).value))
+    const unwrap = (val: string) =>
+      new Promise(resolve => resolve(JSON.parse(val).value))
     const counter = entity(0, [
-      persistence('counter', { deserializeFn: unwrap })
+      persistence('counter', { deserializeFn: unwrap }),
     ])
     await inspectAfterTimeout(() => {
       expect(counter.get()).toBe(1)
@@ -147,12 +152,12 @@ describe('persistence', () => {
   })
 
   it('does not set entity value if async `getItem` resolves to null', async () => {
-    const customStorage = {
+    const customStorage: AsyncStorage = {
       getItem: key => new Promise(resolve => resolve(null)),
-      setItem: jest.fn()
+      setItem: jest.fn(),
     }
     const counter = entity(0, [
-      persistence('counter', { storage: customStorage })
+      persistence('counter', { storage: customStorage }),
     ])
     await inspectAfterTimeout(() => {
       expect(customStorage.setItem).not.toHaveBeenCalled()
@@ -164,13 +169,14 @@ describe('persistence', () => {
     const origWarn = console.warn
     console.warn = jest.fn()
     const origLocalStorage = localStorage
+    // @ts-ignore
     delete global._localStorage
     // emulate disabled localStorage
     Object.defineProperty(global, '_localStorage', {
       get: () => {
         throw new Error('Storage disabled')
       },
-      configurable: true
+      configurable: true,
     })
 
     expect(() => {
@@ -178,11 +184,12 @@ describe('persistence', () => {
     }).not.toThrow()
     expect(console.warn).toHaveBeenCalled()
 
+    // @ts-ignore
     delete global._localStorage
     Object.defineProperty(global, '_localStorage', {
       value: origLocalStorage,
       configurable: true,
-      writable: false
+      writable: false,
     })
     console.warn = origWarn
   })
@@ -191,13 +198,14 @@ describe('persistence', () => {
     const origWarn = console.warn
     console.warn = jest.fn()
     const origSessionStorage = sessionStorage
+    // @ts-ignore
     delete global._sessionStorage
     // emulate disabled sessionStorage
     Object.defineProperty(global, '_sessionStorage', {
       get: () => {
         throw new Error('Storage disabled')
       },
-      configurable: true
+      configurable: true,
     })
 
     expect(() => {
@@ -205,18 +213,19 @@ describe('persistence', () => {
     }).not.toThrow()
     expect(console.warn).toHaveBeenCalled()
 
+    // @ts-ignore
     delete global._sessionStorage
     Object.defineProperty(global, '_sessionStorage', {
       value: origSessionStorage,
       configurable: true,
-      writable: false
+      writable: false,
     })
     console.warn = origWarn
   })
 })
 
-const inspectAfterTimeout = (inspect, timeout = 5) =>
-  new Promise(resolve => {
+const inspectAfterTimeout = (inspect: () => void, timeout = 5) =>
+  new Promise<void>(resolve => {
     setTimeout(() => {
       inspect()
       resolve()

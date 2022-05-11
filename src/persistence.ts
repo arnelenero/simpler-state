@@ -1,8 +1,13 @@
 import type { Plugin } from './entity'
 
-interface AsyncStorage {
-  getItem(): Promise<any>
-  setItem(value: any): Promise<void>
+export interface Storage {
+  getItem(key: string): string | null
+  setItem(key: string, value: string): void
+}
+
+export interface AsyncStorage {
+  getItem(key: string): Promise<string | null>
+  setItem(key: string, value: string): Promise<void>
 }
 
 function getLocalStorage() {
@@ -51,7 +56,7 @@ function setItem(
   storage: Storage | AsyncStorage,
   key: string,
   value: any,
-  serialize: (val: any) => string,
+  serialize: (val: any) => string | Promise<string>,
 ) {
   processValue(serialize, value, (res: string) => storage.setItem(key, res))
 }
@@ -77,8 +82,8 @@ export default function persistence(
   key: string,
   options: {
     storage?: Storage | AsyncStorage | 'local' | 'session'
-    serializeFn?: (value: any) => string
-    deserializeFn?: (value: string) => any
+    serializeFn?: (value: any) => string | Promise<string>
+    deserializeFn?: (value: string) => any | Promise<any>
   } = {},
 ): Plugin {
   if (typeof key !== 'string')

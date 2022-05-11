@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react'
 import { act } from 'react-dom/test-utils'
+// @ts-ignore
 import { mount } from 'enzyme'
 
 import resetAll from '../resetAll'
 import entity from '../entity'
 import useEntity from '../useEntity'
 import { enableStore } from '../store'
+
+import type { Entity } from '../entity'
 
 describe('resetAll', () => {
   const TestShell = () => {
@@ -26,13 +29,13 @@ describe('resetAll', () => {
     return null
   }
 
-  let counter = null
-  let increment = null
-  let countdown = null
-  let decrement = null
-  let component = null
-  let hookValueA = null
-  let hookValueB = null
+  let counter: Entity
+  let increment: Function
+  let countdown: Entity
+  let decrement: Function
+  let component: any
+  let hookValueA: any
+  let hookValueB: any
   let mountCount = 0
 
   enableStore()
