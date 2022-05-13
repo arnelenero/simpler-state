@@ -1,27 +1,30 @@
 import { enableInspector, initInspector, onInit, onSet } from '../inspector'
+import { getMutableMap, updateRegistry } from '../registry'
 
 import type { Entity } from '../entity'
 
 describe('inspector', () => {
   let origExt: any
-  let devTools: typeof connection
   let isDevToolsEnabled = true
+  let onDevToolsEvent: ((event: any) => void) | null
 
   const connection = {
     init: jest.fn((state: Record<string, any>) => {}),
     send: jest.fn((action: { type: string }, state: Record<string, any>) => {}),
-    subscribe: jest.fn((callback: (event: any) => void) => {}),
+    subscribe: jest.fn((callback: (event: any) => void) => {
+      onDevToolsEvent = callback
+    }),
   }
 
   const ext = {
     connect: jest.fn(() => {
-      return (devTools = connection)
+      return connection
     }),
   }
 
   function mockDevTools() {
     origExt = window.__REDUX_DEVTOOLS_EXTENSION__
-    window.__REDUX_DEVTOOLS_EXTENSION__ = isDevToolsEnabled ? ext : undefined
+    window.__REDUX_DEVTOOLS_EXTENSION__ = ext
   }
 
   function unmockDevTools() {
@@ -30,6 +33,7 @@ describe('inspector', () => {
 
   function enableDevTools(enabled = true) {
     isDevToolsEnabled = enabled
+    window.__REDUX_DEVTOOLS_EXTENSION__ = isDevToolsEnabled ? ext : undefined
   }
 
   function mockEntity(name?: string) {
@@ -65,11 +69,37 @@ describe('inspector', () => {
 
     beforeEach(() => {
       ext.connect.mockClear()
+      onDevToolsEvent = null
     })
 
     it('connects to Dev Tools, setting name to document title', () => {
       initInspector()
       expect(ext.connect).toHaveBeenCalledWith({ name: 'Test' })
+    })
+
+    it('subscribes to Dev Tools events', () => {
+      initInspector()
+      enableInspector()
+      onDevToolsEvent!({ type: 'DISPATCH', state: '{"counter": 1}' })
+
+      const registryVal = getMutableMap()
+      expect(registryVal).toHaveProperty('counter', 1)
+    })
+
+    it('restricts subscription to only respond to Dev Tools events when Inspector is enabled', () => {
+      initInspector()
+      enableInspector(false)
+      onDevToolsEvent!({ type: 'DISPATCH', state: '{"counter": 1}' })
+
+      const registryVal = getMutableMap()
+      expect(registryVal).not.toHaveProperty('counter')
+    })
+
+    it('does not subscribe if Dev Tools is not detected', () => {
+      enableDevTools(false)
+      initInspector()
+
+      expect(onDevToolsEvent).toBeNull()
     })
   })
 })
