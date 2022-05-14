@@ -61,7 +61,6 @@ export function initInspector() {
 
     // Subscribe to Dev Tools events to update the registry and have the
     // subscribed entities get notified about the change.
-    // TODO: The `any` type is temporary until @redux-devtools/extension export is fixed.
     devTools.subscribe(event => {
       if (!isInspectorEnabled) return
 
@@ -76,7 +75,7 @@ export function initInspector() {
 
 export function onInit(entity: Entity) {
   // Private entities should not be inspected.
-  if (entity.name?.charAt(0) === '_') return
+  if (entity.name.charAt(0) === '_') return
 
   // Initialize the inspector once on first opportunity.
   if (!isInspectorInitialized) initInspector()
@@ -107,10 +106,10 @@ export function onInit(entity: Entity) {
 
 export function onSet(entity: Entity, alias: string) {
   // Private entities should not be inspected.
-  if (entity.name?.charAt(0) === '_') return
+  if (entity.name.charAt(0) === '_') return
 
   // Exit early if Dev Tools is not installed anyway.
-  if (!devTools /*|| !isInspectorEnabled*/) return
+  if (!devTools) return
 
   const mutableMap = getMutableMap()
 
