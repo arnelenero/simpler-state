@@ -202,9 +202,7 @@ describe('entity', () => {
   it('requires plug-in overrides to be specified via composer function, throws otherwise', () => {
     const plugin: Plugin = {
       // @ts-ignore
-      set: (origSet, ...args) => {
-        origSet(...args)
-      },
+      set: (origSet, ...args) => {},
     }
     expect(() => {
       entity(0, [plugin])
