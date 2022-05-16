@@ -6,13 +6,20 @@ import type { Entity } from '../entity'
 describe('inspector', () => {
   let origExt: any
   let isDevToolsEnabled = true
+  let isDevToolsInitialized = false
   let onDevToolsEvent: ((event: any) => void) | null
   let lastDevToolsEvent: any = null
+  let lastDevToolsState: Record<string, any>
 
   const connection = {
-    init: jest.fn((state: Record<string, any>) => {}),
+    init: jest.fn((state: Record<string, any>) => {
+      isDevToolsInitialized = true
+      lastDevToolsEvent = { type: '@@INIT' }
+      lastDevToolsState = state
+    }),
     send: jest.fn((event: { type: string }, state: Record<string, any>) => {
       lastDevToolsEvent = event
+      lastDevToolsState = state
     }),
     subscribe: jest.fn((callback: (event: any) => void) => {
       onDevToolsEvent = callback
@@ -91,14 +98,23 @@ describe('inspector', () => {
       expect(getMutableMap()).toHaveProperty('counter', 0)
     })
 
-    it('notifies Dev Tools of any lazy-initialized entity', () => {
+    it('defers sending initial values to Dev Tools until the first entity `set()`', () => {
       enableInspector()
       const counter = mockEntity(0, 'counter')
       onInit(counter)
-      onSet(counter, 'counter') // this triggers Dev Tools initialization
+      expect(isDevToolsInitialized).toBe(false)
+
+      onSet(counter, 'increment')
+      expect(isDevToolsInitialized).toBe(true)
+    })
+
+    it('notifies Dev Tools of any lazy-initialized entity', () => {
+      enableInspector()
+      // Due to stateful logic, this test must come after "defers sending initial..."
       onInit(mockEntity(null, 'foo'))
 
       expect(lastDevToolsEvent).toHaveProperty('type', 'foo:@@LAZY_INIT')
+      expect(lastDevToolsState).toEqual(getMutableMap())
     })
   })
 
@@ -145,6 +161,44 @@ describe('inspector', () => {
       expect(onDevToolsEvent).toBeNull()
 
       enableDevTools(true)
+    })
+  })
+
+  describe('onSet', () => {
+    beforeEach(() => {
+      initInspector()
+      lastDevToolsEvent = null
+      lastDevToolsState = {}
+    })
+
+    it('saves the updated value of the entity to the registry', () => {
+      const counter = mockEntity(0, 'counter')
+      onInit(counter)
+      counter.set(1)
+      onSet(counter, 'increment')
+
+      expect(getMutableMap()).toHaveProperty('counter', 1)
+    })
+
+    it('notifies Dev Tools of the entity update', () => {
+      enableInspector()
+      const counter = mockEntity(0, 'counter')
+      onInit(counter)
+      counter.set(1)
+      onSet(counter, 'increment')
+
+      expect(lastDevToolsEvent).toHaveProperty('type', 'counter:increment')
+      expect(lastDevToolsState).toEqual(getMutableMap())
+    })
+
+    it('does not notify Dev Tools of the entity update if Inspector is disabled', () => {
+      enableInspector(false)
+      const counter = mockEntity(0, 'counter')
+      onInit(counter)
+      counter.set(1)
+      onSet(counter, 'increment')
+
+      expect(lastDevToolsEvent).toBeNull()
     })
   })
 })
