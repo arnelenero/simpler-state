@@ -6,7 +6,7 @@ import { mount } from 'enzyme'
 
 import useEntity from '../useEntity'
 import entity from '../entity'
-import { shallowEqual } from '../utils'
+import { shallowEqual } from '../equality'
 
 import type { Entity } from '../entity'
 

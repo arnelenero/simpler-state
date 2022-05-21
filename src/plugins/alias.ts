@@ -1,4 +1,4 @@
-import type { Plugin } from './entity'
+import type { Plugin } from '../core/entity'
 
 /**
  * Alias plug-in provides a meaningful name to the entity.

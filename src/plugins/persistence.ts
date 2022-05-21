@@ -1,4 +1,4 @@
-import type { Plugin } from './entity'
+import type { Plugin } from '../core/entity'
 
 export interface Storage {
   getItem(key: string): string | null

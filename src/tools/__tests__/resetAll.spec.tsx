@@ -4,11 +4,11 @@ import { act } from 'react-dom/test-utils'
 import { mount } from 'enzyme'
 
 import resetAll from '../resetAll'
-import entity from '../entity'
-import useEntity from '../useEntity'
 import { enableStore } from '../store'
+import entity from '../../core/entity'
+import useEntity from '../../core/useEntity'
 
-import type { Entity } from '../entity'
+import type { Entity } from '../../core/entity'
 
 describe('resetAll', () => {
   const TestShell = () => {

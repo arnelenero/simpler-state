@@ -1,7 +1,7 @@
 import { enableInspector, initInspector, onInit, onSet } from '../inspector'
 import { getMutableMap, updateRegistry } from '../registry'
 
-import type { Entity } from '../entity'
+import type { Entity } from '../../core/entity'
 
 describe('inspector', () => {
   let origExt: any

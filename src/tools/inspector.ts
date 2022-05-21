@@ -5,8 +5,8 @@ import {
   watchRegistry,
 } from './registry'
 
-import type { Entity } from './entity'
 import type { MutableMap } from './registry'
+import type { Entity } from '../core/entity'
 
 interface DevToolsEvent {
   type: string

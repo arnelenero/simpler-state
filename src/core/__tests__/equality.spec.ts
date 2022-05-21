@@ -1,4 +1,4 @@
-import { strictEqual, shallowEqual } from '../utils'
+import { strictEqual, shallowEqual } from '../equality'
 
 describe('strictEqual', () => {
   it('returns true when references to the same object are passed', () => {

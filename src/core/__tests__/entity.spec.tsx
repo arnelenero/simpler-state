@@ -3,7 +3,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import entity from '../entity'
-import { getStore, enableStore } from '../store'
+import { getStore, enableStore } from '../../tools/store'
 
 import type { Plugin } from '../entity'
 

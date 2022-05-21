@@ -1,6 +1,6 @@
-import entity from './entity'
+import entity from '../core/entity'
 
-import type { Entity } from './entity'
+import type { Entity } from '../core/entity'
 
 export type MutableMap = Record<string, any>
 

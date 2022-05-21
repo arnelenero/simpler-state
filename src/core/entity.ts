@@ -1,7 +1,7 @@
-import alias from './alias'
-import { onInit, onSet } from './inspector'
-import { getStore, isStoreEnabled } from './store'
 import useEntity from './useEntity'
+import alias from '../plugins/alias'
+import { onInit, onSet } from '../tools/inspector'
+import { getStore, isStoreEnabled } from '../tools/store'
 
 /**
  * An entity is the basic unit of shared state.

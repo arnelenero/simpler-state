@@ -1,6 +1,6 @@
 import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector'
 
-import { strictEqual } from './utils'
+import { strictEqual } from './equality'
 
 import type { Entity } from './entity'
 
