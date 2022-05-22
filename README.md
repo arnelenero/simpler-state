@@ -7,16 +7,17 @@
 
 **SimpleR State** is an ultra-lightweight library that provides the _simplest_ state management for React.
 
-- **Minimalist API**; no complicated concepts or boilerplate
+- **Minimalist API**—no complicated concepts or boilerplate
 - Use **plain functions** to update state (including async)
 - Largely **unopinionated** with flexible syntax
 - Extremely **simple to unit test** state logic
-- Highly extensible with **plug-ins** (e.g. persistence, dev tools)
-- Full **TypeScript** support with uncomplicated types
+- Highly extensible with **plug-ins** (e.g. persistence)
+- Built-in **developer tools** (Inspector, global reset)
+- Full **TypeScript** support with simple types
 - Made specifically for React, and built on **React Hooks**
-- **Fully supports React 18 Concurrent Mode**
-- Multiple times **faster** than context/reducer solution
-- It's tiny, just **around 1 KB** (minified + gzipped)
+- Fully supports **React 18 Concurrent Mode**
+- Several times **faster** than context+reducer solution
+- Tiny footprint, just **around 2 KB** (minified + gzipped)
 
 Get all these benefits with one dependency install:
 
@@ -75,7 +76,7 @@ Learn more about what you can do with SimpleR State at [simpler-state.js.org](ht
 
 **If you like this library, the concept, and its simplicity, please give it a star ⭐️ on the [GitHub repo](https://github.com/arnelenero/simpler-state) to let me know.** 😀
 
-The RFC (Request For Comments) has ended, but please feel free to open an issue on GitHub for any concerns/questions/suggestions.
+This project has enabled [GitHub Discussions](https://github.com/arnelenero/simpler-state/discussions). Please feel free to post any questions/suggestions there. For issues, please report them [here](https://github.com/arnelenero/simpler-state/issues).
 
 ## Prior Art
 
