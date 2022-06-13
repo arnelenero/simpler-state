@@ -1,3 +1,4 @@
+import { strictEqual } from './equality'
 import useEntity from './useEntity'
 import alias from '../plugins/alias'
 import { onInit, onSet } from '../tools/inspector'
@@ -83,14 +84,14 @@ interface EntityImpl<T = any> extends Partial<Entity<T>> {
  * @returns the entity object
  */
 function entity<T = any>(
-  initialValue: T,
-  pluginsOrAlias?: Plugin[] | string,
-): Entity<T>
-
-function entity<T = any>(
   initialValue: Promise<T>,
   pluginsOrAlias?: Plugin[] | string,
 ): Entity<T | undefined>
+
+function entity<T = any>(
+  initialValue: T,
+  pluginsOrAlias?: Plugin[] | string,
+): Entity<T>
 
 function entity(
   initialValue: any,
@@ -182,7 +183,10 @@ function createInit(entity: EntityImpl, initialValue: any): Entity['init'] {
 }
 
 function createHook(entity: EntityImpl): Entity['use'] {
-  return (...args: any[]) => useEntity(entity as Entity, ...args)
+  return <T = any, C = T>(
+    transform: (value: T) => C = (v: any) => v,
+    equality: (a: C, b: C) => boolean = strictEqual,
+  ) => useEntity<T, C>(entity as Entity, transform, equality)
 }
 
 function applyPlugins(entity: Entity, plugins: Plugin[]) {
