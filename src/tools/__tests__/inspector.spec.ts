@@ -1,5 +1,12 @@
-import { enableInspector, initInspector, onInit, onSet } from '../inspector'
+import {
+  enableInspector,
+  initInspector,
+  onInit,
+  onSet,
+  features,
+} from '../inspector'
 import { getMutableMap, updateRegistry } from '../registry'
+import entity from '../../core/entity'
 
 import type { Entity } from '../../core/entity'
 
@@ -19,7 +26,7 @@ describe('inspector', () => {
     }),
     send: jest.fn((event: { type: string }, state: Record<string, any>) => {
       lastDevToolsEvent = event
-      lastDevToolsState = state
+      lastDevToolsState = { ...state }
     }),
     subscribe: jest.fn((callback: (event: any) => void) => {
       onDevToolsEvent = callback
@@ -126,9 +133,9 @@ describe('inspector', () => {
       onDevToolsEvent = null
     })
 
-    it('connects to Dev Tools, setting name to document title', () => {
+    it('connects to Dev Tools, setting name to document title, with certain features disabled', () => {
       initInspector()
-      expect(ext.connect).toHaveBeenCalledWith({ name: 'Test' })
+      expect(ext.connect).toHaveBeenCalledWith({ name: 'Test', features })
     })
 
     it('initializes the registry', () => {
@@ -136,19 +143,107 @@ describe('inspector', () => {
       expect(getMutableMap()).toEqual({})
     })
 
-    it('subscribes to Dev Tools events', () => {
+    it('subscribes to Dev Tools "Jump to State" events', () => {
       initInspector()
       enableInspector()
-      onDevToolsEvent!({ type: 'DISPATCH', state: '{"counter": 1}' })
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        state: '{"counter": 1}',
+        payload: { type: 'JUMP_TO_STATE' },
+      })
 
       const registryVal = getMutableMap()
       expect(registryVal).toHaveProperty('counter', 1)
     })
 
+    it('subscribes to Dev Tools "Jump to Action" events', () => {
+      initInspector()
+      enableInspector()
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        state: '{"counter": 1}',
+        payload: { type: 'JUMP_TO_ACTION' },
+      })
+
+      const registryVal = getMutableMap()
+      expect(registryVal).toHaveProperty('counter', 1)
+    })
+
+    it('subscribes to Dev Tools "Commit" events', () => {
+      initInspector()
+      enableInspector()
+      const registryVal = getMutableMap()
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        payload: { type: 'COMMIT' },
+      })
+
+      expect(lastDevToolsEvent).toHaveProperty('type', '@@INIT')
+      expect(lastDevToolsState).toEqual(registryVal)
+    })
+
+    it('subscribes to Dev Tools "Rollback" events', () => {
+      initInspector()
+      enableInspector()
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        state: '{"counter": 1}',
+        payload: { type: 'ROLLBACK' },
+      })
+
+      const registryVal = getMutableMap()
+      expect(registryVal).toHaveProperty('counter', 1)
+      expect(lastDevToolsEvent).toHaveProperty('type', '@@INIT')
+      expect(lastDevToolsState).toEqual(registryVal)
+    })
+
+    it('subscribes to Dev Tools "Reset" events', () => {
+      initInspector()
+      enableInspector()
+      lastDevToolsEvent = { type: 'increment' }
+      lastDevToolsState = { counter: 1 }
+      updateRegistry({ counter: 1 })
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        payload: { type: 'RESET' },
+      })
+
+      const registryVal = getMutableMap()
+      expect(registryVal).toHaveProperty('counter', 0)
+      expect(lastDevToolsEvent).toHaveProperty('type', '@@INIT')
+      expect(lastDevToolsState).toEqual(registryVal)
+    })
+
+    it('subscribes to Dev Tools "Pause Recording" events', () => {
+      initInspector()
+      enableInspector()
+
+      const foo = entity('', 'foo')
+      foo.set('bar', 'setFooBar')
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        payload: { type: 'PAUSE_RECORDING' },
+      })
+      foo.set('boo', 'setFooBoo')
+
+      expect(lastDevToolsEvent).toHaveProperty('type', 'foo:setFooBar')
+      expect(lastDevToolsState).toHaveProperty('foo', 'bar')
+
+      // Resume recording.
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        payload: { type: 'PAUSE_RECORDING' },
+      })
+    })
+
     it('restricts subscription to only respond to Dev Tools events when Inspector is enabled', () => {
       initInspector()
       enableInspector(false)
-      onDevToolsEvent!({ type: 'DISPATCH', state: '{"counter": 1}' })
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        state: '{"counter": 1}',
+        payload: { type: 'JUMP_TO_STATE' },
+      })
 
       const registryVal = getMutableMap()
       expect(registryVal).not.toHaveProperty('counter')
@@ -161,6 +256,36 @@ describe('inspector', () => {
       expect(onDevToolsEvent).toBeNull()
 
       enableDevTools(true)
+    })
+
+    it('gracefully handles invalid state from Dev Tools event', () => {
+      initInspector()
+      enableInspector()
+      updateRegistry({ counter: 1 })
+
+      expect(() => {
+        onDevToolsEvent!({
+          type: 'DISPATCH',
+          state: 'undefined',
+          payload: { type: 'JUMP_TO_STATE' },
+        })
+      }).not.toThrow()
+
+      const registryVal = getMutableMap()
+      expect(registryVal).toHaveProperty('counter', 1)
+    })
+
+    it('ignores Dev Tools event types other than "DISPATCH"', () => {
+      initInspector()
+      enableInspector()
+      updateRegistry({ counter: 1 })
+      onDevToolsEvent!({
+        type: 'ACTION',
+        payload: '{ "type": "DO_SOMETHING" }',
+      })
+
+      const registryVal = getMutableMap()
+      expect(registryVal).toHaveProperty('counter', 1)
     })
   })
 

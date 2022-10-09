@@ -8,10 +8,19 @@ import {
 import type { MutableMap } from './registry'
 import type { Entity } from '../core/entity'
 
-interface DevToolsEvent {
-  type: string
-  state: string
-}
+type DevToolsEvent =
+  | {
+      type: 'DISPATCH'
+      payload: {
+        type: string
+        [P: string]: any
+      }
+      state: string
+    }
+  | {
+      type: 'ACTION'
+      payload: string
+    }
 
 interface DevToolsConnection {
   init(state: MutableMap): void
@@ -22,7 +31,10 @@ interface DevToolsConnection {
 declare global {
   interface Window {
     __REDUX_DEVTOOLS_EXTENSION__?: {
-      connect(options: { name?: string }): DevToolsConnection
+      connect(options: {
+        name?: string
+        features?: Record<string, any>
+      }): DevToolsConnection
     }
   }
 }
@@ -31,6 +43,8 @@ let devTools: DevToolsConnection | null = null
 let isInspectorEnabled = false
 let isInspectorInitialized = false
 let isDevToolsInitialized = false
+let isDevToolsPaused = false
+let initialRegistryValue: MutableMap | null = null
 
 /**
  * Enables the Inspector for visual debugging of entities using the
@@ -49,28 +63,80 @@ export function enableInspector(condition = true) {
   isInspectorEnabled = condition
 }
 
+// Enabled Dev Tools features
+export const features = {
+  pause: true, // start/pause recording of dispatched actions
+  export: true, // export history of actions in a file
+  import: 'custom', // import history of actions from a file
+  jump: true, // jump back and forth (time travelling)
+  skip: true, // skip (cancel) actions
+  reorder: true, // drag and drop actions in the history list
+}
+
 export function initInspector() {
   devTools =
     (window.__REDUX_DEVTOOLS_EXTENSION__?.connect({
       name: document.title,
+      features,
     }) as DevToolsConnection) ?? null
 
   if (devTools) {
     // The registry collects values of all entities (except private ones).
     initRegistry()
 
-    // Subscribe to Dev Tools events to update the registry and have the
-    // subscribed entities get notified about the change.
-    devTools.subscribe(event => {
-      if (!isInspectorEnabled) return
-
-      if (event.type === 'DISPATCH') {
-        updateRegistry(JSON.parse(event.state))
-      }
-    })
+    // Subscribe to Dev Tools events to synchronize the registry.
+    devTools.subscribe(handleDevToolsEvent)
   }
 
   isInspectorInitialized = true
+}
+
+function handleDevToolsEvent(event: DevToolsEvent) {
+  if (!isInspectorEnabled) return
+
+  if (event.type === 'DISPATCH') {
+    switch (event.payload.type) {
+      case 'JUMP_TO_STATE':
+      case 'JUMP_TO_ACTION':
+        applyStateToEntities(event.state)
+        break
+
+      case 'COMMIT':
+        devTools!.init(getMutableMap())
+        break
+
+      case 'ROLLBACK':
+        const snapshot = applyStateToEntities(event.state)
+        if (snapshot) {
+          devTools!.init(snapshot)
+        }
+        break
+
+      case 'RESET':
+        if (initialRegistryValue !== null) {
+          updateRegistry(initialRegistryValue)
+          devTools!.init(initialRegistryValue)
+        }
+        break
+
+      case 'PAUSE_RECORDING':
+        isDevToolsPaused = !isDevToolsPaused
+        break
+    }
+  }
+}
+
+function applyStateToEntities(state: string): MutableMap | undefined {
+  let parsedState: MutableMap | undefined
+  try {
+    parsedState = JSON.parse(state)
+  } catch (err) {
+    console.error('Ignoring invalid state received from DevTools.')
+  }
+  if (parsedState === undefined) return
+
+  updateRegistry(parsedState)
+  return parsedState
 }
 
 export function onInit(entity: Entity) {
@@ -99,7 +165,7 @@ export function onInit(entity: Entity) {
 
   // If global already initialized, it means this entity is lazy loaded.
   // Notify Dev Tools of the lazy initialization.
-  if (isDevToolsInitialized && isInspectorEnabled) {
+  if (isDevToolsInitialized && isInspectorEnabled && !isDevToolsPaused) {
     devTools.send({ type: `${entity.name}:@@LAZY_INIT` }, mutableMap)
   }
 }
@@ -124,8 +190,13 @@ export function onSet(entity: Entity, alias: string) {
   if (!isDevToolsInitialized) {
     devTools.init(mutableMap)
     isDevToolsInitialized = true
+
+    // Capture the initial value of the registry so we can reset on demand.
+    initialRegistryValue = { ...mutableMap }
   }
 
   // Notify Dev Tools of this update.
-  devTools.send({ type: `${entity.name}:${alias}` }, mutableMap)
+  if (!isDevToolsPaused) {
+    devTools.send({ type: `${entity.name}:${alias}` }, mutableMap)
+  }
 }
