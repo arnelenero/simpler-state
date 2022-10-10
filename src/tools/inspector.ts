@@ -13,6 +13,10 @@ type DevToolsEvent =
       type: 'DISPATCH'
       payload: {
         type: string
+        nextLiftedState?: {
+          computedStates: { state: any }[]
+          currentStateIndex?: number
+        }
         [P: string]: any
       }
       state: string
@@ -24,7 +28,7 @@ type DevToolsEvent =
 
 interface DevToolsConnection {
   init(state: MutableMap): void
-  send(action: { type: string }, state: MutableMap): void
+  send(action: { type: string } | null, state: MutableMap): void
   subscribe(callback: (event: DevToolsEvent) => void): void
 }
 
@@ -92,32 +96,51 @@ export function initInspector() {
 }
 
 function handleDevToolsEvent(event: DevToolsEvent) {
-  if (!isInspectorEnabled) return
+  if (!isInspectorEnabled || !devTools) return
 
   if (event.type === 'DISPATCH') {
     switch (event.payload.type) {
+      // "Time travel" to state selected in Dev Tools.
       case 'JUMP_TO_STATE':
       case 'JUMP_TO_ACTION':
         applyStateToEntities(event.state)
         break
 
+      // Set current app state as initial state in Dev Tools.
       case 'COMMIT':
-        devTools!.init(getMutableMap())
+        devTools.init(getMutableMap())
         break
 
+      // Revert to the last committed state in Dev Tools.
       case 'ROLLBACK':
         const snapshot = applyStateToEntities(event.state)
         if (snapshot) {
-          devTools!.init(snapshot)
+          devTools.init(snapshot)
         }
         break
 
+      // Revert to original initial app state.
       case 'RESET':
         if (initialRegistryValue !== null) {
           updateRegistry(initialRegistryValue)
-          devTools!.init(initialRegistryValue)
+          devTools.init(initialRegistryValue)
         }
         break
+
+      // Set app state to the current state imported (from file) into Dev Tools.
+      case 'IMPORT_STATE': {
+        const { nextLiftedState: imported } = event.payload
+        if (!imported || !imported.computedStates) return
+
+        const currentIndex =
+          imported.currentStateIndex ?? imported.computedStates.length - 1
+        const currentState = imported.computedStates[currentIndex]?.state
+        if (typeof currentState !== 'object') return
+
+        updateRegistry(currentState)
+        devTools.send(null, imported)
+        return
+      }
 
       case 'PAUSE_RECORDING':
         isDevToolsPaused = !isDevToolsPaused
@@ -133,7 +156,7 @@ function applyStateToEntities(state: string): MutableMap | undefined {
   } catch (err) {
     console.error('Ignoring invalid state received from DevTools.')
   }
-  if (parsedState === undefined) return
+  if (typeof parsedState !== 'object') return
 
   updateRegistry(parsedState)
   return parsedState

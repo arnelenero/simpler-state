@@ -214,6 +214,57 @@ describe('inspector', () => {
       expect(lastDevToolsState).toEqual(registryVal)
     })
 
+    it('subscribes to Dev Tools "Import State" events', () => {
+      initInspector()
+      enableInspector()
+      updateRegistry({ counter: 5 })
+      const nextLiftedState = {
+        computedStates: [{ state: { counter: 0 } }, { state: { counter: 1 } }],
+        currentStateIndex: 1,
+      }
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        payload: {
+          type: 'IMPORT_STATE',
+          nextLiftedState,
+        },
+      })
+
+      const registryVal = getMutableMap()
+      expect(registryVal).toHaveProperty('counter', 1)
+      expect(lastDevToolsEvent).toBeNull()
+      expect(lastDevToolsState).toEqual(nextLiftedState)
+    })
+
+    it('gracefully handles invalid "Import State" payload', () => {
+      initInspector()
+      enableInspector()
+      updateRegistry({ counter: 5 })
+
+      const noNextLiftedState = { type: 'IMPORT_STATE' }
+      const noComputedStates = {
+        type: 'IMPORT_STATE',
+        nextLiftedState: {},
+      }
+      const emptyComputedStates = {
+        type: 'IMPORT_STATE',
+        nextLiftedState: { computedStates: [] },
+      }
+      ;[noNextLiftedState, noComputedStates, emptyComputedStates].forEach(
+        payload => {
+          expect(() => {
+            onDevToolsEvent!({
+              type: 'DISPATCH',
+              payload,
+            })
+          }).not.toThrow()
+
+          const registryVal = getMutableMap()
+          expect(registryVal).toHaveProperty('counter', 5)
+        },
+      )
+    })
+
     it('subscribes to Dev Tools "Pause Recording" events', () => {
       initInspector()
       enableInspector()
