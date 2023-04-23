@@ -1,7 +1,7 @@
 # <img src="https://simpler-state.js.org/assets/simpler-state-logo.png" alt="SimpleR State" width="240"/>
 
 [![npm](https://img.shields.io/npm/v/simpler-state)](https://www.npmjs.com/package/simpler-state)
-[![build](https://img.shields.io/travis/arnelenero/simpler-state)](https://travis-ci.com/github/arnelenero/simpler-state)
+[![build](https://img.shields.io/github/actions/workflow/status/arnelenero/simpler-state/main-ci.yml)](https://github.com/arnelenero/simpler-state/actions/workflows/main-ci.yml)
 [![coverage](https://img.shields.io/coverallsCoverage/github/arnelenero/simpler-state)](https://coveralls.io/github/arnelenero/simpler-state)
 [![license](https://img.shields.io/github/license/arnelenero/simpler-state)](https://opensource.org/licenses/MIT)
 
