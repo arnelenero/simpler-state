@@ -29,4 +29,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm test:cov
+    - run: npm run test:cov
