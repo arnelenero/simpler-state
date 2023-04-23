@@ -4,6 +4,9 @@ module.exports = {
   resetMocks: false,
   setupFiles: ['jest-localstorage-mock'],
   setupFilesAfterEnv: ['<rootDir>/test-setup.js'],
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', { useESM: true, isolatedModules: true }],
+  },
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/build/',

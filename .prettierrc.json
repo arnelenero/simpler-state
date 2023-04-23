@@ -4,14 +4,6 @@
   "endOfLine": "lf",
   "jsxBracketSameLine": false,
   "jsxSingleQuote": false,
-  "overrides": [
-    {
-      "files": [".prettierrc", ".babelrc", ".eslintrc"],
-      "options": {
-        "parser": "json"
-      }
-    }
-  ],
   "printWidth": 80,
   "singleQuote": true,
   "semi": false,

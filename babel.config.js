@@ -1,23 +1,26 @@
-const { NODE_ENV, BABEL_ENV } = process.env
-const commonjs = NODE_ENV === 'test' || BABEL_ENV === 'commonjs'
-const loose = true
+const commonjs = process.env.BUILD_TARGET === 'commonjs'
+const isEnvTest = process.env.NODE_ENV === 'test'
 
 module.exports = {
   presets: [
     [
       '@babel/env',
       {
-        loose,
-        modules: false,
-        targets: commonjs ? { ie: 11 } : { node: 'current' },
+        loose: true,
+        modules: commonjs && 'commonjs',
+        targets: isEnvTest ? { node: 'current' } : {},
       },
     ],
+    '@babel/typescript',
     '@babel/react',
   ],
   plugins: [
-    ['@babel/proposal-object-rest-spread', { loose }],
-    commonjs && ['@babel/transform-modules-commonjs', { loose }],
-    ['@babel/transform-runtime', { useESModules: !commonjs }],
-  ].filter(Boolean),
+    [
+      '@babel/transform-runtime',
+      {
+        useESModules: !commonjs,
+      },
+    ],
+  ],
   comments: false,
 }
