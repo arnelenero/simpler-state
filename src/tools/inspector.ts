@@ -194,6 +194,9 @@ export function onInit(entity: Entity) {
 }
 
 export function onSet(entity: Entity, alias: string) {
+  // Send new value to Inspector only if the update did not come from Inspector.
+  if (alias === '@@DEVTOOLS') return
+
   // Private entities should not be inspected.
   if (entity.name.charAt(0) === '_') return
 

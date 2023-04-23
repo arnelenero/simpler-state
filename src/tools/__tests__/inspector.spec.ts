@@ -376,5 +376,16 @@ describe('inspector', () => {
 
       expect(lastDevToolsEvent).toBeNull()
     })
+
+    it('does not notify Dev Tools if update came from Inspector', () => {
+      enableInspector()
+      const counter = mockEntity(0, 'counter')
+      onInit(counter)
+      counter.set(1)
+      onSet(counter, 'increment')
+      onSet(counter, '@@DEVTOOLS')
+
+      expect(lastDevToolsEvent).toHaveProperty('type', 'counter:increment')
+    })
   })
 })

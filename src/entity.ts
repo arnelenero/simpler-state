@@ -156,8 +156,7 @@ function createSet(entity: EntityImpl): Entity['set'] {
 
     entity._subscribers.forEach(cb => cb(entity._value))
 
-    // Send new value to Inspector only if the update did not come from Inspector.
-    if (alias !== '@@DEVTOOLS') onSet(entity as Entity, alias ?? '<anonymous>')
+    onSet(entity as Entity, alias ?? '<anonymous>')
   }
 }
 
