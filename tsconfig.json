@@ -14,7 +14,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "declaration": true,
-    "declarationDir": "./types",
+    "declarationDir": "./dist",
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],

@@ -6,7 +6,7 @@ import {
 } from './registry'
 
 import type { MutableMap } from './registry'
-import type { Entity } from '../core/entity'
+import type { Entity } from '../entity'
 
 type DevToolsEvent =
   | {

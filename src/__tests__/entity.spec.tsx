@@ -2,8 +2,8 @@ import React from 'react'
 // @ts-ignore
 import { mount } from 'enzyme'
 
-import entity from '../entity'
-import { getStore, enableStore } from '../../tools/store'
+import { entity } from '../entity'
+import { getStore, enableStore } from '../tools/store'
 
 import type { Plugin } from '../entity'
 

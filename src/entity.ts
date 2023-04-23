@@ -1,8 +1,8 @@
 import { strictEqual } from './equality'
-import useEntity from './useEntity'
-import alias from '../plugins/alias'
-import { onInit, onSet } from '../tools/inspector'
-import { getStore, isStoreEnabled } from '../tools/store'
+import { useEntity } from './useEntity'
+import { alias } from './plugins/alias'
+import { onInit, onSet } from './tools/inspector'
+import { getStore, isStoreEnabled } from './tools/store'
 
 /**
  * An entity is the basic unit of shared state.
@@ -83,17 +83,17 @@ interface EntityImpl<T = any> extends Partial<Entity<T>> {
  * @param pluginsOrAlias - optional array list of plug-ins (or alias shorthand)
  * @returns the entity object
  */
-function entity<T = any>(
+export function entity<T = any>(
   initialValue: Promise<T>,
   pluginsOrAlias?: Plugin[] | string,
 ): Entity<T | undefined>
 
-function entity<T = any>(
+export function entity<T = any>(
   initialValue: T,
   pluginsOrAlias?: Plugin[] | string,
 ): Entity<T>
 
-function entity(
+export function entity(
   initialValue: any,
   pluginsOrAlias: Plugin[] | string = [],
 ): Entity {
@@ -130,8 +130,6 @@ function entity(
 
   return newEntity
 }
-
-export default entity
 
 function createSubscribe(entity: EntityImpl): Entity['subscribe'] {
   return subscriberFn => {

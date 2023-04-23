@@ -1,5 +1,5 @@
-import persistence from '../persistence'
-import entity from '../../core/entity'
+import { persistence } from '../persistence'
+import { entity } from '../../entity'
 
 import type { AsyncStorage, Storage } from '../persistence'
 

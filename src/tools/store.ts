@@ -1,4 +1,4 @@
-import type { Entity } from '../core/entity'
+import type { Entity } from '../entity'
 
 const store = new Set<Entity>()
 let storeEnabled = false

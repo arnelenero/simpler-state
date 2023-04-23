@@ -5,10 +5,10 @@ import { mount } from 'enzyme'
 
 import resetAll from '../resetAll'
 import { enableStore } from '../store'
-import entity from '../../core/entity'
-import useEntity from '../../core/useEntity'
+import { entity } from '../../entity'
+import { useEntity } from '../../useEntity'
 
-import type { Entity } from '../../core/entity'
+import type { Entity } from '../../entity'
 
 describe('resetAll', () => {
   const TestShell = () => {

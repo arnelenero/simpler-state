@@ -1,4 +1,4 @@
-import type { Plugin } from '../core/entity'
+import type { Plugin } from '../entity'
 
 export interface Storage {
   getItem(key: string): string | null
@@ -78,7 +78,7 @@ function processValue(
  * @param key - unique identifier
  * @param options - optional config for storage and serialization/deserialization
  */
-export default function persistence(
+export function persistence(
   key: string,
   options: {
     storage?: Storage | AsyncStorage | 'local' | 'session'

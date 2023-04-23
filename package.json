@@ -1,6 +1,6 @@
 {
   "name": "simpler-state",
-  "version": "2.0.0-rc.4",
+  "version": "2.0.0-rc.9",
   "description": "The simplest app state management for React",
   "keywords": [
     "react",
@@ -16,26 +16,26 @@
   "license": "MIT",
   "repository": "github:arnelenero/simpler-state",
   "homepage": "https://simpler-state.js.org",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "typings": "types/index.d.ts",
+  "main": "./index.js",
+  "module": "./__es__/index.js",
+  "types": "./index.d.ts",
   "files": [
-    "lib",
-    "es",
-    "types"
+    "**"
   ],
   "sideEffects": false,
   "scripts": {
-    "build:lib": "cross-env BUILD_TARGET=commonjs babel src --out-dir lib --extensions .ts,.tsx --ignore **/__tests__/**",
-    "build:es": "babel src --out-dir es --extensions .ts,.tsx --ignore **/__tests__/**",
-    "build": "npm run clean && npm run compile && npm run build:lib && npm run build:es",
-    "clean": "rimraf build types lib es",
+    "build:lib": "cross-env BUILD_TARGET=commonjs babel src --out-dir dist --extensions .ts,.tsx --ignore \"**/__tests__/**\"",
+    "build:es": "babel src --out-dir dist/__es__ --extensions .ts,.tsx --ignore \"**/__tests__/**\"",
+    "build": "npm run clean && npm run compile && npm run build:lib && npm run build:es && npm run copy",
+    "clean": "rimraf dist",
+    "copy": "cp package.json dist",
     "compile": "tsc",
-    "prepare": "npm test",
-    "pretest": "npm run build",
+    "pretestx": "npm run compile",
+    "prepublishOnly": "echo \"Please run 'npm run release' instead.\" && exit 1",
     "test": "jest",
     "test:cov": "npm test -- --coverage && coveralls < coverage/lcov.info",
-    "test:cov-local": "npm test -- --coverage"
+    "test:cov-local": "npm test -- --coverage",
+    "release": "npm run build && cd dist && npm publish"
   },
   "peerDependencies": {
     "react": ">=16.8.0"

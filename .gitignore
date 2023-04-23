@@ -7,13 +7,9 @@ node_modules
 coverage
 
 # production
-/build
-/lib
-/es
-/types
+/dist
 
 # misc
 .DS_Store
 npm-debug.log*
-.vscode
 .local
