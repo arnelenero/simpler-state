@@ -1,6 +1,6 @@
 {
   "name": "simpler-state",
-  "version": "2.0.0-rc.9",
+  "version": "2.0.0-rc.11",
   "description": "The simplest app state management for React",
   "keywords": [
     "react",
