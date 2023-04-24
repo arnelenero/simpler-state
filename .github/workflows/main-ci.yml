@@ -30,3 +30,6 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run test:cov
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2
+      
