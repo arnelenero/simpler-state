@@ -30,12 +30,9 @@
     "clean": "rimraf dist",
     "copy": "cp package.json dist",
     "compile": "tsc",
-    "pretestx": "npm run compile",
-    "prepublishOnly": "echo \"Please run 'npm run release' instead.\" && exit 1",
     "test": "jest",
     "test:cov": "npm test -- --coverage && coveralls < coverage/lcov.info",
-    "test:cov-local": "npm test -- --coverage",
-    "release": "npm run build && cd dist && npm publish"
+    "test:cov-local": "npm test -- --coverage"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
