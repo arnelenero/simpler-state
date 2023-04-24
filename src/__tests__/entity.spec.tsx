@@ -3,6 +3,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import { entity } from '../entity'
+import { enableInspector } from '../tools/inspector'
 import { getStore, enableStore } from '../tools/store'
 
 import type { Plugin } from '../entity'
@@ -212,7 +213,7 @@ describe('entity', () => {
   it('adds the entity to store if enabled', () => {
     enableStore()
 
-    const counter = entity(true)
+    const counter = entity(0)
     const addedToStore = getStore().has(counter)
     expect(addedToStore).toBe(true)
   })
@@ -220,8 +221,22 @@ describe('entity', () => {
   it('does not add the entity to store if not enabled', () => {
     enableStore(false)
 
-    const counter = entity(false)
+    const counter = entity(0)
     const addedToStore = getStore().has(counter)
     expect(addedToStore).toBe(false)
+  })
+
+  it('supports Inspector if enabled', () => {
+    enableInspector()
+    const origInit = window.__onInitEntity
+    const origSet = window.__onSetEntity
+    window.__onInitEntity = jest.fn((...args) => origInit?.(...args))
+    window.__onSetEntity = jest.fn((...args) => origSet?.(...args))
+
+    const counter = entity(0)
+    expect(window.__onInitEntity).toHaveBeenCalled()
+
+    counter.set(1)
+    expect(window.__onSetEntity).toHaveBeenCalled()
   })
 })

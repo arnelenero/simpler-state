@@ -310,6 +310,9 @@ describe('inspector', () => {
     })
 
     it('gracefully handles invalid state from Dev Tools event', () => {
+      const origConsoleError = console.error
+      console.error = jest.fn()
+
       initInspector()
       enableInspector()
       updateRegistry({ counter: 1 })
@@ -321,9 +324,12 @@ describe('inspector', () => {
           payload: { type: 'JUMP_TO_STATE' },
         })
       }).not.toThrow()
+      expect(console.error).toHaveBeenCalled()
 
       const registryVal = getMutableMap()
       expect(registryVal).toHaveProperty('counter', 1)
+
+      console.error = origConsoleError
     })
 
     it('ignores Dev Tools event types other than "DISPATCH"', () => {

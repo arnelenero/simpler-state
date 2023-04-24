@@ -1,7 +1,6 @@
 import { strictEqual } from './equality'
 import { useEntity } from './useEntity'
 import { alias } from './plugins/alias'
-import { onInit, onSet } from './tools/inspector'
 import { getStore, isStoreEnabled } from './tools/store'
 
 /**
@@ -156,7 +155,7 @@ function createSet(entity: EntityImpl): Entity['set'] {
 
     entity._subscribers.forEach(cb => cb(entity._value))
 
-    onSet(entity as Entity, alias ?? '<anonymous>')
+    window.__onSetEntity?.(entity as Entity, alias ?? '<anonymous>')
   }
 }
 
@@ -175,7 +174,7 @@ function createInit(entity: EntityImpl, initialValue: any): Entity['init'] {
       )
     else entity._value = initialValue
 
-    onInit(entity as Entity)
+    window.__onInitEntity?.(entity as Entity)
   }
 }
 
