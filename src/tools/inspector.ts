@@ -40,8 +40,10 @@ declare global {
         features?: Record<string, any>
       }): DevToolsConnection
     }
-    __onInitEntity?: typeof onInit
-    __onSetEntity?: typeof onSet
+    __inspector?: {
+      onInit: typeof onInit
+      onSet: typeof onSet
+    }
   }
 }
 
@@ -67,8 +69,7 @@ let initialRegistryValue: MutableMap | null = null
  */
 export function enableInspector(condition = true) {
   isInspectorEnabled = condition
-  window.__onInitEntity = condition ? onInit : undefined
-  window.__onSetEntity = condition ? onSet : undefined
+  window.__inspector = condition ? { onInit, onSet } : undefined
 }
 
 // Enabled Dev Tools features

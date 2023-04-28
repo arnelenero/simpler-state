@@ -155,7 +155,7 @@ function createSet(entity: EntityImpl): Entity['set'] {
 
     entity._subscribers.forEach(cb => cb(entity._value))
 
-    window.__onSetEntity?.(entity as Entity, alias ?? '<anonymous>')
+    window.__inspector?.onSet(entity as Entity, alias ?? '<anonymous>')
   }
 }
 
@@ -174,7 +174,7 @@ function createInit(entity: EntityImpl, initialValue: any): Entity['init'] {
       )
     else entity._value = initialValue
 
-    window.__onInitEntity?.(entity as Entity)
+    window.__inspector?.onInit(entity as Entity)
   }
 }
 

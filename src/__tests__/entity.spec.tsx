@@ -228,15 +228,16 @@ describe('entity', () => {
 
   it('supports Inspector if enabled', () => {
     enableInspector()
-    const origInit = window.__onInitEntity
-    const origSet = window.__onSetEntity
-    window.__onInitEntity = jest.fn((...args) => origInit?.(...args))
-    window.__onSetEntity = jest.fn((...args) => origSet?.(...args))
+    const origInspector = window.__inspector
+    window.__inspector = {
+      onInit: jest.fn((...args) => origInspector?.onInit(...args)),
+      onSet: jest.fn((...args) => origInspector?.onSet(...args)),
+    }
 
     const counter = entity(0)
-    expect(window.__onInitEntity).toHaveBeenCalled()
+    expect(window.__inspector.onInit).toHaveBeenCalled()
 
     counter.set(1)
-    expect(window.__onSetEntity).toHaveBeenCalled()
+    expect(window.__inspector.onSet).toHaveBeenCalled()
   })
 })
