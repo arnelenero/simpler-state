@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   resetMocks: false,
   setupFiles: ['jest-localstorage-mock'],
-  setupFilesAfterEnv: ['<rootDir>/test-setup.js'],
+  //setupFilesAfterEnv: ['<rootDir>/test-setup.js'],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { useESM: true, isolatedModules: true }],
   },

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { act } from 'react-dom/test-utils'
-// @ts-ignore
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 
 import resetAll from '../resetAll'
 import { enableStore } from '../store'
@@ -33,7 +32,7 @@ describe('resetAll', () => {
   let increment: Function
   let countdown: Entity
   let decrement: Function
-  let component: any
+  let component: ReturnType<typeof render>
   let hookValueA: any
   let hookValueB: any
   let mountCount = 0
@@ -49,11 +48,11 @@ describe('resetAll', () => {
   })
 
   afterEach(() => {
-    if (component && component.exists()) component.unmount()
+    component.unmount()
   })
 
   it('resets all entities to initial value', () => {
-    component = mount(<TestShell />)
+    component = render(<TestShell />)
 
     const prevMountCount = mountCount
 
@@ -71,7 +70,7 @@ describe('resetAll', () => {
 
     component.unmount()
 
-    component = mount(<TestShell />)
+    component = render(<TestShell />)
 
     expect(mountCount).toBe(prevMountCount + 1)
     expect(hookValueA).toBe(0)

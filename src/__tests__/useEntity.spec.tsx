@@ -1,8 +1,11 @@
+// This Jest shim is required by ReactDOMServer.
+import { TextEncoder } from 'util'
+global.TextEncoder = TextEncoder
+
 import React, { useState, useEffect } from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { act } from 'react-dom/test-utils'
-// @ts-ignore
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 
 import { useEntity } from '../useEntity'
 import { entity } from '../entity'
@@ -37,12 +40,12 @@ describe('useEntity', () => {
 
   const mountCounter = (selectKey?: string, equalityFn?: EqTest) => {
     const CounterView = counterView(selectKey, equalityFn)
-    component = mount(<CounterView />)
+    component = render(<CounterView />)
   }
 
   const mountCounterWithAnother = (CounterB: React.FC) => {
     const CounterView = counterView()
-    component = mount(
+    component = render(
       <div>
         <CounterView />
         <CounterB />
@@ -53,7 +56,7 @@ describe('useEntity', () => {
   let counter: Entity
   let increment: Function
   let touch: Function
-  let component: any
+  let component: ReturnType<typeof render>
   let renderCount = 0
   let hookValue: any
   let setSelectKey: Function
@@ -70,7 +73,7 @@ describe('useEntity', () => {
   })
 
   afterEach(() => {
-    if (component.exists()) component.unmount()
+    component.unmount()
   })
 
   it('returns the current value of the entity', () => {
@@ -201,7 +204,7 @@ describe('useEntity', () => {
       return <>{value}</>
     }
     expect(() => {
-      component = mount(<CounterView />)
+      component = render(<CounterView />)
     }).toThrow()
 
     console.error = origConsoleError

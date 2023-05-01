@@ -1,6 +1,5 @@
 import React from 'react'
-// @ts-ignore
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 
 import { entity } from '../entity'
 import { enableInspector } from '../tools/inspector'
@@ -127,7 +126,7 @@ describe('entity', () => {
       count = counter.use()
       return <></>
     }
-    const component = mount(<CounterView />)
+    const component = render(<CounterView />)
     expect(count).toBe(0)
 
     component.unmount()
