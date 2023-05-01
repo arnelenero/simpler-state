@@ -1,6 +1,9 @@
 import { persistence } from '../persistence'
 import { entity } from '../../entity'
 
+// This mocks the browser Storage API.
+import 'jest-localstorage-mock'
+
 import type { AsyncStorage, Storage } from '../persistence'
 
 describe('persistence', () => {
