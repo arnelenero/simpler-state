@@ -38,14 +38,7 @@ describe('entity', () => {
   })
 
   it('supports Promise for async initial value', async () => {
-    // TODO: Refactor this test to use callback to trigger inspect() instead.
-
-    const promise = new Promise(resolve =>
-      setTimeout(() => {
-        resolve(10)
-      }, 1),
-    )
-    const counter = entity(promise)
+    const counter = entity(Promise.resolve(10))
 
     const inspect = () =>
       new Promise<void>(resolve => {
@@ -58,12 +51,7 @@ describe('entity', () => {
   })
 
   it('keeps value `undefined` while waiting for async initial value', () => {
-    const promise = new Promise(resolve =>
-      setTimeout(() => {
-        resolve(0)
-      }, 1),
-    )
-    const counter = entity(promise)
+    const counter = entity(Promise.resolve(0))
     expect(counter).toHaveProperty('_value', undefined)
   })
 
