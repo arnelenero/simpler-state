@@ -10,30 +10,61 @@ export interface AsyncStorage {
   setItem(key: string, value: string): Promise<void>
 }
 
-function getLocalStorage() {
-  try {
-    return localStorage
-  } catch (err) {
-    return null
+/**
+ * Persistence plug-in enables storing entity values to `localStorage` (default),
+ * `sessionStorage` or custom storage (must implement the Web Storage API).
+ *
+ * @param key - unique identifier
+ * @param options - optional config for storage and serialization/deserialization
+ */
+export function persistence(
+  key: string,
+  options: {
+    storage?: Storage | AsyncStorage
+    serializeFn?: (value: any) => string | Promise<string>
+    deserializeFn?: (value: string) => any | Promise<any>
+  } = {},
+): Plugin {
+  if (typeof key !== 'string')
+    throw new Error('Persistence requires a string key.')
+
+  const storage = options.storage ?? window.localStorage
+  if (!isValidStorage(storage)) {
+    console.warn('Storage unavailable. Persistence disabled.')
+    return {}
+  }
+
+  return {
+    init(origInit, entity) {
+      return () => {
+        const deserialize = options.deserializeFn || JSON.parse
+
+        origInit()
+
+        // Fetch persisted value (if any) from storage.
+        getItem(storage!, key, deserialize, entity.set)
+      }
+    },
+
+    set(origSet, entity) {
+      return (...args) => {
+        const serialize = options.serializeFn || JSON.stringify
+
+        origSet(...args)
+
+        // Persist the new value to storage.
+        setItem(storage!, key, entity.get(), serialize)
+      }
+    },
   }
 }
 
-function getSessionStorage() {
-  try {
-    return sessionStorage
-  } catch (err) {
-    return null
-  }
-}
-
-function validateCustomStorage(storage: any) {
-  if (
-    typeof storage.getItem !== 'function' ||
-    typeof storage.setItem !== 'function'
+function isValidStorage(storage: any): boolean {
+  return (
+    storage &&
+    typeof storage.getItem === 'function' &&
+    typeof storage.setItem === 'function'
   )
-    throw new Error('Persistence: Invalid storage.')
-
-  return storage
 }
 
 function getItem(
@@ -69,58 +100,4 @@ function processValue(
   const res = func(value)
   if (res && typeof res.then === 'function') res.then(callback)
   else callback(res)
-}
-
-/**
- * Persistence plug-in enables storing entity values to `localStorage` (default),
- * `sessionStorage` or custom storage (must implement the Web Storage API).
- *
- * @param key - unique identifier
- * @param options - optional config for storage and serialization/deserialization
- */
-export function persistence(
-  key: string,
-  options: {
-    storage?: Storage | AsyncStorage | 'local' | 'session'
-    serializeFn?: (value: any) => string | Promise<string>
-    deserializeFn?: (value: string) => any | Promise<any>
-  } = {},
-): Plugin {
-  if (typeof key !== 'string')
-    throw new Error('Persistence requires a string key.')
-
-  let storage: Storage | AsyncStorage | null
-  const storageOption = options.storage ?? 'local'
-  if (storageOption === 'local') storage = getLocalStorage()
-  else if (storageOption === 'session') storage = getSessionStorage()
-  else storage = validateCustomStorage(storageOption)
-
-  if (!storage) {
-    console.warn('Storage unavailable. Persistence disabled.')
-    return {}
-  }
-
-  return {
-    init(origInit, entity) {
-      return () => {
-        const deserialize = options.deserializeFn || JSON.parse
-
-        origInit()
-
-        // Fetch persisted value (if any) from storage.
-        getItem(storage!, key, deserialize, entity.set)
-      }
-    },
-
-    set(origSet, entity) {
-      return (...args) => {
-        const serialize = options.serializeFn || JSON.stringify
-
-        origSet(...args)
-
-        // Persist the new value to storage.
-        setItem(storage!, key, entity.get(), serialize)
-      }
-    },
-  }
 }

@@ -63,13 +63,13 @@ describe('persistence', () => {
     expect(localStorage.getItem).toHaveBeenLastCalledWith('counter')
   })
 
-  it('uses localStorage when `storage` option is set to "local"', () => {
-    entity(0, [persistence('counter', { storage: 'local' })])
+  it('uses localStorage when `storage` option is set to `localStorage`', () => {
+    entity(0, [persistence('counter', { storage: localStorage })])
     expect(localStorage.getItem).toHaveBeenLastCalledWith('counter')
   })
 
-  it('uses sessionStorage when `storage` option is set to "session"', () => {
-    entity(0, [persistence('counter', { storage: 'session' })])
+  it('uses sessionStorage when `storage` option is set to `sessionStorage`', () => {
+    entity(0, [persistence('counter', { storage: sessionStorage })])
     expect(sessionStorage.getItem).toHaveBeenLastCalledWith('counter')
     expect(localStorage.getItem).not.toHaveBeenCalled()
   })
@@ -97,14 +97,19 @@ describe('persistence', () => {
     })
   })
 
-  it('requires a custom storage to implement both `getItem` and `setItem`', () => {
+  it('warns if custom storage does not implement both `getItem` and `setItem`', () => {
+    const origWarn = console.warn
+    console.warn = jest.fn()
+
     // @ts-ignore
     const customStorage: AsyncStorage = {
       setItem: jest.fn(),
     }
     expect(() => {
       entity(0, [persistence('counter', { storage: customStorage })])
-    }).toThrow()
+    }).not.toThrow()
+
+    console.warn = origWarn
   })
 
   it('supports a custom `serializeFn` when saving to storage', () => {
@@ -171,58 +176,50 @@ describe('persistence', () => {
   it('warns if localStorage is not available but does not throw', () => {
     const origWarn = console.warn
     console.warn = jest.fn()
+
     const origLocalStorage = localStorage
-    // @ts-ignore
     delete global._localStorage
-    // emulate disabled localStorage
-    Object.defineProperty(global, '_localStorage', {
-      get: () => {
-        throw new Error('Storage disabled')
-      },
-      configurable: true,
-    })
 
     expect(() => {
       entity(0, [persistence('counter')])
     }).not.toThrow()
     expect(console.warn).toHaveBeenCalled()
 
-    // @ts-ignore
-    delete global._localStorage
     Object.defineProperty(global, '_localStorage', {
       value: origLocalStorage,
       configurable: true,
       writable: false,
     })
+
     console.warn = origWarn
   })
 
   it('warns if sessionStorage is not available but does not throw', () => {
     const origWarn = console.warn
     console.warn = jest.fn()
+
     const origSessionStorage = sessionStorage
-    // @ts-ignore
     delete global._sessionStorage
-    // emulate disabled sessionStorage
-    Object.defineProperty(global, '_sessionStorage', {
-      get: () => {
-        throw new Error('Storage disabled')
-      },
-      configurable: true,
-    })
+    // Also delete `localStorage`, otherwise it will be used as fallback.
+    const origLocalStorage = localStorage
+    delete global._localStorage
 
     expect(() => {
-      entity(0, [persistence('counter', { storage: 'session' })])
+      entity(0, [persistence('counter', { storage: sessionStorage })])
     }).not.toThrow()
     expect(console.warn).toHaveBeenCalled()
 
-    // @ts-ignore
-    delete global._sessionStorage
     Object.defineProperty(global, '_sessionStorage', {
       value: origSessionStorage,
       configurable: true,
       writable: false,
     })
+    Object.defineProperty(global, '_localStorage', {
+      value: origLocalStorage,
+      configurable: true,
+      writable: false,
+    })
+
     console.warn = origWarn
   })
 })
