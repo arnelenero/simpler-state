@@ -38,6 +38,9 @@
     "@babel/runtime": "^7.21.0",
     "use-sync-external-store": "^1.2.0"
   },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.4",
