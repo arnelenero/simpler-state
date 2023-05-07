@@ -9,7 +9,7 @@ import { getStore, isStoreEnabled } from './store'
  *
  * @throws if entity store is not enabled
  */
-export default function resetAll() {
+export function resetAll() {
   if (!isStoreEnabled())
     throw new Error(
       'resetAll() requires the entity store. Call enableStore() at startup.',
