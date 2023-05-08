@@ -51,7 +51,8 @@ describe('useEntity', () => {
   }: HookOptions<T> = {}) {
     const renderCount = { current: 0 }
     function CounterView() {
-      const value = useEntity(counter, transform, equality)
+      // We don't need to care about the entity-hook value here.
+      useEntity(counter, transform, equality)
       // Increment `renderCount` on every render.
       useEffect(() => {
         renderCount.current++
@@ -59,8 +60,8 @@ describe('useEntity', () => {
       return <></>
     }
 
-    const rendered = render(<CounterView />)
-    return { ...rendered, renderCount }
+    const view = render(<CounterView />)
+    return { ...view, renderCount }
   }
 
   beforeEach(() => {

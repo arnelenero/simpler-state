@@ -37,6 +37,8 @@ describe('entity', () => {
     expect(counter).toHaveProperty('_value', 0)
   })
 
+  /*** Async initial value ***/
+
   it('supports Promise for async initial value', async () => {
     const counter = entity(Promise.resolve(10))
 
@@ -55,6 +57,8 @@ describe('entity', () => {
     expect(counter).toHaveProperty('_value', undefined)
   })
 
+  /*** Entity name/alias ***/
+
   it('sets the entity name to the optional alias passed as argument', () => {
     const counter = entity(0, 'counter')
     expect(counter.name).toBe('counter')
@@ -64,6 +68,8 @@ describe('entity', () => {
     const counter = entity(0)
     expect(counter.name.indexOf('entity')).toBe(0)
   })
+
+  /*** Entity methods ***/
 
   it('provides a `get` function in the entity', () => {
     const counter = entity(0)
@@ -93,6 +99,18 @@ describe('entity', () => {
     expect(counter).toHaveProperty('_value', 2)
   })
 
+  it('accepts an update alias that is visible to the (optional) Inspector', () => {
+    const counter = entity(0)
+    counter.set(val => val + 1, 'increment')
+    expect(counter).toHaveProperty('_value', 1)
+  })
+
+  it('accepts a special update alias `@@DEVTOOLS`', () => {
+    const counter = entity(0)
+    counter.set(1, '@@DEVTOOLS')
+    expect(counter).toHaveProperty('_value', 1)
+  })
+
   it('provides an `init` function in the entity', () => {
     const counter = entity(0)
     expect(counter.init).toBeInstanceOf(Function)
@@ -114,11 +132,13 @@ describe('entity', () => {
       count = counter.use()
       return <></>
     }
-    const component = render(<CounterView />)
+    const { unmount } = render(<CounterView />)
     expect(count).toBe(0)
 
-    component.unmount()
+    unmount()
   })
+
+  /*** Plug-in support ***/
 
   it('checks if the `plugins` argument (if any) is an array', () => {
     // @ts-ignore
@@ -196,6 +216,8 @@ describe('entity', () => {
       entity(0, [plugin])
     }).toThrow()
   })
+
+  /*** Developer tools and testing ***/
 
   it('adds the entity to store if enabled', () => {
     enableStore()

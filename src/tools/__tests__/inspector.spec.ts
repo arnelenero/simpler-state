@@ -105,6 +105,18 @@ describe('inspector', () => {
       expect(getMutableMap()).toHaveProperty('counter', 0)
     })
 
+    it('defers responding to RESET until values are initialized', () => {
+      enableInspector()
+      const counter = mockEntity(0, 'counter')
+      onInit(counter)
+      onDevToolsEvent!({
+        type: 'DISPATCH',
+        payload: { type: 'RESET' },
+      })
+
+      expect(lastDevToolsEvent).toBeNull()
+    })
+
     it('defers sending initial values to Dev Tools until the first entity `set()`', () => {
       enableInspector()
       const counter = mockEntity(0, 'counter')
